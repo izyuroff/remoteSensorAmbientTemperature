@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60/60);
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60/60);
 
-        logLabel.setText("t°C = " + WARNING_TEMP +  "," + "Период: " + period +  "," + "Интервалы: " + pAlarm + ", " + pNormal);
+        logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
         numberLabel.setText("Номер: " + MY_NUMBER);
         invertButton(serviseON);
 
@@ -135,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             sensorExist = false;
             mButton1.setEnabled(false);
             mButton2.setEnabled(false);
+
         }
 
         mSensorManager.registerListener(this, mSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
@@ -187,11 +188,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             return;
         }
 
-        if (MY_NUMBER != null && mainPeriodic != 0 && ALARM_INTERVAL != 0 && NORMAL_INTERVAL!= 0) {
-            msg("Введите правильные данные");
-            return;
-        }
-
         statusLabel.setText("Служба запущена!!!");
         temperatureLabel.setText(mDEGREES + "°C");
         serviseON = true;
@@ -226,6 +222,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void readSharedPreferences(){
         savePref = getSharedPreferences("ru.microsave.temperature.Prefs", MODE_PRIVATE);
         mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 60 * 1));
+        ALARM_INTERVAL = (savePref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
+        NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 24));
         MY_NUMBER = (savePref.getString("NUMBER", "+7123456789"));
         WARNING_TEMP = (savePref.getInt("WARNING", 16));
         sensorExist = (savePref.getBoolean("IFSENSOR", false));
@@ -241,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60/60);
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60/60);
 
-        logLabel.setText("t°C = " + WARNING_TEMP +  "," + "Период: " + period +  "," + "Интервалы: " + pAlarm + ", " + pNormal);
+        logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
 
 
         savePref = getSharedPreferences("ru.microsave.temperature.Prefs", MODE_PRIVATE);
@@ -273,13 +271,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     {
         // если serviceON
         if (b) {
+            mButton.setEnabled(false);
+            mButton0.setEnabled(false);
             mButton1.setEnabled(true);
             mButton2.setEnabled(false);
+            mButton3.setEnabled(false);
+            mButton4.setEnabled(false);
+            mButton5.setEnabled(false);
         }
         // Если НЕ было запусков или была остановка
         else {
+            mButton.setEnabled(true);
+            mButton0.setEnabled(true);
             mButton1.setEnabled(false);
             mButton2.setEnabled(true);
+            mButton3.setEnabled(true);
+            mButton4.setEnabled(true);
+            mButton5.setEnabled(true);
         }
     }
 
@@ -473,7 +481,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
 
                 WARNING_TEMP = Integer.parseInt(value);
-                logLabel.setText("Минимальная t°C = " + WARNING_TEMP);
                 saveSharedPreferences();
             }
         });
