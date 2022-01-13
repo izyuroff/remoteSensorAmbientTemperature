@@ -58,9 +58,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public String MY_NUMBER;
     public int WARNING_TEMP;
 
-    private final long ALARM_INTERVAL     = 1000 * 60 * 60 * 2;
-    private final long NORMAL_INTERVAL    = 1000 * 60 * 60 * 3;
-    private final long mainPeriodic       = 1000 * 60 * 60;
+    private long ALARM_INTERVAL; //     = 1000 * 60 * 60 * 2;
+    private long NORMAL_INTERVAL; //     = 1000 * 60 * 60 * 3;
+    private long mainPeriodic; //        = 1000 * 60 * 60;
 /*
     private long NORMAL_INTERVAL = 1000 * 60 * 60 * 24;
     private long ALARM_INTERVAL = 1000 * 60 * 60 * 2;
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private boolean sensorExist; // наличие сенсора температуры
 
 
-    private Button mButton,mButton0,mButton1,mButton2;
+    private Button mButton,mButton0,mButton1,mButton2, mButton3,mButton4,mButton5;
     private TextView sensorLabel;
     private TextView temperatureLabel;
     private TextView statusLabel;
@@ -100,6 +100,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mButton0 = findViewById(R.id.button0);
         mButton1 = findViewById(R.id.button1);
         mButton2 = findViewById(R.id.button2);
+        mButton3 = findViewById(R.id.button3);
+        mButton4 = findViewById(R.id.button4);
+        mButton5 = findViewById(R.id.button5);
 
         sensorLabel = (TextView) findViewById(R.id.textView0);
         temperatureLabel = (TextView) findViewById(R.id.textView1);
@@ -184,6 +187,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             return;
         }
 
+        if (MY_NUMBER != null && mainPeriodic != 0 && ALARM_INTERVAL != 0 && NORMAL_INTERVAL!= 0) {
+            msg("Введите правильные данные");
+            return;
+        }
+
         statusLabel.setText("Служба запущена!!!");
         temperatureLabel.setText(mDEGREES + "°C");
         serviseON = true;
@@ -214,82 +222,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
-// ==========================================
-    public void inputNumber(View view) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-        alert.setTitle("Ведите номер пожалуйста");
-        alert.setMessage("в формате +7123456789");
-
-        // Set an EditText view to get user input
-        final EditText input = new EditText(this);
-        input.requestFocus();
-        //getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
-        input.setInputType(InputType.TYPE_CLASS_PHONE);  //установит клавиатуру для ввода номера телефона
-        alert.setView(input);
-
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                String value = String.valueOf(input.getText());
-                // Проверяем поля на пустоту
-                if (TextUtils.isEmpty(input.getText().toString())) {
-                    return;
-                }
-                MY_NUMBER = value;
-                numberLabel.setText("Сохранен номер: " + value);
-                saveSharedPreferences();
-                msg("Введен номер: " + value);
-            }
-        });
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // Canceled.
-            }
-        });
-        alert.show();
-    }
-// ==========================================
-    public void inputWarning(View view) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-        alert.setTitle("Ведите минимальную температуру");
-        alert.setMessage("пожалуйста");
-
-        // Set an EditText view to get user input
-        final EditText input = new EditText(this);
-
-        input.requestFocus();
-
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
-        alert.setView(input);
-
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                String value = String.valueOf(input.getText());
-
-                // Проверяем поля на пустоту
-                if (TextUtils.isEmpty(input.getText().toString())) {
-                    return;
-                }
-
-                WARNING_TEMP = Integer.parseInt(value);
-                logLabel.setText("Минимальная t°C = " + WARNING_TEMP);
-                saveSharedPreferences();
-            }
-        });
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // Canceled.
-            }
-        });
-        alert.show();
-    }
-
     // ==========================================
     private void readSharedPreferences(){
         savePref = getSharedPreferences("ru.microsave.temperature.Prefs", MODE_PRIVATE);
-
+        mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 60 * 1));
         MY_NUMBER = (savePref.getString("NUMBER", "+7123456789"));
         WARNING_TEMP = (savePref.getInt("WARNING", 16));
         sensorExist = (savePref.getBoolean("IFSENSOR", false));
@@ -301,12 +237,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             statusLabel.setText("Служба не была запущена.");
     }
     private void saveSharedPreferences() {
+        String period = String.valueOf((int)mainPeriodic/1000/60/60);
+        String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60/60);
+        String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60/60);
+
+        logLabel.setText("t°C = " + WARNING_TEMP +  "," + "Период: " + period +  "," + "Интервалы: " + pAlarm + ", " + pNormal);
+
+
         savePref = getSharedPreferences("ru.microsave.temperature.Prefs", MODE_PRIVATE);
         SharedPreferences.Editor ed = savePref.edit();
 
         ed.putString("NUMBER", MY_NUMBER);
         ed.putInt("WARNING", WARNING_TEMP);
 
+        ed.putLong("PERIOD_INTERVAL", mainPeriodic);
         ed.putLong("NORMAL_INTERVAL", NORMAL_INTERVAL);
         ed.putLong("ALARM_INTERVAL", ALARM_INTERVAL);
 
@@ -361,5 +305,183 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
       //  mSensorManager = null;
       //  mSensorTemperature = null;
         super.onDestroy();
+    }
+
+    public void inputPeriod(View view) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("Ведите период проверки");
+            alert.setMessage("должен быть меньше интервалов ");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(this);
+
+        input.requestFocus();
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = String.valueOf(input.getText());
+
+                // Проверяем поля на пустоту
+                if (TextUtils.isEmpty(input.getText().toString())) {
+                    return;
+                }
+
+                int hourse = (Integer.parseInt(value));
+                mainPeriodic = Long.valueOf(hourse * 60 * 60 * 1000);
+                saveSharedPreferences();
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+        alert.show();
+    }
+
+    public void inputAlarma(View view) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Ведите интервал тревоги");
+        alert.setMessage("в часах");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(this);
+
+        input.requestFocus();
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = String.valueOf(input.getText());
+
+                // Проверяем поля на пустоту
+                if (TextUtils.isEmpty(input.getText().toString())) {
+                    return;
+                }
+
+                int hourse = (Integer.parseInt(value));
+                ALARM_INTERVAL = Long.valueOf(hourse * 60 * 60 * 1000);
+                Log.d(LOG_TAG, "--- ALARM_INTERVAL ---" + ALARM_INTERVAL);
+
+                saveSharedPreferences();
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+        alert.show();
+    }
+
+    public void inputNormal(View view) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Ведите интервал нормальный");
+        alert.setMessage("в часах");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(this);
+
+        input.requestFocus();
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = String.valueOf(input.getText());
+
+                // Проверяем поля на пустоту
+                if (TextUtils.isEmpty(input.getText().toString())) {
+                    return;
+                }
+
+                int hourse = (Integer.parseInt(value));
+                NORMAL_INTERVAL = Long.valueOf(hourse * 60 * 60 * 1000);
+                Log.d(LOG_TAG, "--- NORMAL_INTERVAL ---" + NORMAL_INTERVAL);
+
+                saveSharedPreferences();
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+        alert.show();
+    }
+
+    // ==========================================
+    public void inputNumber(View view) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle("Ведите номер пожалуйста");
+        alert.setMessage("в формате +7123456789");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(this);
+        input.requestFocus();
+        //getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+        input.setInputType(InputType.TYPE_CLASS_PHONE);  //установит клавиатуру для ввода номера телефона
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = String.valueOf(input.getText());
+                // Проверяем поля на пустоту
+                if (TextUtils.isEmpty(input.getText().toString())) {
+                    return;
+                }
+                MY_NUMBER = value;
+                numberLabel.setText("Сохранен номер: " + value);
+                saveSharedPreferences();
+                msg("Введен номер: " + value);
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+        alert.show();
+    }
+    // ==========================================
+    public void inputWarning(View view) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle("Ведите минимальную температуру");
+        alert.setMessage("пожалуйста");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(this);
+
+        input.requestFocus();
+
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = String.valueOf(input.getText());
+
+                // Проверяем поля на пустоту
+                if (TextUtils.isEmpty(input.getText().toString())) {
+                    return;
+                }
+
+                WARNING_TEMP = Integer.parseInt(value);
+                logLabel.setText("Минимальная t°C = " + WARNING_TEMP);
+                saveSharedPreferences();
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+        alert.show();
     }
 }

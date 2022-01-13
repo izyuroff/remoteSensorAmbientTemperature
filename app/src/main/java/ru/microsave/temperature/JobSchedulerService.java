@@ -108,6 +108,7 @@ public class JobSchedulerService extends JobService {
         myNumber = (saveJobPref.getString("NUMBER", "+7123456789"));
         myWarning = (saveJobPref.getInt("WARNING", 16));
 
+
         myAlarmInterval = (saveJobPref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 2));
         myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 24));
         Boolean b = (saveJobPref.getBoolean("IFSENSOR", true));
