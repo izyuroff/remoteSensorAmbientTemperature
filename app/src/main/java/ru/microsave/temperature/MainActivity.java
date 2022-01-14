@@ -317,8 +317,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void inputPeriod(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setTitle("Ведите период проверки");
-            alert.setMessage("должен быть меньше интервалов ");
+            alert.setTitle("Период проверки в минутах");
+            alert.setMessage("лучше поменьше, чем интервалы");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
 
                 int hourse = (Integer.parseInt(value));
-                mainPeriodic = Long.valueOf(hourse * 60 * 60 * 1000);
+                mainPeriodic = Long.valueOf(hourse * 60 * 1000);
                 saveSharedPreferences();
             }
         });
@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void inputAlarma(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Ведите интервал тревоги");
-        alert.setMessage("в часах");
+        alert.setMessage("в минутах");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -371,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
 
                 int hourse = (Integer.parseInt(value));
-                ALARM_INTERVAL = Long.valueOf(hourse * 60 * 60 * 1000);
+                ALARM_INTERVAL = Long.valueOf(hourse * 60 * 1000);
                 Log.d(LOG_TAG, "--- ALARM_INTERVAL ---" + ALARM_INTERVAL);
 
                 saveSharedPreferences();
@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void inputNormal(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Ведите интервал нормальный");
-        alert.setMessage("в часах");
+        alert.setMessage("в минутах");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -407,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
 
                 int hourse = (Integer.parseInt(value));
-                NORMAL_INTERVAL = Long.valueOf(hourse * 60 * 60 * 1000);
+                NORMAL_INTERVAL = Long.valueOf(hourse * 60 * 1000);
                 Log.d(LOG_TAG, "--- NORMAL_INTERVAL ---" + NORMAL_INTERVAL);
 
                 saveSharedPreferences();

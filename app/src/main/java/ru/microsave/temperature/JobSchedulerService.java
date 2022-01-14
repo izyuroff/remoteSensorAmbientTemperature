@@ -30,6 +30,12 @@ public class JobSchedulerService extends JobService {
 
         long currentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
+        // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
+        if (mLastAlarm == 0 && mLastNormal == 0 ){
+            mLastAlarm = currentTime - 1000;
+            mLastNormal = currentTime - 1000;
+        }
+
         //Log.d(LOG_TAG, "--- onStartJob ---");
         Log.d(LOG_TAG, "currentTime - mLastAlarm > myAlarmInterval: " + currentTime + " - " + mLastAlarm + " = " +  (currentTime - mLastAlarm) + " > " + myAlarmInterval);
         Log.d(LOG_TAG, "currentTime - mLastNormal > myNormalInterval: " + currentTime + " - " + mLastNormal + " = " +  (currentTime - mLastNormal) + " > " + myNormalInterval);
@@ -39,23 +45,19 @@ public class JobSchedulerService extends JobService {
     //    Log.d(LOG_TAG, "--- onStartJob (currentTime - mLastNormal): " + (currentTime - mLastNormal));
 
 
-        // При старте равно нулю
-        if (mLastAlarm == 0 && mLastNormal == 0 ){
-            mLastAlarm = currentTime;
-            mLastNormal = currentTime;
-        }
+
 
         // true если тревога
         boolean alarmType;
         if (serviseJobON && (currentTime - mLastAlarm > myAlarmInterval)) {
-            Log.d(LOG_TAG, "currentTime - mLastAlarm > myAlarmInterval: " + currentTime + " - " + mLastAlarm + " = " +  (currentTime - mLastAlarm) + " > " + myAlarmInterval);
+        //    Log.d(LOG_TAG, "currentTime - mLastAlarm > myAlarmInterval: " + currentTime + " - " + mLastAlarm + " = " +  (currentTime - mLastAlarm) + " > " + myAlarmInterval);
             mLastAlarm = currentTime;
             alarmType = true;
             new JobTask(this, myNumber, myWarning, alarmType).execute(param);
         }
 
         if (serviseJobON && (currentTime - mLastNormal > myNormalInterval)) {
-            Log.d(LOG_TAG, "currentTime - mLastNormal > myNormalInterval: " + currentTime + " - " + mLastNormal + " = " +  (currentTime - mLastNormal) + " > " + myNormalInterval);
+        //    Log.d(LOG_TAG, "currentTime - mLastNormal > myNormalInterval: " + currentTime + " - " + mLastNormal + " = " +  (currentTime - mLastNormal) + " > " + myNormalInterval);
             mLastNormal = currentTime;
             alarmType = false;
             new JobTask(this, myNumber, myWarning, alarmType).execute(param);
