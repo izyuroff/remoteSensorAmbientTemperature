@@ -1,4 +1,4 @@
-# remoteSensorAmbientTemperature
+# remoteSensorAmbientTemperature v.1.1
 
 Получение температуры окружающей среды и сигнализация о слишком низком уровне отправкой СМС на заданный номер
 
