@@ -1,4 +1,4 @@
-package ru.microsave.temperature;
+package ru.microsave.temperaturecontrol;
 
 import android.app.Service;
 import android.content.Intent;

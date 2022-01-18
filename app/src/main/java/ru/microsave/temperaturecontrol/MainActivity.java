@@ -1,4 +1,4 @@
-package ru.microsave.temperature;
+package ru.microsave.temperaturecontrol;
 /*
 Получение температуры окружающей среды и сигнализация о слишком низком уровне
 

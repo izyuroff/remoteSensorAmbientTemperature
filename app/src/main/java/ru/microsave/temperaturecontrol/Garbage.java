@@ -1,4 +1,4 @@
-package ru.microsave.temperature;
+package ru.microsave.temperaturecontrol;
 
 /*
 Полезняшки которые возможно надо использовать
