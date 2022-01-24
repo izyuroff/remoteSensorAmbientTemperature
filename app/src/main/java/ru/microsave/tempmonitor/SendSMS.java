@@ -1,4 +1,4 @@
-package ru.microsave.temperaturecontrol;
+package ru.microsave.tempmonitor;
 
 import android.os.AsyncTask;
 import android.util.Log;

@@ -1,4 +1,4 @@
-package ru.microsave.temperaturecontrol;
+package ru.microsave.tempmonitor;
 
 class MainActivityBackup {
 

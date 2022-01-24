@@ -1,4 +1,4 @@
-package ru.microsave.temperaturecontrol;
+package ru.microsave.tempmonitor;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;

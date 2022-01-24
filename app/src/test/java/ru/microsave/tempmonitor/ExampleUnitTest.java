@@ -1,4 +1,4 @@
-package ru.microsave.temperaturecontrol;
+package ru.microsave.tempmonitor;
 
 import org.junit.Test;
 

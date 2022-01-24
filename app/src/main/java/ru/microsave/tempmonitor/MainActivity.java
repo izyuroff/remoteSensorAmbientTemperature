@@ -1,5 +1,23 @@
-package ru.microsave.temperaturecontrol;
+package ru.microsave.tempmonitor;
 /*
+tempmonitor
+Temperature monitor with alarm SMS
+ 
+RemoteTemperatureGSM
+Temperature alarm SMS
+Temperature remote monitoring and alarm SMS
+
+Alarm SMS at low temperature of the heating system
+
+
+Автономная система контроля температуры для смартфона с ОС Андроид
+При изменении температуры за заданные пределы отпраляется сообщение SMS на заданный номер
+
+Можно использовать:
+Для удаленного контроля системы отопления
+Возможно в качестве пожарной сигнализации
+
+
 v.1.1
 Получение температуры окружающей среды и сигнализация о слишком низком уровне
 
@@ -19,12 +37,6 @@ v.1.1
 Также сигнализация о работоспособности устройства - уровень батареи например
 и может быть можно менять текст сообщения
 Нужен ввод для настройки периодичности сообщений
-
-
-
-
-
-
 
  */
 

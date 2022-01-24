@@ -1,4 +1,4 @@
-package ru.microsave.temperaturecontrol;
+package ru.microsave.tempmonitor;
 // Этот класс для выполнения работы в отдельном потоке и вызывается из JobSchedulerService
 /*
 
