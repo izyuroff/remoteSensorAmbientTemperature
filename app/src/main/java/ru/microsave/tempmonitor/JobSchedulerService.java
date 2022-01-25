@@ -13,6 +13,8 @@ public class JobSchedulerService extends JobService {
    // private WeakReference<MainActivity> mActivity;
     private final String LOG_TAG = "myLogs";
     private boolean serviseJobON;
+    private boolean ifSensor;
+
     private String myNumber;
     private int myWarning;
     private long myAlarmInterval;
@@ -40,27 +42,20 @@ public class JobSchedulerService extends JobService {
         Log.d(LOG_TAG, "currentTime - mLastAlarm > myAlarmInterval: " + currentTime + " - " + mLastAlarm + " = " +  (currentTime - mLastAlarm) + " > " + myAlarmInterval);
         Log.d(LOG_TAG, "currentTime - mLastNormal > myNormalInterval: " + currentTime + " - " + mLastNormal + " = " +  (currentTime - mLastNormal) + " > " + myNormalInterval);
 
-
-    //    Log.d(LOG_TAG, "--- onStartJob (currentTime - mLastAlarm): " + (currentTime - mLastAlarm));
-    //    Log.d(LOG_TAG, "--- onStartJob (currentTime - mLastNormal): " + (currentTime - mLastNormal));
-
-
-
-
         // true если тревога
         boolean alarmType;
         if (serviseJobON && (currentTime - mLastAlarm > myAlarmInterval)) {
         //    Log.d(LOG_TAG, "currentTime - mLastAlarm > myAlarmInterval: " + currentTime + " - " + mLastAlarm + " = " +  (currentTime - mLastAlarm) + " > " + myAlarmInterval);
             mLastAlarm = currentTime;
             alarmType = true;
-            new JobTask(this, myNumber, myWarning, alarmType).execute(param);
+            new JobTask(this, myNumber, myWarning, alarmType,ifSensor).execute(param);
         }
 
         if (serviseJobON && (currentTime - mLastNormal > myNormalInterval)) {
         //    Log.d(LOG_TAG, "currentTime - mLastNormal > myNormalInterval: " + currentTime + " - " + mLastNormal + " = " +  (currentTime - mLastNormal) + " > " + myNormalInterval);
             mLastNormal = currentTime;
             alarmType = false;
-            new JobTask(this, myNumber, myWarning, alarmType).execute(param);
+            new JobTask(this, myNumber, myWarning, alarmType,ifSensor).execute(param);
         }
 
 
@@ -105,17 +100,17 @@ public class JobSchedulerService extends JobService {
 
     private void readSharedPreferences(){
 
-        SharedPreferences saveJobPref = getSharedPreferences("ru.microsave.temperature.Prefs", MODE_PRIVATE);
+        SharedPreferences saveJobPref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         serviseJobON = (saveJobPref.getBoolean("SERVICEON", false));
         myNumber = (saveJobPref.getString("NUMBER", "+7123456789"));
         myWarning = (saveJobPref.getInt("WARNING", 16));
 
 
-        myAlarmInterval = (saveJobPref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 2));
-        myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 24));
-        Boolean b = (saveJobPref.getBoolean("IFSENSOR", true));
+        myAlarmInterval = (saveJobPref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
+        myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
+        ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));
 
-        if (b) onDestroy();
+        if (ifSensor) onDestroy();
 
     }
 }

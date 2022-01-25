@@ -18,9 +18,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
-import android.telephony.SmsManager;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -39,8 +40,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
     private String textMessage;
 
 
-    public JobTask(JobService jobService, String s, int i,Boolean b) {
-
+    public JobTask(JobService jobService, String s, int i, Boolean b, Boolean ifSensor) {
 
         MY_NUMBER_LOCAL = s;
         WARNING_TEMP_LOCAL = i;
@@ -53,6 +53,9 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
 
         this.jobService = jobService;
 
+        if (!ifSensor) {
+            getCpuTemp();
+        }
     }
 
 
@@ -66,7 +69,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
 
         }
         else
-            Log.d(LOG_TAG, "Нет сенсора!");
+            Log.d(LOG_TAG, "Нет сенсора, будет температура CPU");
     }
 
     @Override
@@ -94,8 +97,9 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         if (degrees != 0 && degrees < WARNING_TEMP_LOCAL && mALARM_TYPE) {
             textMessage = timestamp +  "--- Низкая ---: " + degrees;
             try {
-                SmsManager.getDefault()
-                        .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
+            //    Временно ничего не отправляем!
+            //    SmsManager.getDefault()
+            //            .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
                 Log.d(LOG_TAG, textMessage);
             } catch (Exception e) {
                 Log.d(LOG_TAG, "failed to send message");
@@ -106,8 +110,9 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         if (degrees != 0 && !mALARM_TYPE) {
             textMessage = timestamp +  "--- Нормальная ---: " + degrees;
             try {
-                SmsManager.getDefault()
-                        .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
+                //    Временно ничего не отправляем!
+                // SmsManager.getDefault()
+                //        .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
                 Log.d(LOG_TAG, textMessage);
             } catch (Exception e) {
                 Log.d(LOG_TAG, "failed to send message");
@@ -115,4 +120,24 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
             }
         }
     }
+    public float getCpuTemp() {
+        Process process;
+        try {
+            process = Runtime.getRuntime().exec("cat sys/class/thermal/thermal_zone0/temp");
+            process.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = reader.readLine();
+            float temp = Float.parseFloat(line) / 1000.0f;
+
+            DEGREES_LOCAL = (int)temp;
+            Log.d(LOG_TAG, "DEGREES_LOCAL = " + DEGREES_LOCAL);
+            return DEGREES_LOCAL;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(LOG_TAG, "Exception e = ");
+            return 0.0f;
+        }
+    }
+
 }

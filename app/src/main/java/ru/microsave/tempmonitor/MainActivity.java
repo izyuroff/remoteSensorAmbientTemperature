@@ -2,7 +2,7 @@ package ru.microsave.tempmonitor;
 /*
 tempmonitor
 Temperature monitor with alarm SMS
- 
+
 RemoteTemperatureGSM
 Temperature alarm SMS
 Temperature remote monitoring and alarm SMS
@@ -36,7 +36,10 @@ v.1.1
 ---= Добавить в будущем =---
 Также сигнализация о работоспособности устройства - уровень батареи например
 и может быть можно менять текст сообщения
-Нужен ввод для настройки периодичности сообщений
+Нужен ввод для настройки периодичности сообщений FIX
+
+Нужно можно вводить несколько номеров для СМС
+Снимать температуру также с батареи
 
  */
 
@@ -44,12 +47,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -66,7 +71,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
-
     // Для отправки СМС
     public String MY_NUMBER;
     public int WARNING_TEMP;
@@ -127,9 +131,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         readSharedPreferences();
 
-        String period = String.valueOf((int)mainPeriodic/1000/60/60);
-        String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60/60);
-        String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60/60);
+        String period = String.valueOf((int)mainPeriodic/1000);
+        String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000);
+        String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000);
 
         logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
         numberLabel.setText("Номер: " + MY_NUMBER);
@@ -144,10 +148,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } else {
             // Если нет датчика, скажем об этом
             sensorLabel.setText("Датчика t°C - НЕТ");
-            temperatureLabel.setText("?°C");
+          //  temperatureLabel.setText("?°C");
+
+           // batteryTemperature();
+          // getCpuTemp();
             sensorExist = false;
-            mButton1.setEnabled(false);
-            mButton2.setEnabled(false);
+           // mButton1.setEnabled(false);
+           // mButton2.setEnabled(false);
 
         }
 
@@ -167,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
        // sendAlarm(degrees);
        // realSMS (degrees);
         }
-        else msg("У вас нет датчика температуры");
+        else msg("Датчика температуры нет, измеряем t°C CPU");
     }
 
     @Override
@@ -177,9 +184,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // Метод для кнопочки ОСТАНОВИТЬ СЛУЖБУ
     public void stopSheduler (View view){
 
-
         stopService(new Intent(this, JobSchedulerService.class));
-
         serviseON = false;
         invertButton(serviseON);
 
@@ -198,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if (!sensorExist) {
             msg("У вас нет датчика температуры");
-            return;
+            // return;
         }
 
         statusLabel.setText("Служба запущена!!!");
@@ -233,12 +238,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // ==========================================
     private void readSharedPreferences(){
-        savePref = getSharedPreferences("ru.microsave.temperature.Prefs", MODE_PRIVATE);
+        savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
+
+        mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000));
+        ALARM_INTERVAL = (savePref.getLong("ALARM_INTERVAL", 1000));
+        NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 1000));
+/*
+
         mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 60 * 1));
         ALARM_INTERVAL = (savePref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
-        NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 24));
+        NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
+*/
+
         MY_NUMBER = (savePref.getString("NUMBER", "+7123456789"));
-        WARNING_TEMP = (savePref.getInt("WARNING", 16));
+        WARNING_TEMP = (savePref.getInt("WARNING", 88));
         sensorExist = (savePref.getBoolean("IFSENSOR", false));
         serviseON = (savePref.getBoolean("SERVICEON", false));
         invertButton(serviseON);
@@ -248,14 +261,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             statusLabel.setText("Служба не была запущена.");
     }
     private void saveSharedPreferences() {
-        String period = String.valueOf((int)mainPeriodic/1000/60/60);
-        String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60/60);
-        String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60/60);
+        String period = String.valueOf((int)mainPeriodic/1000);
+        String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000);
+        String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000);
 
         logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
 
 
-        savePref = getSharedPreferences("ru.microsave.temperature.Prefs", MODE_PRIVATE);
+        savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         SharedPreferences.Editor ed = savePref.edit();
 
         ed.putString("NUMBER", MY_NUMBER);
@@ -349,8 +362,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     return;
                 }
 
-                int hourse = (Integer.parseInt(value));
-                mainPeriodic = Long.valueOf(hourse * 60 * 1000);
+                int secunde = (Integer.parseInt(value));
+                mainPeriodic = Long.valueOf(secunde * 1000);
                 saveSharedPreferences();
             }
         });
@@ -383,8 +396,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     return;
                 }
 
-                int hourse = (Integer.parseInt(value));
-                ALARM_INTERVAL = Long.valueOf(hourse * 60 * 1000);
+                int secunde = (Integer.parseInt(value));
+                ALARM_INTERVAL = Long.valueOf(secunde * 1000);
                 Log.d(LOG_TAG, "--- ALARM_INTERVAL ---" + ALARM_INTERVAL);
 
                 saveSharedPreferences();
@@ -400,7 +413,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void inputNormal(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Ведите интервал нормальный");
+        alert.setTitle("Введите интервал нормальный");
         alert.setMessage("в минутах");
 
         // Set an EditText view to get user input
@@ -419,8 +432,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     return;
                 }
 
-                int hourse = (Integer.parseInt(value));
-                NORMAL_INTERVAL = Long.valueOf(hourse * 60 * 1000);
+                int secunde = (Integer.parseInt(value));
+                NORMAL_INTERVAL = Long.valueOf(secunde * 1000);
                 Log.d(LOG_TAG, "--- NORMAL_INTERVAL ---" + NORMAL_INTERVAL);
 
                 saveSharedPreferences();
@@ -438,7 +451,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void inputNumber(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        alert.setTitle("Ведите номер пожалуйста");
+        alert.setTitle("Введите номер пожалуйста");
         alert.setMessage("в формате +7123456789");
 
         // Set an EditText view to get user input
@@ -473,7 +486,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void inputWarning(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        alert.setTitle("Ведите минимальную температуру");
+        alert.setTitle("Введите минимальную температуру");
         alert.setMessage("пожалуйста");
 
         // Set an EditText view to get user input
@@ -504,4 +517,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
         alert.show();
     }
+
+    public void batteryTemperature ()
+    {
+        Intent intent = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        float  temp   = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) / 10;
+
+        String message = String.valueOf(temp) + Character.toString ((char) 176) + " C";
+        temperatureLabel.setText(message);
+    }
+
 }

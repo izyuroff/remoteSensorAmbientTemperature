@@ -13,7 +13,7 @@ import android.view.View;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
-//  import static ru.microsave.temperature.MainActivity.serviceON;
+//  import static ru.microsave.tempmonitor.MainActivity.serviceON;
 
 public class Control_activity extends AppCompatActivity {
     private final String LOG_TAG = "myLogs";
@@ -36,7 +36,7 @@ public class Control_activity extends AppCompatActivity {
 
         Intent intent = getIntent();
         serviceONlocal = intent.getBooleanExtra("serviceIntentON",true);
-        mPeriodic = intent.getLongExtra("schedulerPeriodic",1000 * 15);
+        mPeriodic = intent.getLongExtra("schedulerPeriodic",1000 * 15); // по умолчанию 15 секунд
         Log.d(LOG_TAG, "--- onCreate ControlActivity serviceON = " + serviceONlocal);
 
         if (serviceONlocal)
@@ -105,7 +105,7 @@ public class Control_activity extends AppCompatActivity {
             ComponentName componentName = new ComponentName(this, JobSchedulerService.class);
             final JobInfo jobInfo = new JobInfo.Builder(mJobId, componentName)
                     .setRequiresCharging(false)
-                    .setPeriodic(mPeriodic) // Период запусков должен быть больше, чем переменные *_INTERVAL
+                    .setPeriodic(mPeriodic) // Период запусков должен быть больше(?), чем переменные *_INTERVAL
                     .build();
             JobScheduler jobScheduler = (JobScheduler) getSystemService(
                     Context.JOB_SCHEDULER_SERVICE);
