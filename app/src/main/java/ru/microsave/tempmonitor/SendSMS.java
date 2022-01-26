@@ -3,7 +3,7 @@ package ru.microsave.tempmonitor;
 import android.os.AsyncTask;
 import android.util.Log;
 
-//import static ru.microsave.temperature.MainActivity.MY_NUMBER;
+//import static ru.microsave.tempmonitor.MainActivity.MY_NUMBER;
 
 class  SendSMS extends AsyncTask<String, Void, Void> {
     private final String LOG_TAG = "myLogs";

@@ -86,7 +86,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
        // mJobSensorManager.unregisterListener(this);
-        jobService.jobFinished(jobParameters, false);
+        jobService.jobFinished(jobParameters, true);
 
     }
 

@@ -10,7 +10,7 @@ android {
         configurations.all {
             resolutionStrategy { force 'androidx.core:core:1.6.0' }
         }
-        applicationId "ru.microsave.temperature"
+        applicationId "ru.microsave.tempmonitor"
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 1

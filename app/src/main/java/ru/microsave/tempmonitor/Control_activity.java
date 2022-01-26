@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import java.util.List;
 
@@ -39,42 +38,28 @@ public class Control_activity extends AppCompatActivity {
         mPeriodic = intent.getLongExtra("schedulerPeriodic",1000 * 15); // по умолчанию 15 секунд
         Log.d(LOG_TAG, "--- onCreate ControlActivity serviceON = " + serviceONlocal);
 
-        if (serviceONlocal)
+        if (serviceONlocal){
+            Log.d(LOG_TAG, "--- jobPlan --- ");
             jobPlan();
-        else
+        }
+        else{
+            Log.d(LOG_TAG, "--- stopPlanNow --- ");
             stopPlanNow();
-
-    }
-
-    public void stopPlan(View v) {
-        mJobScheduler.cancelAll();
-        serviceONlocal = false;
-        Log.d(LOG_TAG, "--- stopPlan ControlActivity serviceON = " + serviceONlocal);
-    //    Intent intent = new Intent(this, MainActivity.class);
-    //    intent.putExtra("serviceON", false);
-    //    startActivity(intent);
-      //  finish();
+        }
     }
 
     public void stopPlanNow() {
         serviceONlocal = false;
-        Log.d(LOG_TAG, "Cancel all scheduled jobs");
-        JobScheduler scheduler = (JobScheduler) getSystemService(
-                Context.JOB_SCHEDULER_SERVICE);
-        List<JobInfo> allPendingJobs = scheduler.getAllPendingJobs();
+
+        List<JobInfo> allPendingJobs = mJobScheduler.getAllPendingJobs();
         for (JobInfo info : allPendingJobs) {
             int id = info.getId();
-            scheduler.cancel(id);
+            Log.d(LOG_TAG, "Cancel all scheduled jobs with id = " + id);
+            mJobScheduler.cancel(id);
         }
-        scheduler.cancelAll();
 
-        if (mJobScheduler==null) {
-            finish();
-        //    Intent intent = new Intent(this, MainActivity.class);
-        //    intent.putExtra("STOPSTOPSTOP", false);
-        //    startActivity(intent);
-        }
-        else Log.d(LOG_TAG, "--- А НИЧЕ И Н БЫЛО ЗАПУЩЕНО = " + serviceONlocal);
+        mJobScheduler.cancelAll();
+        Log.d(LOG_TAG, "Cancel all scheduled jobs");
         finish();
     }
 
@@ -82,15 +67,25 @@ public class Control_activity extends AppCompatActivity {
 
         // ==========================
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-
             ComponentName componentName = new ComponentName(this, JobSchedulerService.class);
+
+            int i = JobInfo.BACKOFF_POLICY_EXPONENTIAL;
+
             final JobInfo jobInfo = new JobInfo.Builder(mJobId, componentName)
-                    .setRequiresCharging(false)
-                    .setPeriodic(mPeriodic, mPeriodic)
+                    //.setPeriodic(300, 100)
+                    //.setOverrideDeadline(4*16*60*1000)
+                    //.setMinimumLatency(3000)
+                    .setMinimumLatency(16*60*1000)
                     .build();
-            JobScheduler jobScheduler = (JobScheduler) getSystemService(
-                    Context.JOB_SCHEDULER_SERVICE);
-            jobScheduler.schedule(jobInfo);
+            Log.d(LOG_TAG, "JobInfo.BACKOFF_POLICY_EXPONENTIAL = " + i);
+            mJobScheduler.schedule(jobInfo);
+
+/*            int ret = mJobScheduler.schedule(jobInfo);
+            if (ret == JobScheduler.RESULT_SUCCESS) {
+                Log.d(LOG_TAG, "Job scheduled successfully");
+            } else {
+                Log.d(LOG_TAG, "Job scheduling failed");
+            }*/
 
             if (mJobScheduler.schedule(jobInfo) <= 0) {
                 Log.d(LOG_TAG, "onCreate: Some error, jobInfo = " + jobInfo);
@@ -107,9 +102,8 @@ public class Control_activity extends AppCompatActivity {
                     .setRequiresCharging(false)
                     .setPeriodic(mPeriodic) // Период запусков должен быть больше(?), чем переменные *_INTERVAL
                     .build();
-            JobScheduler jobScheduler = (JobScheduler) getSystemService(
-                    Context.JOB_SCHEDULER_SERVICE);
-            jobScheduler.schedule(jobInfo);
+
+            mJobScheduler.schedule(jobInfo);
 
             if (mJobScheduler.schedule(jobInfo) <= 0) {
                 Log.d(LOG_TAG, "onCreate: Some error, jobInfo = " + jobInfo);

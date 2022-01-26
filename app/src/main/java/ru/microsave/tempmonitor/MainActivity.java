@@ -184,18 +184,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // Метод для кнопочки ОСТАНОВИТЬ СЛУЖБУ
     public void stopSheduler (View view){
 
-        stopService(new Intent(this, JobSchedulerService.class));
+    //    stopService(new Intent(this, JobSchedulerService.class));
         serviseON = false;
         invertButton(serviseON);
 
         statusLabel.setText("Служба остановлена.");
         temperatureLabel.setText(mDEGREES + "°C");
         saveSharedPreferences();
-    //    Intent intent = new Intent(this, Control_activity.class);
-    //    intent.putExtra("serviceON", false);
-    //    startActivity(intent);
         Log.d(LOG_TAG, "--- stopSheduler MainActivity --- serviceON = " + serviseON);
-       // finish();
+
+        Intent intent = new Intent(this, Control_activity.class);
+        intent.putExtra("serviceIntentON", serviseON);
+        startActivity(intent);
     }
 
     // Метод для кнопочки БОЕВОЕ ДЕЖУРСТВО
@@ -211,7 +211,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         serviseON = true;
         invertButton(serviseON);
         saveSharedPreferences();
-    //    mSensorManager.unregisterListener(this);
+        // Может быть надо раскомментировать?
+        // mSensorManager.unregisterListener(this);
         Intent intent = new Intent(this, Control_activity.class);
 
         // Запретить оптимизировать батарею
@@ -222,21 +223,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                 intent.setData(Uri.parse("package:" + packageName));
-                intent.putExtra("serviceIntentON", true);
+                intent.putExtra("serviceIntentON", serviseON);
                 intent.putExtra("schedulerPeriodic", mainPeriodic);
                 startActivity(intent);
             }
         }
         else {
-            intent.putExtra("serviceIntentON", true);
+            msg("Служба запускается для API < 22");
+            intent.putExtra("serviceIntentON", serviseON);
             intent.putExtra("schedulerPeriodic", mainPeriodic);
             startActivity(intent);
-            msg("Служба запускается для API < 22");
         }
-
     }
 
-    // ==========================================
     private void readSharedPreferences(){
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
 

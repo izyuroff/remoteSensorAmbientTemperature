@@ -3,7 +3,7 @@ package ru.microsave.tempmonitor;
 class MainActivityBackup {
 
     /*
-    package ru.microsave.temperature;
+    package ru.microsave.tempmonitor;
 
 Получение температуры окружающей среды и сигнализация о слишком низком уровне
 Измерения проводить каждый час - пробуждение смартфона от сна

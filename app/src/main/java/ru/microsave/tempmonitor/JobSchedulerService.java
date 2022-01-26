@@ -38,7 +38,7 @@ public class JobSchedulerService extends JobService {
             mLastNormal = currentTime - 1000;
         }
 
-        //Log.d(LOG_TAG, "--- onStartJob ---");
+        Log.d(LOG_TAG, "--- onStartJob ---");
         Log.d(LOG_TAG, "currentTime - mLastAlarm > myAlarmInterval: " + currentTime + " - " + mLastAlarm + " = " +  (currentTime - mLastAlarm) + " > " + myAlarmInterval);
         Log.d(LOG_TAG, "currentTime - mLastNormal > myNormalInterval: " + currentTime + " - " + mLastNormal + " = " +  (currentTime - mLastNormal) + " > " + myNormalInterval);
 
@@ -90,7 +90,6 @@ public class JobSchedulerService extends JobService {
 
     @Override
     public void onDestroy() {
-        long currentTime = System.currentTimeMillis();
         stopService(new Intent(this, JobSchedulerService.class));
     }
     @Override
