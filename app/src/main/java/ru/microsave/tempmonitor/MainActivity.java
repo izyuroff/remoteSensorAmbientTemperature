@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.ICE_CREAM_SANDWICH && mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
             mSensorTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+            mSensorTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
             sensorExist = true;
             sensorLabel.setText("Датчик t°C - ОК");
         } else {
@@ -192,6 +193,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         temperatureLabel.setText(mDEGREES + "°C");
         saveSharedPreferences();
         Log.d(LOG_TAG, "--- stopSheduler MainActivity --- serviceON = " + serviseON);
+
+        // Может быть надо раскомментировать?
+        // mSensorManager.unregisterListener(this);
 
         Intent intent = new Intent(this, Control_activity.class);
         intent.putExtra("serviceIntentON", serviseON);
@@ -329,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Почему то закомментировал, не помню, были проблемы вроде бы
         // Но в то же время надо бы выполнять
-      //  mSensorManager.unregisterListener(this);
+        mSensorManager.unregisterListener(this);
 
     }
     @Override

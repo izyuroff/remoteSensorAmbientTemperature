@@ -3,7 +3,9 @@ package ru.microsave.tempmonitor;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.BatteryManager;
 import android.util.Log;
 
 import java.text.DateFormat;
@@ -11,6 +13,7 @@ import java.util.Date;
 
 public class JobSchedulerService extends JobService {
    // private WeakReference<MainActivity> mActivity;
+    private String tempBattery;
     private final String LOG_TAG = "myLogs";
     private boolean serviseJobON;
     private boolean ifSensor;
@@ -30,12 +33,14 @@ public class JobSchedulerService extends JobService {
     @Override
     public boolean onStartJob(JobParameters param) {
 
+        batteryTemperature ();
+
         long currentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastNormal == 0 ){
-            mLastAlarm = currentTime - 1000;
-            mLastNormal = currentTime - 1000;
+            mLastAlarm = currentTime - 100000;
+            mLastNormal = currentTime - 100000;
         }
 
         Log.d(LOG_TAG, "--- onStartJob ---");
@@ -48,14 +53,14 @@ public class JobSchedulerService extends JobService {
         //    Log.d(LOG_TAG, "currentTime - mLastAlarm > myAlarmInterval: " + currentTime + " - " + mLastAlarm + " = " +  (currentTime - mLastAlarm) + " > " + myAlarmInterval);
             mLastAlarm = currentTime;
             alarmType = true;
-            new JobTask(this, myNumber, myWarning, alarmType,ifSensor).execute(param);
+            new JobTask(this, myNumber, myWarning, alarmType,ifSensor,tempBattery).execute(param);
         }
 
         if (serviseJobON && (currentTime - mLastNormal > myNormalInterval)) {
         //    Log.d(LOG_TAG, "currentTime - mLastNormal > myNormalInterval: " + currentTime + " - " + mLastNormal + " = " +  (currentTime - mLastNormal) + " > " + myNormalInterval);
             mLastNormal = currentTime;
             alarmType = false;
-            new JobTask(this, myNumber, myWarning, alarmType,ifSensor).execute(param);
+            new JobTask(this, myNumber, myWarning, alarmType,ifSensor,tempBattery).execute(param);
         }
 
 
@@ -82,15 +87,15 @@ public class JobSchedulerService extends JobService {
     }
     @Override
     public boolean onStopJob(JobParameters params) {
-    //    Log.d(LOG_TAG, "--- onStopJob ---");
+        Log.d(LOG_TAG, "--- onStopJob --- return true");
     //    Log.d(LOG_TAG, "mLastAlarm = " + mLastAlarm);
     //    Log.d(LOG_TAG, "mLastNormal = " + mLastNormal);
-        return false;
+        return true;
     }
 
     @Override
     public void onDestroy() {
-        stopService(new Intent(this, JobSchedulerService.class));
+    //    stopService(new Intent(this, JobSchedulerService.class));
     }
     @Override
     public void onCreate() {
@@ -109,7 +114,15 @@ public class JobSchedulerService extends JobService {
         myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));
 
-        if (ifSensor) onDestroy();
+        // Похоже тут была проблема!
+      //  if (ifSensor) onDestroy();
+    }
+    public String batteryTemperature ()
+    {
+        Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        float  temp   = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) / 10;
 
+        tempBattery = String.valueOf(temp) + Character.toString ((char) 176) + "C";
+        return tempBattery;
     }
 }

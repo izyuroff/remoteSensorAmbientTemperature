@@ -1,5 +1,10 @@
 package ru.microsave.tempmonitor;
+/*
+Класс контроллер
+Сюда передаются настройки пользователя: период теста, интервалы сообщений
+В нем настраивается и вызывается служба шедулера
 
+ */
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -72,20 +77,21 @@ public class Control_activity extends AppCompatActivity {
             int i = JobInfo.BACKOFF_POLICY_EXPONENTIAL;
 
             final JobInfo jobInfo = new JobInfo.Builder(mJobId, componentName)
-                    //.setPeriodic(300, 100)
-                    //.setOverrideDeadline(4*16*60*1000)
-                    //.setMinimumLatency(3000)
-                    .setMinimumLatency(16*60*1000)
+                    //.setPeriodic(1000*60,1000*30)
+                    //.setPeriodic(1000*60*20,1000*60*16)
+                    .setOverrideDeadline(60*1000)
+                    .setMinimumLatency(3*1000)
+                    //.setMinimumLatency(16*60*1000)
                     .build();
             Log.d(LOG_TAG, "JobInfo.BACKOFF_POLICY_EXPONENTIAL = " + i);
             mJobScheduler.schedule(jobInfo);
 
-/*            int ret = mJobScheduler.schedule(jobInfo);
+            int ret = mJobScheduler.schedule(jobInfo);
             if (ret == JobScheduler.RESULT_SUCCESS) {
-                Log.d(LOG_TAG, "Job scheduled successfully");
+                Log.d(LOG_TAG, "Job scheduled successfully ret = " + ret);
             } else {
                 Log.d(LOG_TAG, "Job scheduling failed");
-            }*/
+            }
 
             if (mJobScheduler.schedule(jobInfo) <= 0) {
                 Log.d(LOG_TAG, "onCreate: Some error, jobInfo = " + jobInfo);

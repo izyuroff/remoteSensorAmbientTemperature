@@ -1,12 +1,12 @@
 package ru.microsave.tempmonitor;
-// Этот класс для выполнения работы в отдельном потоке и вызывается из JobSchedulerService
 /*
+Этот класс для выполнения работы в отдельном потоке и вызывается из JobSchedulerService
+    Здесь производится измерение температуры и отправка СМС сообщения
 
     MainActivity
     ControlActivity
     JobSchedulerService
     JobTask
-    SendSMS
 
  */
 
@@ -26,6 +26,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements SensorEventListener {
+    private String mTempBattery;
     private String MY_NUMBER_LOCAL;
     private int WARNING_TEMP_LOCAL;
     private Boolean mALARM_TYPE;
@@ -40,22 +41,20 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
     private String textMessage;
 
 
-    public JobTask(JobService jobService, String s, int i, Boolean b, Boolean ifSensor) {
+    public JobTask(JobService jobService, String s, int i, Boolean b, Boolean ifSensor,String tempBattery) {
 
         MY_NUMBER_LOCAL = s;
         WARNING_TEMP_LOCAL = i;
         mALARM_TYPE = b;
+        mTempBattery = tempBattery;
+        Log.d(LOG_TAG, "Нет сенсора, будет температура mTempBattery = " + mTempBattery);
 
-        mJobSensorManager = (SensorManager) jobService.getSystemService(Context.SENSOR_SERVICE);
-        mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-        mJobSensorManager.registerListener(this, mJobSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
-
-
-        this.jobService = jobService;
-
-        if (!ifSensor) {
-            getCpuTemp();
+        if (ifSensor) {
+            mJobSensorManager = (SensorManager) jobService.getSystemService(Context.SENSOR_SERVICE);
+            mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+            mJobSensorManager.registerListener(this, mJobSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
         }
+        this.jobService = jobService;
     }
 
 
@@ -80,13 +79,14 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
     protected JobParameters doInBackground(JobParameters... jobParameters) {
             ++myJobTask;
             Log.d(LOG_TAG, "myJobTask = " + myJobTask);
+            Log.d(LOG_TAG, "mTempBattery = " + mTempBattery);
             myMessage(DEGREES_LOCAL);
         return jobParameters[0];
     }
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
        // mJobSensorManager.unregisterListener(this);
-        jobService.jobFinished(jobParameters, true);
+    //    jobService.jobFinished(jobParameters, true);
 
     }
 
