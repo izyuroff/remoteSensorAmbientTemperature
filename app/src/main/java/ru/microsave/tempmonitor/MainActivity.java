@@ -131,9 +131,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         readSharedPreferences();
 
-        String period = String.valueOf((int)mainPeriodic/1000);
-        String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000);
-        String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000);
+        String period = String.valueOf((int)mainPeriodic/1000*60);
+        String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000*60);
+        String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000*60);
 
         logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
         numberLabel.setText("Номер: " + MY_NUMBER);
@@ -243,9 +243,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void readSharedPreferences(){
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
 
-        mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000));
-        ALARM_INTERVAL = (savePref.getLong("ALARM_INTERVAL", 1000));
-        NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 1000));
+        mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 15));
+        ALARM_INTERVAL = (savePref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
+        NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
 /*
 
         mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 60 * 1));
@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void inputPeriod(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setTitle("Период проверки в минутах");
-            alert.setMessage("лучше поменьше, чем интервалы");
+            alert.setMessage("Важно: не менее 15 минут!");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -365,8 +365,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     return;
                 }
 
-                int secunde = (Integer.parseInt(value));
-                mainPeriodic = Long.valueOf(secunde * 1000);
+                int minute = (Integer.parseInt(value));
+                mainPeriodic = Long.valueOf(minute * 60 * 1000);
                 saveSharedPreferences();
             }
         });
@@ -380,8 +380,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void inputAlarma(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Ведите интервал тревоги");
-        alert.setMessage("в минутах");
+        alert.setTitle("Ведите интервал тревоги, в минутах");
+        alert.setMessage("по умолчанию 60 минут");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -399,8 +399,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     return;
                 }
 
-                int secunde = (Integer.parseInt(value));
-                ALARM_INTERVAL = Long.valueOf(secunde * 1000);
+                int minute= (Integer.parseInt(value));
+                ALARM_INTERVAL = Long.valueOf(minute * 60 * 1000);
                 Log.d(LOG_TAG, "--- ALARM_INTERVAL ---" + ALARM_INTERVAL);
 
                 saveSharedPreferences();
@@ -416,8 +416,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void inputNormal(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Введите интервал нормальный");
-        alert.setMessage("в минутах");
+        alert.setTitle("Введите интервал норма, в минутах ");
+        alert.setMessage("12 часов = 720 минут");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -435,8 +435,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     return;
                 }
 
-                int secunde = (Integer.parseInt(value));
-                NORMAL_INTERVAL = Long.valueOf(secunde * 1000);
+                int minute= (Integer.parseInt(value));
+                NORMAL_INTERVAL = Long.valueOf(minute * 60 * 1000);
                 Log.d(LOG_TAG, "--- NORMAL_INTERVAL ---" + NORMAL_INTERVAL);
 
                 saveSharedPreferences();

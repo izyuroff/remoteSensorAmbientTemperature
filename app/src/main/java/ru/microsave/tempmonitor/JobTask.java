@@ -18,6 +18,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
+import android.telephony.SmsManager;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -26,10 +27,11 @@ import java.text.DateFormat;
 import java.util.Date;
 
 class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements SensorEventListener {
-    private String mTempBattery;
+    private float mTempBattery;
     private String MY_NUMBER_LOCAL;
     private int WARNING_TEMP_LOCAL;
     private Boolean mALARM_TYPE;
+    private Boolean ifSensor;
     private static int DEGREES_LOCAL; // Похоже только static работает
 
     private static Sensor mJobSensorTemperature;
@@ -41,19 +43,24 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
     private String textMessage;
 
 
-    public JobTask(JobService jobService, String s, int i, Boolean b, Boolean ifSensor,String tempBattery) {
+    public JobTask(JobService jobService, String num, int war, Boolean al, Boolean sen, float tempBat) {
 
-        MY_NUMBER_LOCAL = s;
-        WARNING_TEMP_LOCAL = i;
-        mALARM_TYPE = b;
-        mTempBattery = tempBattery;
-        Log.d(LOG_TAG, "Нет сенсора, будет температура mTempBattery = " + mTempBattery);
+        MY_NUMBER_LOCAL = num;
+        WARNING_TEMP_LOCAL = war;
+        mALARM_TYPE = al;
+        ifSensor = sen;
+        mTempBattery = tempBat;
+
+
 
         if (ifSensor) {
             mJobSensorManager = (SensorManager) jobService.getSystemService(Context.SENSOR_SERVICE);
             mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
             mJobSensorManager.registerListener(this, mJobSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
         }
+        else
+        Log.d(LOG_TAG, "Нет сенсора, будет температура mTempBattery = " + mTempBattery);
+
         this.jobService = jobService;
     }
 
@@ -80,13 +87,30 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
             ++myJobTask;
             Log.d(LOG_TAG, "myJobTask = " + myJobTask);
             Log.d(LOG_TAG, "mTempBattery = " + mTempBattery);
-            myMessage(DEGREES_LOCAL);
+
+            if (ifSensor) {
+                Log.d(LOG_TAG, "EXIST A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
+                myMessage(DEGREES_LOCAL);
+            }
+            else {
+                // Если нет сенсора, получаем и отправляем температуру батареи
+                DEGREES_LOCAL = (int) mTempBattery;
+                Log.d(LOG_TAG, "NO A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
+                myMessage(DEGREES_LOCAL);
+            }
+
         return jobParameters[0];
     }
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
-       // mJobSensorManager.unregisterListener(this);
-    //    jobService.jobFinished(jobParameters, true);
+        try {
+            mJobSensorManager.unregisterListener(this);
+            Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "mJobSensorManager.unregisterListener = null");
+            e.printStackTrace();
+        }
+        //    jobService.jobFinished(jobParameters, true);
 
     }
 
@@ -95,11 +119,10 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
         if (degrees != 0 && degrees < WARNING_TEMP_LOCAL && mALARM_TYPE) {
-            textMessage = timestamp +  "--- Низкая ---: " + degrees;
+            textMessage = timestamp +  " Тревога: " + degrees + Character.toString ((char) 176) + "C";
             try {
-            //    Временно ничего не отправляем!
-            //    SmsManager.getDefault()
-            //            .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
+                SmsManager.getDefault()
+                        .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
                 Log.d(LOG_TAG, textMessage);
             } catch (Exception e) {
                 Log.d(LOG_TAG, "failed to send message");
@@ -108,11 +131,13 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         }
 
         if (degrees != 0 && !mALARM_TYPE) {
-            textMessage = timestamp +  "--- Нормальная ---: " + degrees;
+            textMessage = timestamp +  " Норма: " + degrees + Character.toString ((char) 176) + "C";
+
+          //  tempBattery = String.valueOf(temp) + Character.toString ((char) 176) + "C";
+
             try {
-                //    Временно ничего не отправляем!
-                // SmsManager.getDefault()
-                //        .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
+                 SmsManager.getDefault()
+                        .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
                 Log.d(LOG_TAG, textMessage);
             } catch (Exception e) {
                 Log.d(LOG_TAG, "failed to send message");

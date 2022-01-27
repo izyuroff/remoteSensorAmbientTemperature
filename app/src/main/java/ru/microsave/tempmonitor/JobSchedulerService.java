@@ -7,13 +7,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Date;
 
 public class JobSchedulerService extends JobService {
-   // private WeakReference<MainActivity> mActivity;
-    private String tempBattery;
+    private float tempBattery;
     private final String LOG_TAG = "myLogs";
     private boolean serviseJobON;
     private boolean ifSensor;
@@ -32,7 +32,7 @@ public class JobSchedulerService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters param) {
-
+        Toast.makeText(getApplicationContext(), "Job Started", Toast.LENGTH_SHORT).show();
         batteryTemperature ();
 
         long currentTime = System.currentTimeMillis();
@@ -95,7 +95,7 @@ public class JobSchedulerService extends JobService {
 
     @Override
     public void onDestroy() {
-    //    stopService(new Intent(this, JobSchedulerService.class));
+        stopService(new Intent(this, JobSchedulerService.class));
     }
     @Override
     public void onCreate() {
@@ -113,16 +113,12 @@ public class JobSchedulerService extends JobService {
         myAlarmInterval = (saveJobPref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
         myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));
-
-        // Похоже тут была проблема!
-      //  if (ifSensor) onDestroy();
     }
-    public String batteryTemperature ()
+    public float batteryTemperature ()
     {
         Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        float  temp   = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) / 10;
+        tempBattery   = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) / 10;
 
-        tempBattery = String.valueOf(temp) + Character.toString ((char) 176) + "C";
         return tempBattery;
     }
 }

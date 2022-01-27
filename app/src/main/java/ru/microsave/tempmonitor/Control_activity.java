@@ -40,7 +40,7 @@ public class Control_activity extends AppCompatActivity {
 
         Intent intent = getIntent();
         serviceONlocal = intent.getBooleanExtra("serviceIntentON",true);
-        mPeriodic = intent.getLongExtra("schedulerPeriodic",1000 * 15); // по умолчанию 15 секунд
+        mPeriodic = intent.getLongExtra("schedulerPeriodic",1000 * 60 * 15); // по умолчанию 15 минут
         Log.d(LOG_TAG, "--- onCreate ControlActivity serviceON = " + serviceONlocal);
 
         if (serviceONlocal){
@@ -78,9 +78,9 @@ public class Control_activity extends AppCompatActivity {
 
             final JobInfo jobInfo = new JobInfo.Builder(mJobId, componentName)
                     //.setPeriodic(1000*60,1000*30)
-                    //.setPeriodic(1000*60*20,1000*60*16)
-                    .setOverrideDeadline(60*1000)
-                    .setMinimumLatency(3*1000)
+                    .setPeriodic(mPeriodic, 5 * 60 *1000)
+                    //.setOverrideDeadline(60*1000)
+                    //.setMinimumLatency(3*1000)
                     //.setMinimumLatency(16*60*1000)
                     .build();
             Log.d(LOG_TAG, "JobInfo.BACKOFF_POLICY_EXPONENTIAL = " + i);
@@ -96,10 +96,6 @@ public class Control_activity extends AppCompatActivity {
             if (mJobScheduler.schedule(jobInfo) <= 0) {
                 Log.d(LOG_TAG, "onCreate: Some error, jobInfo = " + jobInfo);
             }
-            /*jobInfo = new JobInfo.Builder(mJobId++, new ComponentName(this, JobSchedulerService.class.getName()))
-                    .setPeriodic(1*60*1000,30*1000)
-                    .build();*/
-           // Log.d(LOG_TAG, "VERSION_CODES > N setPeriodic = 1 and 0,5 min, +mJobId = " + mJobId);
             Log.d(LOG_TAG, "onJob ControlActivity jobInfo = " + jobInfo);
         } else
         {
