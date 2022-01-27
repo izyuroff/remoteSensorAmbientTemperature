@@ -131,9 +131,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         readSharedPreferences();
 
-        String period = String.valueOf((int)mainPeriodic/1000*60);
-        String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000*60);
-        String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000*60);
+        String period = String.valueOf((int)mainPeriodic/1000/60);
+        String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60);
+        String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
 
         logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
         numberLabel.setText("Номер: " + MY_NUMBER);
@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 */
 
         MY_NUMBER = (savePref.getString("NUMBER", "+7123456789"));
-        WARNING_TEMP = (savePref.getInt("WARNING", 88));
+        WARNING_TEMP = (savePref.getInt("WARNING", 15));
         sensorExist = (savePref.getBoolean("IFSENSOR", false));
         serviseON = (savePref.getBoolean("SERVICEON", false));
         invertButton(serviseON);
@@ -264,9 +264,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             statusLabel.setText("Служба не была запущена.");
     }
     private void saveSharedPreferences() {
-        String period = String.valueOf((int)mainPeriodic/1000);
-        String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000);
-        String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000);
+        String period = String.valueOf((int)mainPeriodic/1000/60);
+        String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60);
+        String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
 
         logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
 
