@@ -195,13 +195,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (!sensorExist) {
             msg("У вас нет датчика температуры");
             // return;
+            temperatureLabel.setText("? t°C");
+        }
+        else
+        {
+            temperatureLabel.setText(mDEGREES + "°C");
         }
 
-        statusLabel.setText("Служба запущена!!!");
-        temperatureLabel.setText(mDEGREES + "°C");
         serviseON = true;
         invertButton(serviseON);
         saveSharedPreferences();
+        statusLabel.setText("Служба запущена!!!");
+
         // Может быть надо раскомментировать?
         // mSensorManager.unregisterListener(this);
         Intent intent = new Intent(this, Control_activity.class);

@@ -125,7 +125,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
                         .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
                 Log.d(LOG_TAG, textMessage);
             } catch (Exception e) {
-                Log.d(LOG_TAG, "failed to send message");
+                Log.d(LOG_TAG, "failed to send message: " + textMessage);
                 e.printStackTrace();
             }
         }
@@ -140,7 +140,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
                         .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
                 Log.d(LOG_TAG, textMessage);
             } catch (Exception e) {
-                Log.d(LOG_TAG, "failed to send message");
+                Log.d(LOG_TAG, "failed to send message" + textMessage);
                 e.printStackTrace();
             }
         }
