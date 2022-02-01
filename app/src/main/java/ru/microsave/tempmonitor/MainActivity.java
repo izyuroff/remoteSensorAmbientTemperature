@@ -71,7 +71,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
-    // Для отправки СМС
+    // Для отправки СМС implements View.OnClickListener
     public String MY_NUMBER;
     public int WARNING_TEMP;
 
@@ -86,11 +86,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public int mDEGREES;
     public boolean serviseON; // состояние службы боевого дежурства, запущена или нет
-
+    public boolean sensorExist; // наличие сенсора температуры
     private Sensor mSensorTemperature;
     private SensorManager mSensorManager;
     private SharedPreferences savePref;
-    private boolean sensorExist; // наличие сенсора температуры
+
 
 
     private Button mButton,mButton0,mButton1,mButton2, mButton3,mButton4,mButton5;
@@ -130,7 +130,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         readSharedPreferences();
+        updateScreen();
+        checkSensor();
 
+        mSensorManager.registerListener(this, mSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
+        Log.d(LOG_TAG, "--- onCreate.MainActivity.sensorExist---" + sensorExist);
+    }
+
+    private void updateScreen() {
         String period = String.valueOf((int)mainPeriodic/1000/60);
         String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60);
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
@@ -138,35 +145,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
         numberLabel.setText("Номер: " + MY_NUMBER);
         invertButton(serviseON);
-
-        // Проверим наличчие сенсора
-
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.ICE_CREAM_SANDWICH && mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
-            mSensorTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-            mSensorTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
-            sensorExist = true;
-            sensorLabel.setText("Датчик t°C - ОК");
-        } else {
-            // Если нет датчика, скажем об этом
-            sensorLabel.setText("Датчика t°C - НЕТ");
-          //  temperatureLabel.setText("?°C");
-
-           // batteryTemperature();
-          // getCpuTemp();
-            sensorExist = false;
-           // mButton1.setEnabled(false);
-           // mButton2.setEnabled(false);
-
-        }
-
-        mSensorManager.registerListener(this, mSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
-        Log.d(LOG_TAG, "--- onCreate MainActivity ---");
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensor) {
+        Log.d(LOG_TAG, "--- onSensorChanged.sensorExist ---: " + sensorExist);
 
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.ICE_CREAM_SANDWICH && mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
+          //  sensorExist = true;
+            Log.d(LOG_TAG, "--- if.onSensorChanged.sensorExist ---: " + sensorExist);
+        }
         if(sensorExist && mSensorTemperature.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
+        //if(mSensorTemperature.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
 
         // получаю, преобразую в int и сохраняю в degrees
            mDEGREES = (int)sensor.values[0];
@@ -175,7 +165,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
        // sendAlarm(degrees);
        // realSMS (degrees);
         }
-        else msg("Датчика температуры нет, измеряем t°C CPU");
+        // msg("Датчика температуры нет, измеряем t°C CPU");
+        else temperatureLabel.setText("Проблема, нет датчика t");
     }
 
     @Override
@@ -333,7 +324,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Почему то закомментировал, не помню, были проблемы вроде бы
         // Но в то же время надо бы выполнять
-        mSensorManager.unregisterListener(this);
+        // Да, точно, при уходе в другую активити
+       // mSensorManager.unregisterListener(this);
 
     }
     @Override
@@ -521,13 +513,35 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         alert.show();
     }
 
-    public void batteryTemperature ()
+    private void checkSensor(){
+        // Проверим наличчие сенсора
+
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.ICE_CREAM_SANDWICH && mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
+            sensorLabel.setText("Датчик t°C - ОК");
+            sensorExist = true;
+            mSensorTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+            //    mSensorTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
+
+        } else {
+            // Если нет датчика, скажем об этом
+            sensorLabel.setText("Датчика t°C - НЕТ?");
+            batteryTemp(null);
+            //  temperatureLabel.setText("?°C");
+            // getCpuTemp();
+            sensorExist = false;
+            // mButton1.setEnabled(false);
+            // mButton2.setEnabled(false);
+
+        }
+
+    }
+
+    public void batteryTemp (View v)
     {
         Intent intent = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         float  temp   = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) / 10;
 
-        String message = String.valueOf(temp) + Character.toString ((char) 176) + " C";
+        String message = String.valueOf(temp) + Character.toString ((char) 176) + "C";
         temperatureLabel.setText(message);
     }
-
 }

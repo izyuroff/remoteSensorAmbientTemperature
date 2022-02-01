@@ -78,7 +78,7 @@ public class Control_activity extends AppCompatActivity {
 
             final JobInfo jobInfo = new JobInfo.Builder(mJobId, componentName)
                     //.setPeriodic(1000*60,1000*30)
-                    .setPeriodic(mPeriodic, 5 * 60 *1000)
+                    .setPeriodic(mPeriodic, 10 * 60 *1000)
                     //.setOverrideDeadline(60*1000)
                     //.setMinimumLatency(3*1000)
                     //.setMinimumLatency(16*60*1000)

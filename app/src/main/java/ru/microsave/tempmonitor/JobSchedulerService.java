@@ -39,8 +39,8 @@ public class JobSchedulerService extends JobService {
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastNormal == 0 ){
-            mLastAlarm = currentTime - 100000;
-            mLastNormal = currentTime - 100000;
+            mLastAlarm = currentTime - 1019000;
+            mLastNormal = currentTime - 1019000;
         }
 
         Log.d(LOG_TAG, "--- onStartJob ---");
@@ -83,19 +83,19 @@ public class JobSchedulerService extends JobService {
             new JobTask(this).execute(param);
         }*/
       //  new JobTask(this).execute(param);
-        return true;
+        return false;
     }
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.d(LOG_TAG, "--- onStopJob --- return true");
     //    Log.d(LOG_TAG, "mLastAlarm = " + mLastAlarm);
     //    Log.d(LOG_TAG, "mLastNormal = " + mLastNormal);
-        return true;
+        return false;
     }
 
     @Override
     public void onDestroy() {
-        stopService(new Intent(this, JobSchedulerService.class));
+    //    stopService(new Intent(this, JobSchedulerService.class));
     }
     @Override
     public void onCreate() {
