@@ -14,7 +14,7 @@ Alarm SMS at low temperature of the heating system
 При изменении температуры за заданные пределы отпраляется сообщение SMS на заданный номер
 
 Можно использовать:
-Для удаленного контроля системы отопления
+Для удаленного контроля температуры, системы отопления
 Возможно в качестве пожарной сигнализации
 
 
@@ -39,7 +39,7 @@ v.1.1
 Нужен ввод для настройки периодичности сообщений FIX
 
 Нужно можно вводить несколько номеров для СМС
-Снимать температуру также с батареи
+Снимать температуру также с батареи FIX
 
  */
 
@@ -94,11 +94,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     private Button mButton,mButton0,mButton1,mButton2, mButton3,mButton4,mButton5;
-    private TextView sensorLabel;
-    private TextView temperatureLabel;
-    private TextView statusLabel;
-    private TextView logLabel;
-    private TextView numberLabel;
+    private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,logLabel,numberLabel;
 
 
     private final String LOG_TAG = "myLogs";
@@ -121,11 +117,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mButton4 = findViewById(R.id.button4);
         mButton5 = findViewById(R.id.button5);
 
-        sensorLabel = (TextView) findViewById(R.id.textView0);
-        temperatureLabel = (TextView) findViewById(R.id.textView1);
-        statusLabel = (TextView) findViewById(R.id.textView2);
-        logLabel = (TextView) findViewById(R.id.textView3);
-        numberLabel = (TextView) findViewById(R.id.textView4);
+        sensorLabel = findViewById(R.id.textView);
+        temperatureLabel = findViewById(R.id.textView1);
+        statusLabel = findViewById(R.id.textView2);
+        logLabel = findViewById(R.id.textView3);
+        numberLabel = findViewById(R.id.textView4);
+        batteryLabel = findViewById(R.id.textView5);
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
@@ -149,24 +146,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent sensor) {
-        Log.d(LOG_TAG, "--- onSensorChanged.sensorExist ---: " + sensorExist);
+       // Log.d(LOG_TAG, "--- onSensorChanged.sensorExist ---: " + sensorExist);
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.ICE_CREAM_SANDWICH && mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
-          //  sensorExist = true;
-            Log.d(LOG_TAG, "--- if.onSensorChanged.sensorExist ---: " + sensorExist);
-        }
-        if(sensorExist && mSensorTemperature.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
-        //if(mSensorTemperature.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
 
-        // получаю, преобразую в int и сохраняю в degrees
-           mDEGREES = (int)sensor.values[0];
+            if(sensorExist && mSensorTemperature.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
+                //if(mSensorTemperature.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
 
-          temperatureLabel.setText(mDEGREES + "°C");
-       // sendAlarm(degrees);
-       // realSMS (degrees);
+                // получаю, преобразую в int и сохраняю в degrees
+                mDEGREES = (int)sensor.values[0];
+
+                temperatureLabel.setText(mDEGREES + "°C");
+                // sendAlarm(degrees);
+                // realSMS (degrees);
+            }
+            // msg("Датчика температуры нет, измеряем t°C CPU");
+            else temperatureLabel.setText("Проблема, нет датчика t");
         }
-        // msg("Датчика температуры нет, измеряем t°C CPU");
-        else temperatureLabel.setText("Проблема, нет датчика t");
     }
 
     @Override
@@ -517,14 +513,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Проверим наличчие сенсора
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.ICE_CREAM_SANDWICH && mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
-            sensorLabel.setText("Датчик t°C - ОК");
+            sensorLabel.setText("ТЕРМОМЕТР");
             sensorExist = true;
             mSensorTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
             //    mSensorTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
 
         } else {
             // Если нет датчика, скажем об этом
-            sensorLabel.setText("Датчика t°C - НЕТ?");
+            sensorLabel.setText("НЕТ ТЕРМОМЕТРА");
             batteryTemp(null);
             //  temperatureLabel.setText("?°C");
             // getCpuTemp();
@@ -542,6 +538,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         float  temp   = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) / 10;
 
         String message = String.valueOf(temp) + Character.toString ((char) 176) + "C";
-        temperatureLabel.setText(message);
+        batteryLabel.setText(message);
     }
 }
