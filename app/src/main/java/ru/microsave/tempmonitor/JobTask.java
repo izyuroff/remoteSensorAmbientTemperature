@@ -116,10 +116,16 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
 
     private void myMessage(int degrees){
         long currentTime = System.currentTimeMillis();
+
+       // SimpleDateFormat SDFormat = new SimpleDateFormat("MM/dd/yyyy");
+       // DateFormat DFormat = DateFormat.getDateTimeInstance();
+       // String timestamp = DateFormat.getDateInstance(DateFormat.SHORT).format(new Date(currentTime));
+
+       // String timestamp = DFormat.format(new Date(currentTime));
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
         if (degrees != 0 && degrees < WARNING_TEMP_LOCAL && mALARM_TYPE) {
-            textMessage = timestamp +  " Тревога: " + degrees + Character.toString ((char) 176) + "C";
+            textMessage = "#" + myJobTask + " " + timestamp +  " НИЗКАЯ: " + degrees + Character.toString ((char) 176) + "C";
             try {
                 SmsManager.getDefault()
                         .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
@@ -131,7 +137,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         }
 
         if (degrees != 0 && !mALARM_TYPE) {
-            textMessage = timestamp +  " Норма: " + degrees + Character.toString ((char) 176) + "C";
+            textMessage = "#" + myJobTask + " " + timestamp +  " НОРМА: " + degrees + Character.toString ((char) 176) + "C";
 
           //  tempBattery = String.valueOf(temp) + Character.toString ((char) 176) + "C";
 

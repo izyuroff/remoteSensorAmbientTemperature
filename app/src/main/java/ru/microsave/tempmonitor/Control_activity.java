@@ -78,6 +78,7 @@ public class Control_activity extends AppCompatActivity {
 
             final JobInfo jobInfo = new JobInfo.Builder(mJobId, componentName)
                     //.setPeriodic(1000*60,1000*30)
+                    .setRequiresCharging(false)
                     .setPeriodic(mPeriodic, 15 * 60 *1000)
                     .setPersisted(isPersisted)
                     //.setOverrideDeadline(60*1000)
