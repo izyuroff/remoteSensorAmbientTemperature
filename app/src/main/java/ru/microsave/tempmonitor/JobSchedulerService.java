@@ -38,8 +38,8 @@ public class JobSchedulerService extends JobService {
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastNormal == 0 ){
-            mLastAlarm = currentTime - 1019000;
-            mLastNormal = currentTime - 1019000;
+            mLastAlarm = currentTime - 60000;
+            mLastNormal = currentTime - 60000;
         }
 
 //        Log.d(LOG_TAG, "--- onStartJob ---");
@@ -116,7 +116,7 @@ public class JobSchedulerService extends JobService {
     public float batteryTemperature ()
     {
         Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        tempBattery   = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) / 10; // Почему разделил на 10??? Не помню
+        tempBattery   = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) / 10; // Почему разделил на 10??? Да почему то выдача идет в 10 раз больше
 
         return tempBattery;
     }

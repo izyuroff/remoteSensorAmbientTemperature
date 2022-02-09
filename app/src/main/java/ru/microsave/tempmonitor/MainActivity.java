@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public int mDEGREES;
     public boolean serviseON; // состояние службы боевого дежурства, запущена или нет
     public boolean sensorExist; // наличие сенсора температуры
+    public boolean messageRead; // сообщение прочитано
     private Sensor mSensorTemperature;
     private SensorManager mSensorManager;
     private SharedPreferences savePref;
@@ -194,7 +195,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         invertButton(serviseON);
 
         statusLabel.setText("Служба остановлена.");
-        temperatureLabel.setText(mDEGREES + "°C");
+
+        if (sensorExist)temperatureLabel.setText(mDEGREES + "°C");
+
         saveSharedPreferences();
         Log.d(LOG_TAG, "--- stopSheduler MainActivity --- serviceON = " + serviseON);
 
@@ -210,12 +213,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void control (View view){
 
         if (!sensorExist) {
-            msg("У вас нет датчика температуры");
+            msg("Служба измеряет температуру батареи!");
             // return;
-            temperatureLabel.setText("? t°C");
+            temperatureLabel.setText("-?-");
         }
         else
         {
+            msg("Служба запущена! Термометр работает.");
             temperatureLabel.setText(mDEGREES + "°C");
         }
 
@@ -230,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Запретить оптимизировать батарею
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            msg("Служба запускается для API > 22 ");
+        //    msg("Служба запускается для API > 22 ");
             String packageName = getPackageName();
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
@@ -242,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         }
         else {
-            msg("Служба запускается для API < 22");
+        //    msg("Служба запускается для API < 22");
             intent.putExtra("serviceIntentON", serviseON);
             intent.putExtra("schedulerPeriodic", mainPeriodic);
             startActivity(intent);
@@ -265,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         MY_NUMBER = (savePref.getString("NUMBER", "+7123456789"));
         WARNING_TEMP = (savePref.getInt("WARNING", 15));
         sensorExist = (savePref.getBoolean("IFSENSOR", false));
+        messageRead = (savePref.getBoolean("MESSAGEREAD", false));
         serviseON = (savePref.getBoolean("SERVICEON", false));
         invertButton(serviseON);
         if (serviseON)
@@ -291,6 +296,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ed.putLong("ALARM_INTERVAL", ALARM_INTERVAL);
 
         ed.putBoolean("IFSENSOR", sensorExist);
+        ed.putBoolean("MESSAGEREAD", messageRead);
         ed.putBoolean("SERVICEON", serviseON);
 
         ed.apply();
@@ -301,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // fast way to call Toast
     private void msg(String s)
     {
-        Toast.makeText(getApplicationContext(),s,Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
     }
 
         // Меняем кнопочки
@@ -485,7 +491,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 MY_NUMBER = value;
                 numberLabel.setText("Сохранен номер: " + value);
                 saveSharedPreferences();
-                msg("Введен номер: " + value);
+                msg("Сохранен номер: " + value);
             }
         });
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -531,6 +537,43 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         alert.show();
     }
 
+    public void messageBattery (View view) {
+
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+            if (!sensorExist) {
+            alert.setTitle("Внимание!");
+            alert.setMessage("У вас нет встроенного термометра, поэтому все измерения будут производиться " +
+                    "с помощью датчика температуры на аккумуляторе. Это дает погрешность при включенном экране и работе приложений." +
+                    "\n\nДля точных данных оставьте телефон в покое." +
+                    "Примерно через час, датчик начнет давать показания, близкие к температуре окружающего воздуха." +
+                    "\n\n На экране температура батареи НЕ ОБНОВЛЯЕТСЯ, нужно по ней тапать!");
+            }
+            else {
+                alert.setTitle("Обратите внимание");
+                alert.setMessage("Температура батареи на экране автоматически не обновляется, для обновления нужно тапать по температуре" +
+                        "\n\nВ данный момент все измерения производятся на встроенном термометре - датчике температуры окружающего воздуха" +
+                        "\n\nПоказания температуры батареи выводятся только для общей информации");
+            }
+
+
+
+            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    messageRead = true;
+                    saveSharedPreferences();
+                }
+            });
+
+
+
+
+            alert.show();
+
+    }
+
+
     private void checkSensor(){
         // Проверим наличчие сенсора
 
@@ -542,22 +585,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         } else {
             // Если нет датчика, скажем об этом
-            sensorLabel.setText("НЕТ ТЕРМОМЕТРА");
-            batteryTemp(null);
-            //  temperatureLabel.setText("?°C");
-            // getCpuTemp();
+
+            if (!messageRead) messageBattery (null);
+
+
             sensorExist = false;
-            // mButton1.setEnabled(false);
-            // mButton2.setEnabled(false);
-
+            temperatureLabel.setText("-?-");
+            batteryTemp(null);
         }
-
     }
 
     public void batteryTemp (View v)
     {
         Intent intent = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        float  temp   = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) / 10;
+        int  temp   = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) /10;
 
         String message = String.valueOf(temp) + Character.toString ((char) 176) + "C";
         batteryLabel.setText(message);
