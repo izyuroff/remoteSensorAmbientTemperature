@@ -179,7 +179,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 // realSMS (degrees);
             }
             // msg("Датчика температуры нет, измеряем t°C CPU");
-            else temperatureLabel.setText("Проблема, нет датчика t");
+
+            else temperatureLabel.setText("-?-");
         }
     }
 
@@ -213,20 +214,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void control (View view){
 
         if (!sensorExist) {
-            msg("Служба измеряет температуру батареи!");
+            msg("Успешный старт, t°C от аккумулятора");
             // return;
             temperatureLabel.setText("-?-");
         }
         else
         {
-            msg("Служба запущена! Термометр работает.");
+            msg("Служба запущена успешно!");
             temperatureLabel.setText(mDEGREES + "°C");
         }
 
         serviseON = true;
         invertButton(serviseON);
         saveSharedPreferences();
-        statusLabel.setText("Служба запущена!!!");
+        statusLabel.setText("Служба выполняется");
 
         // Может быть надо раскомментировать?
         // mSensorManager.unregisterListener(this);
@@ -273,9 +274,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         serviseON = (savePref.getBoolean("SERVICEON", false));
         invertButton(serviseON);
         if (serviseON)
-            statusLabel.setText("Служба была запущена!");
+            statusLabel.setText("Служба выполняется!");
         else
-            statusLabel.setText("Служба не была запущена.");
+            statusLabel.setText("Служба остановлена.");
     }
     private void saveSharedPreferences() {
         String period = String.valueOf((int)mainPeriodic/1000/60);
