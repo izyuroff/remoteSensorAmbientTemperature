@@ -12,11 +12,13 @@
         <activity
             android:name="ru.microsave.tempmonitor.Control_activity"
             android:screenOrientation="portrait"
+            android:exported="true"
             tools:ignore="LockedOrientationActivity" />
 
         <activity
             android:name="ru.microsave.tempmonitor.MainActivity"
             android:screenOrientation="portrait"
+            android:exported="true"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
