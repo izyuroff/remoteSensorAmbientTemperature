@@ -74,30 +74,23 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
+    private final long mainPeriodic = 1000 * 60 * 15;
+
     // Для отправки СМС implements View.OnClickListener
     public String MY_NUMBER;
     public int WARNING_TEMP;
-
     private long ALARM_INTERVAL; //     = 1000 * 60 * 60 * 2;
     private long NORMAL_INTERVAL; //     = 1000 * 60 * 60 * 3;
-    private long mainPeriodic; //        = 1000 * 60 * 60;
-/*
-    private long NORMAL_INTERVAL = 1000 * 60 * 60 * 24;
-    private long ALARM_INTERVAL = 1000 * 60 * 60 * 2;
-    private long mainPeriodic = 1000 * 60 * 60;
-*/
 
     public int mDEGREES;
     public boolean serviseON; // состояние службы боевого дежурства, запущена или нет
     public boolean sensorExist; // наличие сенсора температуры
-    public boolean messageRead; // сообщение прочитано
+    public boolean messageRead; // сообщение прочитано при запуске, больше не выводить
     private Sensor mSensorTemperature;
     private SensorManager mSensorManager;
     private SharedPreferences savePref;
 
-
-
-    private Button mButton,mButton0,mButton1,mButton2, mButton3,mButton4,mButton5;
+    private Button mButton0,mButton1,mButton2,mButton3,mButton4,mButton5;
     private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,logLabel,numberLabel;
 
 
@@ -113,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);*/
 
-        mButton = findViewById(R.id.button);
         mButton0 = findViewById(R.id.button0);
         mButton1 = findViewById(R.id.button1);
         mButton2 = findViewById(R.id.button2);
@@ -153,11 +145,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void updateScreen() {
-        String period = String.valueOf((int)mainPeriodic/1000/60);
+        //String period = String.valueOf((int)mainPeriodic/1000/60);
         String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60);
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
-
-        logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
+    // mainPeriodic сделал константой  на 15 минут
+    //    logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
+        logLabel.setText("t°: " + WARNING_TEMP +  ",  " +  ", " + "Тревога: " + pAlarm + ",  " + "Норма: " + pNormal);
         numberLabel.setText("Номер: " + MY_NUMBER);
         invertButton(serviseON);
     }
@@ -180,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
             // msg("Датчика температуры нет, измеряем t°C CPU");
 
-            else temperatureLabel.setText("-?-");
+            else temperatureLabel.setText("-----");
         }
     }
 
@@ -212,18 +205,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // Метод для кнопочки БОЕВОЕ ДЕЖУРСТВО
     public void control (View view){
-
-        if (!sensorExist) {
-            msg("Успешный старт, t°C от аккумулятора");
-            // return;
-            temperatureLabel.setText("-?-");
-        }
-        else
-        {
-            msg("Служба запущена успешно!");
-            temperatureLabel.setText(mDEGREES + "°C");
-        }
-
+        msg("Служба запущена успешно!");
         serviseON = true;
         invertButton(serviseON);
         saveSharedPreferences();
@@ -257,18 +239,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void readSharedPreferences(){
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
 
-        mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 15));
+        // mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 15));
         ALARM_INTERVAL = (savePref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
         NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
-/*
-
-        mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 60 * 1));
-        ALARM_INTERVAL = (savePref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
-        NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
-*/
-
         MY_NUMBER = (savePref.getString("NUMBER", "+7123456789"));
         WARNING_TEMP = (savePref.getInt("WARNING", 15));
+
         sensorExist = (savePref.getBoolean("IFSENSOR", false));
         messageRead = (savePref.getBoolean("MESSAGEREAD", false));
         serviseON = (savePref.getBoolean("SERVICEON", false));
@@ -279,11 +255,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             statusLabel.setText("Служба остановлена.");
     }
     private void saveSharedPreferences() {
-        String period = String.valueOf((int)mainPeriodic/1000/60);
+        // String period = String.valueOf((int)mainPeriodic/1000/60);
         String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60);
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
 
-        logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
+        // logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
+        logLabel.setText("t°: " + WARNING_TEMP +  ",  " + ", " + "Тревога: " + pAlarm + ",  " + "Норма: " + pNormal);
 
 
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
@@ -292,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ed.putString("NUMBER", MY_NUMBER);
         ed.putInt("WARNING", WARNING_TEMP);
 
-        ed.putLong("PERIOD_INTERVAL", mainPeriodic);
+        // ed.putLong("PERIOD_INTERVAL", mainPeriodic);
         ed.putLong("NORMAL_INTERVAL", NORMAL_INTERVAL);
         ed.putLong("ALARM_INTERVAL", ALARM_INTERVAL);
 
@@ -316,7 +293,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     {
         // если serviceON
         if (b) {
-            mButton.setEnabled(false);
             mButton0.setEnabled(false);
             mButton1.setEnabled(true);
             mButton2.setEnabled(false);
@@ -326,7 +302,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         // Если НЕ было запусков или была остановка
         else {
-            mButton.setEnabled(true);
             mButton0.setEnabled(true);
             mButton1.setEnabled(false);
             mButton2.setEnabled(true);
@@ -383,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
 
                 int minute = (Integer.parseInt(value));
-                mainPeriodic = Long.valueOf(minute * 60 * 1000);
+               // mainPeriodic = Long.valueOf(minute * 60 * 1000);
                 saveSharedPreferences();
             }
         });
@@ -397,8 +372,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void inputAlarma(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Ведите интервал тревоги, в минутах");
-        alert.setMessage("по умолчанию 60 минут");
+        alert.setTitle("Интервал тревога (минут)");
+
+        alert.setMessage("Тревожные СМС приходят, если температура ниже заданного порога." +
+                "\n\nНе менее 15 минут!");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -433,8 +410,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void inputNormal(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Введите интервал норма, в минутах ");
-        alert.setMessage("12 часов = 720 минут");
+        alert.setTitle("Интервал норма в минутах");
+        alert.setMessage("нормальные СМС приходят независимо от температуры" +
+                "\n(720 минут = 12 часов)" +
+                "\n\nНе менее 15 минут!");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -471,8 +450,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void inputNumber(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        alert.setTitle("Введите номер пожалуйста");
-        alert.setMessage("в формате +7123456789");
+        alert.setTitle("Номер для СМС");
+        alert.setMessage("Код страны обязателен!\nпример: +7987654321");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -506,8 +485,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void inputWarning(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        alert.setTitle("Введите минимальную температуру");
-        alert.setMessage("пожалуйста");
+        alert.setTitle("Минимальная t°C");
+        alert.setMessage("для тревожных СМС");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -539,41 +518,32 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void messageBattery (View view) {
-
-
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
             if (!sensorExist) {
-            alert.setTitle("Внимание!");
-            alert.setMessage("У вас нет встроенного термометра, поэтому все измерения будут производиться " +
-                    "с помощью датчика температуры на аккумуляторе. Это дает погрешность при включенном экране и работе приложений." +
-                    "\n\nДля точных данных оставьте телефон в покое." +
-                    "Примерно через час, датчик начнет давать показания, близкие к температуре окружающего воздуха." +
-                    "\n\n На экране температура батареи НЕ ОБНОВЛЯЕТСЯ, нужно по ней тапать!");
+            alert.setTitle("Термометра нет!");
+            alert.setMessage("Измерения производятся на аккумуляторе. Это дает погрешность при включенном экране" +
+                    "\n\nОставьте телефон в покое примерно на один час." +
+                    "\nДатчик начнет давать температуру воздуха." +
+                    "\n\nНа экране температура\nСАМА НЕ ОБНОВЛЯЕТСЯ!\nТапайте по ней!");
             }
             else {
-                alert.setTitle("Обратите внимание");
-                alert.setMessage("Температура батареи на экране автоматически не обновляется, для обновления нужно тапать по температуре" +
-                        "\n\nВ данный момент все измерения производятся на встроенном термометре - датчике температуры окружающего воздуха" +
-                        "\n\nПоказания температуры батареи выводятся только для общей информации");
+                alert.setTitle("Смартфон имеет термометр!");
+                alert.setMessage(
+                        "Это встроенный датчик температуры окружающего воздуха" +
+                        "\n\nВсе измерения производятся именно на этом термометре"+
+                        "\n\nПоказания батареи выводятся только для информации!"+
+                        "\n\nТемпература батареи на экране автоматически не обновляется, тапайте по ней каждый раз"
+                        );
             }
-
-
-
             alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     messageRead = true;
                     saveSharedPreferences();
                 }
             });
-
-
-
-
             alert.show();
-
     }
-
 
     private void checkSensor(){
         // Проверим наличчие сенсора
@@ -586,12 +556,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         } else {
             // Если нет датчика, скажем об этом
-
             if (!messageRead) messageBattery (null);
-
-
             sensorExist = false;
-            temperatureLabel.setText("-?-");
+            temperatureLabel.setText("-----");
             batteryTemp(null);
         }
     }
