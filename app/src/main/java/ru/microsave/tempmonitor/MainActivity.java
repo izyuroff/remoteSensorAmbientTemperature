@@ -44,7 +44,7 @@ v.1.1
 Нужно можно вводить несколько номеров для СМС
 
 Снимать температуру также с батареи FIX
-Не обновляется автоматически, это плохо
+Не обновляется автоматически, это плохо FIX
 
  */
 
@@ -64,7 +64,9 @@ import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -80,6 +82,11 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
     private final long mainPeriodic = 1000 * 60 * 15;
+
+
+    // Для обновления температуры батареи в UI
+    private Handler mHandler = new Handler();
+    private long mTime = 0L;
 
     // Для отправки СМС implements View.OnClickListener
     public String MY_NUMBER;
@@ -148,15 +155,46 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
+    // Описание Runnable-объекта
+    private Runnable timeUpdaterRunnable = new Runnable() {
+        public void run() {
+            // вычисляем время
+            final long start = mTime;
+            long millis = SystemClock.uptimeMillis() - start;
+            int second = (int) (millis / 1000);
+            int min = second / 60;
+            second = second % 60;
+            // выводим время
+            batteryTemp();
+           // mTimeTextView.setText("" + min + ":" + String.format("%02d", second));
+            // повторяем через каждые 200 миллисекунд
+            mHandler.postDelayed(this, 2000);
+        }
+    };
+
     private void updateScreen() {
         //String period = String.valueOf((int)mainPeriodic/1000/60);
         String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60);
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
     // mainPeriodic сделал константой  на 15 минут
     //    dataLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
-        dataLabel.setText("t°: " + WARNING_TEMP +  ",  " +  ", " + "Тревога: " + pAlarm + ",  " + "Норма: " + pNormal);
-        numberLabel.setText("Номер: " + MY_NUMBER);
+        dataLabel.setText("Минимальная: " + WARNING_TEMP + " t°C" + "\nЧастота тревоги: " + pAlarm + " минут" + "\nЧастота норм смс: " + pNormal + " минут");
+        numberLabel.setText("Ваш номер: " + MY_NUMBER);
         invertButton(serviseON);
+    }
+
+    private void updateBattery() {
+
+        if (mTime == 0L) {
+            mTime = SystemClock.uptimeMillis();
+            mHandler.removeCallbacks(timeUpdaterRunnable);
+            // Добавляем Runnable-объект timeUpdaterRunnable в очередь
+            // сообщений, объект должен быть запущен после задержки в 100 мс
+            mHandler.postDelayed(timeUpdaterRunnable, 100);
+        }
+
+
+
     }
 
     @Override
@@ -264,8 +302,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
 
         // dataLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
-        dataLabel.setText("t°: " + WARNING_TEMP +  ",  " + ", " + "Тревога: " + pAlarm + ",  " + "Норма: " + pNormal);
-
+        dataLabel.setText("Минимальная: " + WARNING_TEMP + " t°C" + "\nЧастота тревоги: " + pAlarm + " минут" + "\nЧастота норм смс: " + pNormal + " минут");
 
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         SharedPreferences.Editor ed = savePref.edit();
@@ -319,6 +356,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onResume() {
         super.onResume();
         readSharedPreferences();
+
+        // Добавляем Runnable-объект
+        mHandler.postDelayed(timeUpdaterRunnable, 100);
     }
 
     @Override
@@ -331,6 +371,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Да, точно, при уходе в другую активити (что точно? проблемы или нет?)
        // mSensorManager.unregisterListener(this);
 
+        // Удаляем Runnable-объект для прекращения задачи
+        mHandler.removeCallbacks(timeUpdaterRunnable);
     }
     @Override
     protected void onDestroy() {
@@ -376,10 +418,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void inputAlarma(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Интервал тревога (минут)");
+        alert.setTitle("Частота тревоги в минутах");
 
         alert.setMessage("Тревожные СМС приходят, если температура ниже заданного порога." +
-                "\n\nНе менее 15 минут!");
+                "\n\nВажно: Не следует задавать интервал меньше 15 минут!");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -414,10 +456,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void inputNormal(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Интервал норма в минутах");
-        alert.setMessage("нормальные СМС приходят независимо от температуры" +
-                "\n(720 минут = 12 часов)" +
-                "\n\nНе менее 15 минут!");
+        alert.setTitle("Частота нормальных СМС в минутах");
+        alert.setMessage("Нормальные СМС приходят независимо от показаний температуры" +
+                "\n\n По умолчанию 720 минут (каждые 12 часов, это два раза в сутки)" +
+                "\n\nВажно: Не следует задавать интервал меньше 15 минут!");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -525,20 +567,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
             if (!sensorExist) {
-            alert.setTitle("Термометра нет!");
-            alert.setMessage("Измерения производятся на аккумуляторе. Это дает погрешность при включенном экране" +
+            alert.setTitle("Термометр не обнаружен!");
+            alert.setMessage("Измерения производятся на аккумуляторе. Это дает погрешность при включенном экране." +
                     "\n\nОставьте телефон в покое примерно на один час." +
-                    "\nДатчик начнет давать температуру воздуха." +
-                    "\n\nНа экране температура\nСАМА НЕ ОБНОВЛЯЕТСЯ!\nТапайте по ней!");
+                    "\nДатчик начнет выдавать значения, близкие к реальной температуре воздуха.");
             }
             else {
-                alert.setTitle("Смартфон имеет термометр!");
+                alert.setTitle("Термометр обнаружен!");
                 alert.setMessage(
-                        "Это встроенный датчик температуры окружающего воздуха" +
-                        "\n\nВсе измерения производятся именно на этом термометре"+
-                        "\n\nПоказания батареи выводятся только для информации!"+
-                        "\n\nТемпература батареи на экране автоматически не обновляется, тапайте по ней каждый раз"
-                        );
+                        "Имеется встроенный датчик температуры окружающего воздуха" +
+                        "\n\nВсе измерения производятся именно на нем"+
+                        "\n\nПоказания батареи выводятся только для информации!");
             }
             alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
@@ -563,11 +602,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if (!messageRead) messageBattery (null);
             sensorExist = false;
             temperatureLabel.setText("-----");
-            batteryTemp(null);
         }
     }
 
-    public void batteryTemp (View v)
+
+
+
+    public void batteryTemp ()
     {
         Intent intent = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         int  temp   = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) /10;

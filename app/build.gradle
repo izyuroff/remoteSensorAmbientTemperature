@@ -25,6 +25,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    // это исключение ненужных зависимостей
+    // взято отсюда https://xakep.ru/2018/05/08/top10-android-problems/#toc10.
+    configurations.all {
+        exclude group : 'com.android.support', module :'transition'
+        exclude group : 'com.android.support', module :'customtabs'
+        exclude group : 'com.android.support', module :'support-media-compat'
+        exclude group : 'com.android.support', module :'support-fragment'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
