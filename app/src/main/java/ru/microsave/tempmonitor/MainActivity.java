@@ -178,24 +178,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
     // mainPeriodic сделал константой  на 15 минут
     //    dataLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
-        dataLabel.setText("Минимальная: " + WARNING_TEMP + " t°C" + "\nЧастота тревоги: " + pAlarm + " минут" + "\nЧастота норм смс: " + pNormal + " минут");
-        numberLabel.setText("Ваш номер: " + MY_NUMBER);
+        dataLabel.setText("Минимальная темп.: " + WARNING_TEMP + "°C" + "\nЧастота тревоги: " + pAlarm + " минут" + "\nЧастота норм смс: " + pNormal + " минут");
+        numberLabel.setText("Номер для СМС: " + MY_NUMBER);
         invertButton(serviseON);
     }
 
-    private void updateBattery() {
-
-        if (mTime == 0L) {
-            mTime = SystemClock.uptimeMillis();
-            mHandler.removeCallbacks(timeUpdaterRunnable);
-            // Добавляем Runnable-объект timeUpdaterRunnable в очередь
-            // сообщений, объект должен быть запущен после задержки в 100 мс
-            mHandler.postDelayed(timeUpdaterRunnable, 100);
-        }
-
-
-
-    }
 
     @Override
     public void onSensorChanged(SensorEvent sensor) {
@@ -302,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
 
         // dataLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
-        dataLabel.setText("Минимальная: " + WARNING_TEMP + " t°C" + "\nЧастота тревоги: " + pAlarm + " минут" + "\nЧастота норм смс: " + pNormal + " минут");
+        dataLabel.setText("Минимальная темп.: " + WARNING_TEMP + "°C" + "\nЧастота тревоги: " + pAlarm + " минут" + "\nЧастота норм смс: " + pNormal + " минут");
 
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         SharedPreferences.Editor ed = savePref.edit();
@@ -531,7 +518,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void inputWarning(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        alert.setTitle("Минимальная t°C");
+        alert.setTitle("Минимальная температура");
         alert.setMessage("для тревожных СМС");
 
         // Set an EditText view to get user input
