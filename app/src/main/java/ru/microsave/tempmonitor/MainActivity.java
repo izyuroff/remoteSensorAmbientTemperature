@@ -28,18 +28,23 @@ v.1.1
 Ввод уровня низкой температуры,
 
 Пробуждение смартфона от сна, реализовано настройкой класса JobScheduler
-Аварийное сообщение при низком уровне температуры, отправка СМС каждый час
-Регулярное сообщение о работоспособности устройства - отправка СМС раз в 12 часов
+Измерение температуры происходит каждые 15 минут, менее нельзя из-за особенностей класса JobScheduler
+Аварийное сообщение при низком уровне температуры, отправка тревожных СМС каждый час
+Регулярное сообщение о работоспособности устройства - отправка нормальных СМС раз в 12 часов
 
 
 
 ---= Добавить в будущем =---
 Также сигнализация о работоспособности устройства - уровень батареи например
 и может быть можно менять текст сообщения
+
+
 Нужен ввод для настройки периодичности сообщений FIX
 
 Нужно можно вводить несколько номеров для СМС
+
 Снимать температуру также с батареи FIX
+Не обновляется автоматически, это плохо
 
  */
 
@@ -91,8 +96,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SharedPreferences savePref;
 
     private Button mButton0,mButton1,mButton2,mButton3,mButton4,mButton5;
-    private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,logLabel,numberLabel;
-
+    private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,dataLabel,numberLabel;
 
     private final String LOG_TAG = "myLogs";
     // private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
@@ -116,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorLabel = findViewById(R.id.textView);
         temperatureLabel = findViewById(R.id.textView1);
         statusLabel = findViewById(R.id.textView2);
-        logLabel = findViewById(R.id.textView3);
+        dataLabel = findViewById(R.id.textView3);
         numberLabel = findViewById(R.id.textView4);
         batteryLabel = findViewById(R.id.textView5);
 
@@ -149,8 +153,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60);
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
     // mainPeriodic сделал константой  на 15 минут
-    //    logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
-        logLabel.setText("t°: " + WARNING_TEMP +  ",  " +  ", " + "Тревога: " + pAlarm + ",  " + "Норма: " + pNormal);
+    //    dataLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
+        dataLabel.setText("t°: " + WARNING_TEMP +  ",  " +  ", " + "Тревога: " + pAlarm + ",  " + "Норма: " + pNormal);
         numberLabel.setText("Номер: " + MY_NUMBER);
         invertButton(serviseON);
     }
@@ -259,8 +263,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60);
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
 
-        // logLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
-        logLabel.setText("t°: " + WARNING_TEMP +  ",  " + ", " + "Тревога: " + pAlarm + ",  " + "Норма: " + pNormal);
+        // dataLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
+        dataLabel.setText("t°: " + WARNING_TEMP +  ",  " + ", " + "Тревога: " + pAlarm + ",  " + "Норма: " + pNormal);
 
 
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
@@ -324,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Почему то закомментировал, не помню, были проблемы вроде бы
         // Но в то же время надо бы выполнять
-        // Да, точно, при уходе в другую активити
+        // Да, точно, при уходе в другую активити (что точно? проблемы или нет?)
        // mSensorManager.unregisterListener(this);
 
     }

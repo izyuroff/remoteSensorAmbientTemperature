@@ -84,8 +84,6 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
 
     @Override
     protected JobParameters doInBackground(JobParameters... jobParameters) {
-            ++myJobTask;
-            Log.d(LOG_TAG, "myJobTask = " + myJobTask);
             Log.d(LOG_TAG, "mTempBattery = " + mTempBattery);
 
             if (ifSensor) {
@@ -125,6 +123,8 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
         if (degrees != 0 && degrees < WARNING_TEMP_LOCAL && mALARM_TYPE) {
+            ++myJobTask;
+            Log.d(LOG_TAG, "myJobTask = " + myJobTask);
             textMessage = "#" + myJobTask + " " + timestamp +  " НИЗКАЯ: " + degrees + Character.toString ((char) 176) + "C";
             try {
                 SmsManager.getDefault()
@@ -137,6 +137,8 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         }
 
         if (degrees != 0 && !mALARM_TYPE) {
+            ++myJobTask;
+            Log.d(LOG_TAG, "myJobTask = " + myJobTask);
             textMessage = "#" + myJobTask + " " + timestamp +  " НОРМА: " + degrees + Character.toString ((char) 176) + "C";
 
           //  tempBattery = String.valueOf(temp) + Character.toString ((char) 176) + "C";
