@@ -40,6 +40,7 @@ public class Control_activity extends AppCompatActivity {
 
         Intent intent = getIntent();
         serviceONlocal = intent.getBooleanExtra("serviceIntentON",true);
+
         mPeriodic = intent.getLongExtra("schedulerPeriodic",1000 * 60 * 15); // по умолчанию 15 минут
         //Log.d(LOG_TAG, "--- onCreate ControlActivity serviceON = " + serviceONlocal);
 
@@ -54,6 +55,7 @@ public class Control_activity extends AppCompatActivity {
     }
 
     public void stopPlanNow() {
+        Log.d(LOG_TAG, "stopPlanNow serviceONlocal = " + serviceONlocal);
         serviceONlocal = false;
 
         List<JobInfo> allPendingJobs = mJobScheduler.getAllPendingJobs();
@@ -77,10 +79,15 @@ public class Control_activity extends AppCompatActivity {
             ComponentName componentName = new ComponentName(this, JobSchedulerService.class);
 
             final JobInfo jobInfo = new JobInfo.Builder(mJobId, componentName)
-                    //.setPeriodic(1000*60,1000*30)
+                    // Не требовать быть на зарядке
                     .setRequiresCharging(false)
-                    .setPeriodic(mPeriodic, 15 * 60 *1000)
+
+                    // Во втором параметре, значение для обязательного выполнения
+                    .setPeriodic(mPeriodic, 20 * 60 *1000)
+
+                    // Для восстановления после перезагрузки
                     .setPersisted(isPersisted)
+
                     //.setOverrideDeadline(60*1000)
                     //.setMinimumLatency(3*1000)
                     //.setMinimumLatency(16*60*1000)

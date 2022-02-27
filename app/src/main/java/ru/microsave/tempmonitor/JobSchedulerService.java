@@ -38,8 +38,8 @@ public class JobSchedulerService extends JobService {
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastNormal == 0 ){
-            mLastAlarm = currentTime - 60000;
-            mLastNormal = currentTime - 60000;
+            mLastAlarm = currentTime - 5000;
+            mLastNormal = currentTime - 5000;
         }
 
 //        Log.d(LOG_TAG, "--- onStartJob ---");

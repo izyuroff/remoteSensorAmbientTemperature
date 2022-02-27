@@ -81,7 +81,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
-    private final long mainPeriodic = 1000 * 60 * 16;
+    private final long mainPeriodic = 1000 * 60 * 15;
 
 
     // Для обновления температуры батареи в UI
@@ -116,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);*/
-
         mButton0 = findViewById(R.id.button0);
         mButton1 = findViewById(R.id.button1);
         mButton2 = findViewById(R.id.button2);
@@ -131,14 +130,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         numberLabel = findViewById(R.id.textView4);
         batteryLabel = findViewById(R.id.textView5);
 
+        // Прежде всего получим сенсор менеджер
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
+        // Тут проверка наличия сенсора и чтение сохраненных настроек
+        Log.d(LOG_TAG, "1 MainActivity.sensorExist = " + sensorExist);
         readSharedPreferences();
+        Log.d(LOG_TAG, "2 MainActivity sensorExist = " + sensorExist);
         updateScreen();
+
         checkSensor();
 
+        Log.d(LOG_TAG, "4 MainActivity sensorExist = " + sensorExist);
+
+        // Только после проверки регистрируем листенер
+        if (sensorExist)
         mSensorManager.registerListener(this, mSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
-        Log.d(LOG_TAG, "--- onCreate.MainActivity.sensorExist---" + sensorExist);
 
         // Запрос пермишна
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -186,24 +193,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent sensor) {
-       // Log.d(LOG_TAG, "--- onSensorChanged.sensorExist ---: " + sensorExist);
+    // В этом методе не нужно ничего лишнего! Если есть сенсор, то здесь большая цикличная работа
+        mDEGREES = (int)sensor.values[0];
+        temperatureLabel.setText(mDEGREES + "°C");
 
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.ICE_CREAM_SANDWICH && mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
+        // Поначал наделал тут проверок, ничего не нужно оказалось
+/*        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.ICE_CREAM_SANDWICH && mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
 
+            // ### Вот эта проверка больше нигде не встречается:
             if(sensorExist && mSensorTemperature.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
-                //if(mSensorTemperature.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
-
                 // получаю, преобразую в int и сохраняю в degrees
                 mDEGREES = (int)sensor.values[0];
-
                 temperatureLabel.setText(mDEGREES + "°C");
-                // sendAlarm(degrees);
-                // realSMS (degrees);
             }
-            // msg("Датчика температуры нет, измеряем t°C CPU");
-
+            // Кстати, else никогда не выполняется, если нет сенсора то и в этот метод не попадем!
             else temperatureLabel.setText("-----");
-        }
+        }*/
     }
 
     @Override
@@ -218,9 +223,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         invertButton(serviseON);
 
         statusLabel.setText("Служба остановлена.");
-
+        Log.d(LOG_TAG, "6 MainActivity sensorExist = " + sensorExist);
         if (sensorExist)temperatureLabel.setText(mDEGREES + "°C");
-
+        Log.d(LOG_TAG, "MainActivity sensorExist = " + sensorExist);
         saveSharedPreferences();
         Log.d(LOG_TAG, "--- stopSheduler MainActivity --- serviceON = " + serviseON);
 
@@ -265,24 +270,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    private void readSharedPreferences(){
-        savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
-
-        // mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 15));
-        ALARM_INTERVAL = (savePref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
-        NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
-        MY_NUMBER = (savePref.getString("NUMBER", "+7123456789"));
-        WARNING_TEMP = (savePref.getInt("WARNING", 15));
-
-        sensorExist = (savePref.getBoolean("IFSENSOR", false));
-        messageRead = (savePref.getBoolean("MESSAGEREAD", false));
-        serviseON = (savePref.getBoolean("SERVICEON", false));
-        invertButton(serviseON);
-        if (serviseON)
-            statusLabel.setText("Служба выполняется!");
-        else
-            statusLabel.setText("Служба остановлена.");
-    }
     private void saveSharedPreferences() {
         // String period = String.valueOf((int)mainPeriodic/1000/60);
         String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60);
@@ -307,6 +294,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         ed.apply();
         ed.commit();
+    }
+    private void readSharedPreferences(){
+        savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
+
+        // mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 15));
+        ALARM_INTERVAL = (savePref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
+        NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
+        MY_NUMBER = (savePref.getString("NUMBER", "+7123456789"));
+        WARNING_TEMP = (savePref.getInt("WARNING", 15));
+
+        sensorExist = (savePref.getBoolean("IFSENSOR", false));
+        messageRead = (savePref.getBoolean("MESSAGEREAD", false));
+        serviseON = (savePref.getBoolean("SERVICEON", false));
+        invertButton(serviseON);
+        if (serviseON)
+            statusLabel.setText("Служба выполняется!");
+        else
+            statusLabel.setText("Служба остановлена.");
     }
     // ==========================================
 
@@ -407,8 +412,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Частота тревоги в минутах");
 
-        alert.setMessage("Тревожные СМС приходят, если температура ниже заданного порога." +
-                "\n\nВажно: Не следует задавать интервал меньше 15 минут!");
+        alert.setMessage("Тревожные СМС приходят, если температура опустится ниже заданного порога." +
+                "\n\nВажно: Интервал меньше, чем 15 минут не работает!");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -446,7 +451,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         alert.setTitle("Частота нормальных СМС в минутах");
         alert.setMessage("Нормальные СМС приходят независимо от показаний температуры" +
                 "\n\n По умолчанию 720 минут (каждые 12 часов, это два раза в сутки)" +
-                "\n\nВажно: Не следует задавать интервал меньше 15 минут!");
+                "\n\nВажно: Интервал меньше, чем 15 минут не работает!");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -484,7 +489,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle("Номер для СМС");
-        alert.setMessage("Код страны обязателен!\nпример: +7987654321");
+        alert.setMessage("Код страны и \"+\" обязателен!\nпример: +7987654321");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -519,7 +524,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle("Минимальная температура");
-        alert.setMessage("для тревожных СМС");
+        alert.setMessage("Используется для тревожных СМС" + "\nНиже 0 не установить!");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -552,7 +557,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void messageBattery (View view) {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
+            Log.d(LOG_TAG, "33 MainActivity sensorExist = " + sensorExist);
             if (!sensorExist) {
             alert.setTitle("Термометр не обнаружен!");
             alert.setMessage("Измерения производятся на аккумуляторе. Это дает погрешность при включенном экране." +
@@ -586,10 +591,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         } else {
             // Если нет датчика, скажем об этом
-            if (!messageRead) messageBattery (null);
+
             sensorExist = false;
             temperatureLabel.setText("-----");
         }
+        if (!messageRead) messageBattery (null);
+        saveSharedPreferences();
     }
 
 

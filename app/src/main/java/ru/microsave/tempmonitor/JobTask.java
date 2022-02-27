@@ -125,7 +125,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         if (degrees != 0 && degrees < WARNING_TEMP_LOCAL && mALARM_TYPE) {
             ++myJobTask;
             Log.d(LOG_TAG, "myJobTask = " + myJobTask);
-            textMessage = "#" + myJobTask + " " + timestamp +  " НИЗКАЯ: " + degrees + Character.toString ((char) 176) + "C";
+            textMessage = "#" + myJobTask + " " + timestamp +  " ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C";
             try {
                 SmsManager.getDefault()
                         .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
@@ -139,7 +139,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         if (degrees != 0 && !mALARM_TYPE) {
             ++myJobTask;
             Log.d(LOG_TAG, "myJobTask = " + myJobTask);
-            textMessage = "#" + myJobTask + " " + timestamp +  " НОРМА: " + degrees + Character.toString ((char) 176) + "C";
+            textMessage = "#" + myJobTask + " " + timestamp +  " ИНФО: " + degrees + Character.toString ((char) 176) + "C";
 
           //  tempBattery = String.valueOf(temp) + Character.toString ((char) 176) + "C";
 
