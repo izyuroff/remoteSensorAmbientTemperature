@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private static final int PERMISSION_REQUEST_CODE = 1;
     private final long mainPeriodic = 1000 * 60 * 15;
 
-
     // Для обновления температуры батареи в UI
     private Handler mHandler = new Handler();
     private long mTime = 0L;
@@ -116,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);*/
+
         mButton0 = findViewById(R.id.button0);
         mButton1 = findViewById(R.id.button1);
         mButton2 = findViewById(R.id.button2);
@@ -173,9 +173,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             second = second % 60;
             // выводим время
             batteryTemp();
-           // mTimeTextView.setText("" + min + ":" + String.format("%02d", second));
+            // batteryLabel.setText("" + min + ":" + String.format("%02d", second));
             // повторяем через каждые 200 миллисекунд
-            mHandler.postDelayed(this, 2000);
+            mHandler.postDelayed(this, 3000);
         }
     };
 
@@ -350,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         readSharedPreferences();
 
         // Добавляем Runnable-объект
-        mHandler.postDelayed(timeUpdaterRunnable, 100);
+        mHandler.postDelayed(timeUpdaterRunnable, 5000);
     }
 
     @Override

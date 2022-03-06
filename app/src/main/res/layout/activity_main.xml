@@ -13,6 +13,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:enabled="true"
+        android:gravity="start|center_vertical"
+        android:insetTop="8dp"
+        android:insetBottom="8dp"
         android:onClick="messageBattery"
         android:text="ИНФОРМАЦИЯ"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -25,9 +28,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:enabled="true"
+        android:gravity="start|center_vertical"
+        android:insetLeft="0dp"
+        android:insetTop="8dp"
+        android:insetRight="18dp"
+        android:insetBottom="8dp"
         android:onClick="inputWarning"
         android:text="МИНИМАЛЬНАЯ t°C"
+        android:textAlignment="viewStart"
         android:textAllCaps="false"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -39,6 +49,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:enabled="true"
+        android:gravity="start|center_vertical"
+        android:insetTop="8dp"
+        android:insetBottom="8dp"
         android:onClick="inputNumber"
         android:text="НОМЕР ТЕЛЕФОНА"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -52,6 +65,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:enabled="true"
+        android:gravity="start|center_vertical"
+        android:insetTop="8dp"
+        android:insetBottom="8dp"
         android:onClick="inputAlarma"
         android:text="ТРЕВОЖНЫЕ СМС"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -65,8 +81,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         android:enabled="true"
+        android:gravity="start|center_vertical"
+        android:insetTop="8dp"
+        android:insetBottom="8dp"
         android:onClick="inputNormal"
-        android:text="НОРМАЛЬНЫЕ СМС"
+        android:text="СТАНДАРТНЫЕ СМС"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -201,13 +220,20 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.12" />
+        app:layout_constraintGuide_percent="0.05" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.88" />
+        app:layout_constraintGuide_percent="0.7" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
