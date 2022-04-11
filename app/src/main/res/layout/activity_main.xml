@@ -11,7 +11,6 @@
         android:id="@+id/button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
         android:enabled="true"
         android:gravity="start|center_vertical"
         android:insetTop="8dp"
@@ -26,12 +25,11 @@
         android:id="@+id/button0"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
         android:enabled="true"
         android:gravity="start|center_vertical"
         android:insetLeft="0dp"
         android:insetTop="8dp"
-        android:insetRight="18dp"
+        android:insetRight="0dp"
         android:insetBottom="8dp"
         android:onClick="inputWarning"
         android:text="МИНИМАЛЬНАЯ t°C"
@@ -39,7 +37,7 @@
         android:textAllCaps="false"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/button" />
 
@@ -47,7 +45,6 @@
         android:id="@+id/button3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
         android:enabled="true"
         android:gravity="start|center_vertical"
         android:insetTop="8dp"
@@ -55,7 +52,6 @@
         android:onClick="inputNumber"
         android:text="НОМЕР ТЕЛЕФОНА"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/button0" />
 
@@ -63,7 +59,6 @@
         android:id="@+id/button4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
         android:enabled="true"
         android:gravity="start|center_vertical"
         android:insetTop="8dp"
@@ -71,7 +66,6 @@
         android:onClick="inputAlarma"
         android:text="ТРЕВОЖНЫЕ СМС"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/button3" />
 
@@ -79,7 +73,6 @@
         android:id="@+id/button5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
         android:enabled="true"
         android:gravity="start|center_vertical"
         android:insetTop="8dp"
@@ -87,7 +80,6 @@
         android:onClick="inputNormal"
         android:text="СТАНДАРТНЫЕ СМС"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/button4" />
 
@@ -95,7 +87,7 @@
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:foregroundGravity="left|center"
         android:onClick="stopSheduler"
         android:text="СТОП"
@@ -110,7 +102,7 @@
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:foregroundGravity="left|center"
         android:gravity="start|center_vertical"
         android:onClick="control"
@@ -161,11 +153,59 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
-        android:clickable="true"
+        android:clickable="false"
         android:text="-----"
-        android:textSize="36sp"
+        android:textSize="26sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView0" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:clickable="false"
+        android:text="-----"
+        android:textSize="26sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button0"
+        app:layout_constraintTop_toBottomOf="@+id/button" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:clickable="false"
+        android:text="-----"
+        android:textSize="26sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button3"
+        app:layout_constraintTop_toBottomOf="@+id/button0" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:clickable="false"
+        android:text="-----"
+        android:textSize="26sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button4"
+        app:layout_constraintTop_toBottomOf="@+id/button3" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:clickable="false"
+        android:text="-----"
+        android:textSize="26sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button5"
+        app:layout_constraintTop_toBottomOf="@+id/button4" />
 
     <TextView
         android:id="@+id/textView2"
@@ -227,7 +267,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.7" />
+        app:layout_constraintGuide_percent="0.73" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"
