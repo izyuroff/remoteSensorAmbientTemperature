@@ -414,7 +414,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Частота тревоги в минутах");
 
-        alert.setMessage("Тревожные СМС приходят, если температура опустится ниже заданного порога." +
+        alert.setMessage("Тревожные СМС отправляются,\nесли температура ниже, чем: " + WARNING_TEMP + " °С" +
                 "\n\nНастроено: " + ALARM_INTERVAL/60/1000 + " минут" +
                 "\n\nВажно: Интервал меньше, чем 15 минут установить нельзя!");
 
@@ -461,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         readSharedPreferences();
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Частота СМС в минутах");
-        alert.setMessage("Эти СМС для информации, от показаний температуры не зависят!" +
+        alert.setMessage("СМС только для информации,\nот температуры не зависят!" +
                 "\n\n Настроено: " + NORMAL_INTERVAL/60/1000 + " минут" +
                 "\n\nВажно: Интервал меньше, чем 15 минут установить нельзя!");
 
