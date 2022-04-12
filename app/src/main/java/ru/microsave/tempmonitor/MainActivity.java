@@ -409,11 +409,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void inputAlarma(View view) {
+        readSharedPreferences();
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Частота тревоги в минутах");
 
         alert.setMessage("Тревожные СМС приходят, если температура опустится ниже заданного порога." +
-                "\n\nВажно: Интервал меньше, чем 15 минут не работает!");
+                "\n\nНастроено: " + ALARM_INTERVAL/60/1000 + " минут" +
+                "\n\nВажно: Интервал меньше, чем 15 минут установить нельзя!");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -432,6 +434,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
 
                 int minute= (Integer.parseInt(value));
+                // Проверка значения
+                if (minute < 15) return;
+
                 ALARM_INTERVAL = Long.valueOf(minute * 60 * 1000);
                 Log.d(LOG_TAG, "--- ALARM_INTERVAL ---" + ALARM_INTERVAL);
 
@@ -447,11 +452,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void inputNormal(View view) {
+        readSharedPreferences();
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Частота нормальных СМС в минутах");
-        alert.setMessage("Нормальные СМС приходят независимо от показаний температуры" +
-                "\n\n По умолчанию 720 минут (каждые 12 часов, это два раза в сутки)" +
-                "\n\nВажно: Интервал меньше, чем 15 минут не работает!");
+        alert.setTitle("Частота СМС в минутах");
+        alert.setMessage("СМС приходят независимо от показаний температуры" +
+                "\n\n Настроено: " + NORMAL_INTERVAL/60/1000 + " минут" +
+                "\n\nВажно: Интервал меньше, чем 15 минут установить нельзя!");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -470,6 +476,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
 
                 int minute= (Integer.parseInt(value));
+                // Проверка значения
+                if (minute < 15) return;
+
                 NORMAL_INTERVAL = Long.valueOf(minute * 60 * 1000);
                 Log.d(LOG_TAG, "--- NORMAL_INTERVAL ---" + NORMAL_INTERVAL);
 
@@ -524,7 +533,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle("Минимальная температура");
-        alert.setMessage("Используется для тревожных СМС" + "\nНиже 0 не установить!");
+        alert.setMessage("Это для тревожных СМС" + "\n\nВажно:\nНельзя установить 0 и ниже!");
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -542,6 +551,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 if (TextUtils.isEmpty(input.getText().toString())) {
                     return;
                 }
+
+                // Проверка значения, запрещено устанавливать ноль и ниже
+                int minimalTemp = (Integer.parseInt(value));
+                if (minimalTemp < 1) return;
 
                 WARNING_TEMP = Integer.parseInt(value);
                 saveSharedPreferences();
