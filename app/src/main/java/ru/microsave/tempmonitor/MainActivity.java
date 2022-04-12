@@ -392,6 +392,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // Проверяем поля на пустоту
                 if (TextUtils.isEmpty(input.getText().toString())) {
+                    Toast.makeText(getApplicationContext(),"Выход без изменений!",Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -430,17 +431,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // Проверяем поля на пустоту
                 if (TextUtils.isEmpty(input.getText().toString())) {
+                    Toast.makeText(getApplicationContext(),"Выход без изменений!",Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 int minute= (Integer.parseInt(value));
                 // Проверка значения
-                if (minute < 15) return;
+                if (minute < 15){
+                    Toast.makeText(getApplicationContext(),"Нельзя устанавливать менее 15 минут!",Toast.LENGTH_LONG).show();
+                    inputAlarma(null);
+                }
 
-                ALARM_INTERVAL = Long.valueOf(minute * 60 * 1000);
-                Log.d(LOG_TAG, "--- ALARM_INTERVAL ---" + ALARM_INTERVAL);
-
-                saveSharedPreferences();
+                else {
+                    ALARM_INTERVAL = Long.valueOf(minute * 60 * 1000);
+                    Log.d(LOG_TAG, "--- ALARM_INTERVAL ---" + ALARM_INTERVAL/1000/60);
+                    saveSharedPreferences();
+                }
             }
         });
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -455,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         readSharedPreferences();
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Частота СМС в минутах");
-        alert.setMessage("СМС приходят независимо от показаний температуры" +
+        alert.setMessage("Эти СМС для информации, от показаний температуры не зависят!" +
                 "\n\n Настроено: " + NORMAL_INTERVAL/60/1000 + " минут" +
                 "\n\nВажно: Интервал меньше, чем 15 минут установить нельзя!");
 
@@ -472,17 +478,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // Проверяем поля на пустоту
                 if (TextUtils.isEmpty(input.getText().toString())) {
+                    Toast.makeText(getApplicationContext(),"Выход без изменений!",Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 int minute= (Integer.parseInt(value));
                 // Проверка значения
-                if (minute < 15) return;
-
-                NORMAL_INTERVAL = Long.valueOf(minute * 60 * 1000);
-                Log.d(LOG_TAG, "--- NORMAL_INTERVAL ---" + NORMAL_INTERVAL);
-
-                saveSharedPreferences();
+                if (minute < 15){
+                    Toast.makeText(getApplicationContext(),"Нельзя устанавливать менее 15 минут!",Toast.LENGTH_LONG).show();
+                    inputNormal(null);
+                }
+                else {
+                    NORMAL_INTERVAL = Long.valueOf(minute * 60 * 1000);
+                    Log.d(LOG_TAG, "--- NORMAL_INTERVAL ---" + NORMAL_INTERVAL/1000/60);
+                    saveSharedPreferences();
+                }
             }
         });
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -511,10 +521,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String value = String.valueOf(input.getText());
+                
                 // Проверяем поля на пустоту
+
                 if (TextUtils.isEmpty(input.getText().toString())) {
+                    Toast.makeText(getApplicationContext(),"Выход без изменений!",Toast.LENGTH_LONG).show();
                     return;
                 }
+
+                // TODO: 12.04.2022 Хорошо бы добавить проверку введенного номера на правильность
                 MY_NUMBER = value;
                 numberLabel.setText("Сохранен номер: " + value);
                 saveSharedPreferences();
@@ -549,15 +564,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // Проверяем поля на пустоту
                 if (TextUtils.isEmpty(input.getText().toString())) {
+                    Toast.makeText(getApplicationContext(),"Выход без изменений!",Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 // Проверка значения, запрещено устанавливать ноль и ниже
                 int minimalTemp = (Integer.parseInt(value));
-                if (minimalTemp < 1) return;
+                if (minimalTemp < 1){
+                    Toast.makeText(getApplicationContext(),"Нельзя устанавливать 0!",Toast.LENGTH_LONG).show();
+                    inputWarning(null);
+                }
 
-                WARNING_TEMP = Integer.parseInt(value);
-                saveSharedPreferences();
+            else {
+                    WARNING_TEMP = Integer.parseInt(value);
+                    saveSharedPreferences();
+                }
             }
         });
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
