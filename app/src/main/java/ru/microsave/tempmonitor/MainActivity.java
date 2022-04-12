@@ -508,7 +508,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle("Номер для СМС");
-        alert.setMessage("Код страны и \"+\" обязателен!\nпример: +7987654321");
+        // TODO: 12.04.2022 Что то тут не так, проверка нужна на правильность ввода номера 
+        alert.setMessage("Без \"+\"  и кода страны СМС не работают!" +
+                "\n\n Настроено: " + MY_NUMBER);
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -548,7 +550,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle("Минимальная температура");
-        alert.setMessage("Это для тревожных СМС" + "\n\nВажно:\nНельзя установить 0 и ниже!");
+        alert.setMessage("Это для тревожных СМС" + "\nВажно:\nНельзя установить 0°С и ниже!" +
+                "\n\n Настроено: " + WARNING_TEMP + "°С"
+        );
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
