@@ -550,7 +550,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle("Минимальная температура");
-        alert.setMessage("Это для тревожных СМС" + "\nВажно:\nНельзя установить 0°С и ниже!" +
+        alert.setMessage("Это для тревожных СМС" + "\n\nВажно:\nНельзя установить 0°С и ниже!" +
                 "\n\n Настроено: " + WARNING_TEMP + "°С"
         );
 

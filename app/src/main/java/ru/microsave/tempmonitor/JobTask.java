@@ -75,7 +75,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
 
         }
         else
-            Log.d(LOG_TAG, "Нет сенсора, будет температура CPU");
+            Log.d(LOG_TAG, "Нет сенсора, будет температура CPU, UPD:но это условие никогда не выполнится :)");
     }
 
     @Override
