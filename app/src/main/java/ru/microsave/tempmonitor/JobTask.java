@@ -67,6 +67,9 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
 
+        DEGREES_LOCAL = (int)sensorEvent.values[0];
+
+/*
         if(mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
             // получаю, преобразую в int и сохраняю в DEGREES_LOCAL
             DEGREES_LOCAL = (int)sensorEvent.values[0];
@@ -75,6 +78,8 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         }
         else
             Log.d(LOG_TAG, "Нет сенсора, будет температура CPU, UPD:но это условие никогда не выполнится :) тут вообще не нужна проверка");
+*/
+
     }
 
     @Override
@@ -100,7 +105,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
     }
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
-        try {
+/*        try {
             if (mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null){
                 mJobSensorManager.unregisterListener(this);
             Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
@@ -109,7 +114,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         } catch (Exception e) {
             Log.d(LOG_TAG, "mJobSensorManager.unregisterListener = null");
             e.printStackTrace();
-        }
+        }*/
         //    jobService.jobFinished(jobParameters, true);
 
     }
@@ -124,7 +129,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
        // String timestamp = DFormat.format(new Date(currentTime));
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
-        if (degrees != 0 && degrees < WARNING_TEMP_LOCAL && mALARM_TYPE) {
+        /*if (degrees != 0 && degrees < WARNING_TEMP_LOCAL && mALARM_TYPE) {
             ++myJobTask;
             Log.d(LOG_TAG, "myJobTask = " + myJobTask);
             textMessage = "#" + myJobTask + " " + timestamp +  " ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C";
@@ -133,9 +138,13 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
                         .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
                 Log.d(LOG_TAG, textMessage);
             } catch (Exception e) {
-                Log.d(LOG_TAG, "failed to send message: " + textMessage);
+                Log.d(LOG_TAG, "1 failed to send message: " + textMessage);
                 e.printStackTrace();
             }
+
+        }
+        else  {
+            Log.d(LOG_TAG, "1 Условия не выполнились: " + degrees + " " + mALARM_TYPE);
         }
 
         if (degrees != 0 && !mALARM_TYPE) {
@@ -150,10 +159,26 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
                         .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
                 Log.d(LOG_TAG, textMessage);
             } catch (Exception e) {
-                Log.d(LOG_TAG, "failed to send message" + textMessage);
+                Log.d(LOG_TAG, "2 failed to send message" + textMessage);
                 e.printStackTrace();
             }
         }
+        else {
+            Log.d(LOG_TAG, "2 Условия не выполнились: " + degrees + " " + mALARM_TYPE);
+        }*/
+
+
+
+        try {
+            SmsManager.getDefault()
+                    .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
+            Log.d(LOG_TAG, "Ok message: " + textMessage);
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "1 failed to send message: " + textMessage);
+            e.printStackTrace();
+        }
+
+
     }
 
 

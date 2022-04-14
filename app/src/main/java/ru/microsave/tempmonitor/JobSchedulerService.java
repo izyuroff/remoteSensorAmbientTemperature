@@ -33,14 +33,14 @@ public class JobSchedulerService extends JobService {
     public boolean onStartJob(JobParameters param) {
        // Toast.makeText(getApplicationContext(), "Job Started", Toast.LENGTH_SHORT).show();
         readSharedPreferences();
-        batteryTemperature ();
+      //  batteryTemperature ();
 
         long currentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastNormal == 0 ){
-            mLastAlarm = currentTime - 30000;
-            mLastNormal = currentTime - 15000;
+            mLastAlarm = currentTime - 100;
+            mLastNormal = currentTime - 100;
         }
 
 //        Log.d(LOG_TAG, "--- onStartJob ---");
@@ -51,13 +51,13 @@ public class JobSchedulerService extends JobService {
 
         // true если тревога
         boolean alarmType;
-        if (serviseJobON && (currentTime - mLastAlarm >= myAlarmInterval)) {
+        if (serviseJobON && (currentTime - mLastAlarm > myAlarmInterval)) {
             mLastAlarm = currentTime - 60000;
             alarmType = true;
             new JobTask(this, myNumber, myWarning, alarmType,ifSensor,tempBattery).execute(param);
         }
 
-        if (serviseJobON && (currentTime - mLastNormal >= myNormalInterval)) {
+        if (serviseJobON && (currentTime - mLastNormal > myNormalInterval)) {
             mLastNormal = currentTime - 90000;
             alarmType = false;
             new JobTask(this, myNumber, myWarning, alarmType,ifSensor,tempBattery).execute(param);
