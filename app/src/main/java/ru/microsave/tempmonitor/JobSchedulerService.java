@@ -32,14 +32,15 @@ public class JobSchedulerService extends JobService {
     @Override
     public boolean onStartJob(JobParameters param) {
        // Toast.makeText(getApplicationContext(), "Job Started", Toast.LENGTH_SHORT).show();
+        readSharedPreferences();
         batteryTemperature ();
 
         long currentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastNormal == 0 ){
-            mLastAlarm = currentTime - 5000;
-            mLastNormal = currentTime - 5000;
+            mLastAlarm = currentTime - 30000;
+            mLastNormal = currentTime - 15000;
         }
 
 //        Log.d(LOG_TAG, "--- onStartJob ---");
@@ -50,40 +51,21 @@ public class JobSchedulerService extends JobService {
 
         // true если тревога
         boolean alarmType;
-        if (serviseJobON && (currentTime - mLastAlarm > myAlarmInterval)) {
-            mLastAlarm = currentTime;
+        if (serviseJobON && (currentTime - mLastAlarm >= myAlarmInterval)) {
+            mLastAlarm = currentTime - 60000;
             alarmType = true;
             new JobTask(this, myNumber, myWarning, alarmType,ifSensor,tempBattery).execute(param);
         }
 
-        if (serviseJobON && (currentTime - mLastNormal > myNormalInterval)) {
-            mLastNormal = currentTime;
+        if (serviseJobON && (currentTime - mLastNormal >= myNormalInterval)) {
+            mLastNormal = currentTime - 90000;
             alarmType = false;
             new JobTask(this, myNumber, myWarning, alarmType,ifSensor,tempBattery).execute(param);
         }
 
-
-
-        // jobFinished(param, false);
-
-/*        // Normal SMS
-        if ((currentTime - mLastUpdated) > NORMAL_INTERVAL) {
-            mLastUpdated = currentTime;
-            String textMessage = "Все системы работают нормально";
-           // Log.d(LOG_TAG,"currentTime - mJobLastUpdated: " + String.valueOf(currentTime - mLastUpdated));
-            // Log.d(LOG_TAG,"NORMAL_INTERVAL: " + String.valueOf(NORMAL_INTERVAL));
-           // Log.d(LOG_TAG, textMessage);
-            new SendSMS().execute(textMessage);
-        }*/
-        // Alarm SMS
-/*       if ((currentTime - mLastMessage) > ALARM_INTERVAL) {
-            mLastMessage = currentTime;
-            //Log.d(LOG_TAG,"currentTime - mLastMessage: " + String.valueOf(currentTime - mLastMessage));
-            new JobTask(this).execute(param);
-        }*/
-      //  new JobTask(this).execute(param);
         return false;
     }
+
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.d(LOG_TAG, "--- onStopJob --- return true");
@@ -98,26 +80,25 @@ public class JobSchedulerService extends JobService {
     }
     @Override
     public void onCreate() {
-        readSharedPreferences();
+     //   readSharedPreferences();
     }
 
     private void readSharedPreferences(){
-
         SharedPreferences saveJobPref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         serviseJobON = (saveJobPref.getBoolean("SERVICEON", false));
         myNumber = (saveJobPref.getString("NUMBER", "+7123456789"));
         myWarning = (saveJobPref.getInt("WARNING", 16));
 
-
         myAlarmInterval = (saveJobPref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
         myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));
+        Log.d(LOG_TAG, "readSharedPreferences: OK");
     }
+
     public float batteryTemperature ()
     {
         Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         tempBattery   = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) / 10; // Почему разделил на 10??? Да почему то выдача идет в 10 раз больше
-
         return tempBattery;
     }
 }

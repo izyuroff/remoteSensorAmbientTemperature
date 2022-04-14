@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     // Описание Runnable-объекта
+    // Тут у нам цикличный опрос температуры батареи
     private Runnable timeUpdaterRunnable = new Runnable() {
         public void run() {
             // вычисляем время
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             // выводим время
             batteryTemp();
             // batteryLabel.setText("" + min + ":" + String.format("%02d", second));
-            // повторяем через каждые 200 миллисекунд
+            // повторяем через каждые 3000 миллисекунд
             mHandler.postDelayed(this, 3000);
         }
     };
@@ -194,6 +195,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent sensor) {
     // В этом методе не нужно ничего лишнего! Если есть сенсор, то здесь большая цикличная работа
+    // Метод кстати не связан с отправкой СМС, это только для вывода температуры на экран, когда приложение активно,
+    // для СМС работает аналогичный метод в классе JobTask
         mDEGREES = (int)sensor.values[0];
         temperatureLabel.setText(mDEGREES + "°C");
 
@@ -224,20 +227,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         statusLabel.setText("Служба остановлена.");
         Log.d(LOG_TAG, "6 MainActivity sensorExist = " + sensorExist);
+
         if (sensorExist)temperatureLabel.setText(mDEGREES + "°C");
         Log.d(LOG_TAG, "MainActivity sensorExist = " + sensorExist);
+
         saveSharedPreferences();
         Log.d(LOG_TAG, "--- stopSheduler MainActivity --- serviceON = " + serviseON);
 
         // Может быть надо раскомментировать?
         // mSensorManager.unregisterListener(this);
-
         Intent intent = new Intent(this, Control_activity.class);
         intent.putExtra("serviceIntentON", serviseON);
         startActivity(intent);
     }
 
-    // Метод для кнопочки БОЕВОЕ ДЕЖУРСТВО
+    // Метод для кнопочки БОЕВОЕ ДЕЖУРСТВО, то есть СТАРТ
     public void control (View view){
         msg("Служба запущена успешно!");
         serviseON = true;
@@ -437,8 +441,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 int minute= (Integer.parseInt(value));
                 // Проверка значения
-                if (minute < 15){
-                    Toast.makeText(getApplicationContext(),"Нельзя устанавливать менее 15 минут!",Toast.LENGTH_LONG).show();
+                if (minute < 15 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N || minute < 1){
+                    Toast.makeText(getApplicationContext(),"Нельзя устанавливать менее 15 минут или 0!",Toast.LENGTH_LONG).show();
                     inputAlarma(null);
                 }
 
@@ -484,8 +488,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 int minute= (Integer.parseInt(value));
                 // Проверка значения
-                if (minute < 15){
-                    Toast.makeText(getApplicationContext(),"Нельзя устанавливать менее 15 минут!",Toast.LENGTH_LONG).show();
+                if (minute < 15 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N || minute < 1){
+                    Toast.makeText(getApplicationContext(),"Нельзя устанавливать менее 15 минут или 0!",Toast.LENGTH_LONG).show();
                     inputNormal(null);
                 }
                 else {

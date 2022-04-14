@@ -49,9 +49,8 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         WARNING_TEMP_LOCAL = war;
         mALARM_TYPE = al;
         ifSensor = sen;
-        mTempBattery = tempBat;
-
-
+        // mTempBattery = tempBat; // #####
+        mTempBattery = 1000;
 
         if (ifSensor) {
             mJobSensorManager = (SensorManager) jobService.getSystemService(Context.SENSOR_SERVICE);
@@ -69,13 +68,13 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
     public void onSensorChanged(SensorEvent sensorEvent) {
 
         if(mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
-            // получаю, преобразую в int и сохраняю в degrees
+            // получаю, преобразую в int и сохраняю в DEGREES_LOCAL
             DEGREES_LOCAL = (int)sensorEvent.values[0];
-           // Log.d(LOG_TAG, "DEGREES = " + DEGREES);
+            // Log.d(LOG_TAG, "DEGREES_LOCAL = " + DEGREES_LOCAL);
 
         }
         else
-            Log.d(LOG_TAG, "Нет сенсора, будет температура CPU, UPD:но это условие никогда не выполнится :)");
+            Log.d(LOG_TAG, "Нет сенсора, будет температура CPU, UPD:но это условие никогда не выполнится :) тут вообще не нужна проверка");
     }
 
     @Override
@@ -102,8 +101,11 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
         try {
-            mJobSensorManager.unregisterListener(this);
+            if (mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null){
+                mJobSensorManager.unregisterListener(this);
             Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
+        }
+
         } catch (Exception e) {
             Log.d(LOG_TAG, "mJobSensorManager.unregisterListener = null");
             e.printStackTrace();
@@ -153,6 +155,8 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
             }
         }
     }
+
+
     public float getCpuTemp() {
         Process process;
         try {

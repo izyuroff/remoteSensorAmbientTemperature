@@ -83,7 +83,7 @@ public class Control_activity extends AppCompatActivity {
                     .setRequiresCharging(false)
 
                     // Во втором параметре, значение для обязательного выполнения
-                    .setPeriodic(mPeriodic, 20 * 60 *1000)
+                    .setPeriodic(mPeriodic, 16 * 60 * 1000)
 
                     // Для восстановления после перезагрузки
                     .setPersisted(isPersisted)
