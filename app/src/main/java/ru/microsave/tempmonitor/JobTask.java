@@ -1,12 +1,6 @@
 package ru.microsave.tempmonitor;
 /*
-Этот класс для выполнения работы в отдельном потоке и вызывается из JobSchedulerService
-    Здесь производится измерение температуры и отправка СМС сообщения
-
-    MainActivity
-    ControlActivity
-    JobSchedulerService
-    JobTask
+Этот класс больше не нужен, из него сделал 4 разных
 
  */
 

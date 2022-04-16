@@ -41,34 +41,37 @@ public class JobSchedulerService extends JobService {
 
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastNormal == 0 ){
-            mLastAlarm = mCurrentTime - mLastAlarm;
-            mLastNormal = mCurrentTime - mLastNormal;
+            mLastAlarm = mCurrentTime - 900000;
+            mLastNormal = mCurrentTime - 900000;
         }
 
-        Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
-        Log.d(LOG_TAG, "myNormalInterval: " + mCurrentTime + " - " + mLastNormal + " = " +  (mCurrentTime - mLastNormal) + " ? " + myNormalInterval);
-
         if (mCurrentTime - mLastAlarm > myAlarmInterval){
+            Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
             mLastAlarm = mCurrentTime;
             alarmType = true;
                 if (ifSensor) {
+                    Log.d(LOG_TAG, "new: JobAlarmSensor");
                     new JobAlarmSensor(this, myNumber,TASK_NUMBER).execute(param);
                 }
                 else {
                 batteryTemperature ();
-                new JobAlarmBattery(this, myNumber,tempBattery,TASK_NUMBER).execute(param);
+                    Log.d(LOG_TAG, "new: JobAlarmBattery");
+                    new JobAlarmBattery(this, myNumber,tempBattery,TASK_NUMBER).execute(param);
                 }
         }
 
         if (mCurrentTime - mLastNormal > myNormalInterval){
+            Log.d(LOG_TAG, "myNormalInterval: " + mCurrentTime + " - " + mLastNormal + " = " +  (mCurrentTime - mLastNormal) + " ? " + myNormalInterval);
             mLastNormal = mCurrentTime;
             alarmType = true;
                 if (ifSensor) {
-                new JobInfoSensor(this, myNumber,TASK_NUMBER).execute(param);
+                    Log.d(LOG_TAG, "new: JobInfoSensor");
+                    new JobInfoSensor(this, myNumber,TASK_NUMBER).execute(param);
                 }
                 else {
                 batteryTemperature ();
-                new JobInfoBattery(this, myNumber,tempBattery,TASK_NUMBER).execute(param);
+                    Log.d(LOG_TAG, "new: JobInfoBattery");
+                    new JobInfoBattery(this, myNumber,tempBattery,TASK_NUMBER).execute(param);
                 }
         }
 
