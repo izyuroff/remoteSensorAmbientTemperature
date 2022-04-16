@@ -77,8 +77,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ButtonBarLayout;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SharedPreferences savePref;
 
     private Button mButton0,mButton1,mButton2,mButton3,mButton4,mButton5;
+
     private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,dataLabel,numberLabel;
 
     private final String LOG_TAG = "myLogs";
@@ -160,19 +161,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             }
         }
+
+        mButton2.setOnClickListener(view -> startSheduler());
     }
 
+
     // Описание Runnable-объекта
-    // Тут у нам цикличный опрос температуры батареи
+    // Тут у нас цикличный опрос температуры батареи
     private Runnable timeUpdaterRunnable = new Runnable() {
         public void run() {
-            // вычисляем время
-            final long start = mTime;
+            // вычисляем время (Кажется этот код из какого то примера по Handler:))))
+/*            final long start = mTime;
             long millis = SystemClock.uptimeMillis() - start;
             int second = (int) (millis / 1000);
             int min = second / 60;
             second = second % 60;
             // выводим время
+*/            
             batteryTemp();
             // batteryLabel.setText("" + min + ":" + String.format("%02d", second));
             // повторяем через каждые 3000 миллисекунд
@@ -186,11 +191,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
     // mainPeriodic сделал константой  на 15 минут
     //    dataLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
-        dataLabel.setText("Минимальная темп.: " + WARNING_TEMP + "°C" + "\nЧастота тревоги: " + pAlarm + " минут" + "\nЧастота норм смс: " + pNormal + " минут");
+        dataLabel.setText("Минимальная темп.: " + WARNING_TEMP + getString(R.string.symbol_degrees) + "\nЧастота тревоги: " + pAlarm + " минут" + "\nЧастота норм смс: " + pNormal + " минут");
         numberLabel.setText("Номер для СМС: " + MY_NUMBER);
         invertButton(serviseON);
     }
-
 
     @Override
     public void onSensorChanged(SensorEvent sensor) {
@@ -198,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // Метод кстати не связан с отправкой СМС, это только для вывода температуры на экран, когда приложение активно,
     // для СМС работает аналогичный метод в классе JobTask
         mDEGREES = (int)sensor.values[0];
-        temperatureLabel.setText(mDEGREES + "°C");
+        temperatureLabel.setText(mDEGREES + getString(R.string.symbol_degrees));
 
         // Поначал наделал тут проверок, ничего не нужно оказалось
 /*        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.ICE_CREAM_SANDWICH && mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
@@ -207,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if(sensorExist && mSensorTemperature.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
                 // получаю, преобразую в int и сохраняю в degrees
                 mDEGREES = (int)sensor.values[0];
-                temperatureLabel.setText(mDEGREES + "°C");
+                temperatureLabel.setText(mDEGREES + getString(R.string.symbol_degrees));
             }
             // Кстати, else никогда не выполняется, если нет сенсора то и в этот метод не попадем!
             else temperatureLabel.setText("-----");
@@ -228,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         statusLabel.setText("Служба остановлена.");
         Log.d(LOG_TAG, "6 MainActivity sensorExist = " + sensorExist);
 
-        if (sensorExist)temperatureLabel.setText(mDEGREES + "°C");
+        if (sensorExist)temperatureLabel.setText(mDEGREES + getString(R.string.symbol_degrees));
         Log.d(LOG_TAG, "MainActivity sensorExist = " + sensorExist);
 
         saveSharedPreferences();
@@ -241,8 +245,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         startActivity(intent);
     }
 
+
+
+
+
+
+
     // Метод для кнопочки БОЕВОЕ ДЕЖУРСТВО, то есть СТАРТ
-    public void control (View view){
+    public void startSheduler (){
         msg("Служба запущена успешно!");
         serviseON = true;
         invertButton(serviseON);
@@ -280,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
 
         // dataLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
-        dataLabel.setText("Минимальная темп.: " + WARNING_TEMP + "°C" + "\nЧастота тревоги: " + pAlarm + " минут" + "\nЧастота норм смс: " + pNormal + " минут");
+        dataLabel.setText("Минимальная темп.: " + WARNING_TEMP + getString(R.string.symbol_degrees) + "\nЧастота тревоги: " + pAlarm + " минут" + "\nЧастота норм смс: " + pNormal + " минут");
 
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         SharedPreferences.Editor ed = savePref.edit();
@@ -330,15 +340,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     {
         // если serviceON
         if (b) {
+            mButton1.setBackgroundResource(R.drawable.red_button);
+            mButton2.setBackgroundResource(R.drawable.gray_button);
+
             mButton0.setEnabled(false);
             mButton1.setEnabled(true);
             mButton2.setEnabled(false);
             mButton3.setEnabled(false);
             mButton4.setEnabled(false);
             mButton5.setEnabled(false);
+
         }
         // Если НЕ было запусков или была остановка
         else {
+            mButton1.setBackgroundResource(R.drawable.gray_button);
+            mButton2.setBackgroundResource(R.drawable.red_button);
             mButton0.setEnabled(true);
             mButton1.setEnabled(false);
             mButton2.setEnabled(true);
@@ -376,41 +392,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
       //  mSensorManager = null;
       //  mSensorTemperature = null;
         super.onDestroy();
-    }
-
-    public void inputPeriod(View view) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setTitle("Период проверки в минутах");
-            alert.setMessage("Важно: не менее 15 минут!");
-
-        // Set an EditText view to get user input
-        final EditText input = new EditText(this);
-
-        input.requestFocus();
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
-        alert.setView(input);
-
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                String value = String.valueOf(input.getText());
-
-                // Проверяем поля на пустоту
-                if (TextUtils.isEmpty(input.getText().toString())) {
-                    Toast.makeText(getApplicationContext(),"Выход без изменений!",Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                int minute = (Integer.parseInt(value));
-               // mainPeriodic = Long.valueOf(minute * 60 * 1000);
-                saveSharedPreferences();
-            }
-        });
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // Canceled.
-            }
-        });
-        alert.show();
     }
 
     public void inputAlarma(View view) {
