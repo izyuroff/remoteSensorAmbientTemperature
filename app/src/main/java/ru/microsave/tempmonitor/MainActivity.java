@@ -93,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public int WARNING_TEMP;
     private long ALARM_INTERVAL; //     = 1000 * 60 * 60 * 2;
     private long NORMAL_INTERVAL; //     = 1000 * 60 * 60 * 3;
-
     public int mDEGREES;
     public boolean serviseON; // состояние службы боевого дежурства, запущена или нет
     public boolean sensorExist; // наличие сенсора температуры

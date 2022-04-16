@@ -16,14 +16,17 @@ public class JobSchedulerService extends JobService {
     private final String LOG_TAG = "myLogs";
     private boolean serviseJobON;
     private boolean ifSensor;
+    private boolean alarmType;
 
     private String myNumber;
     private int myWarning;
     private long myAlarmInterval;
     private long myNormalInterval;
+    private long mCurrentTime;
 
     private static long mLastAlarm;
     private static long mLastNormal;
+    public static int TASK_NUMBER = 0;
 
     public JobSchedulerService() {
 
@@ -31,36 +34,42 @@ public class JobSchedulerService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters param) {
-       // Toast.makeText(getApplicationContext(), "Job Started", Toast.LENGTH_SHORT).show();
-        // readSharedPreferences();
-        batteryTemperature ();
+        readSharedPreferences();
+        ++TASK_NUMBER;
+        mCurrentTime = System.currentTimeMillis();
+        String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
 
-        long currentTime = System.currentTimeMillis();
-        String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastNormal == 0 ){
-            mLastAlarm = currentTime - mLastAlarm;
-            mLastNormal = currentTime - mLastNormal;
+            mLastAlarm = mCurrentTime - mLastAlarm;
+            mLastNormal = mCurrentTime - mLastNormal;
         }
 
-//        Log.d(LOG_TAG, "--- onStartJob ---");
-//        Log.d(LOG_TAG, "currentTime - mLastAlarm > myAlarmInterval: " + currentTime + " - " + mLastAlarm + " = " +  (currentTime - mLastAlarm) + " > " + myAlarmInterval);
-//        Log.d(LOG_TAG, "currentTime - mLastNormal > myNormalInterval: " + currentTime + " - " + mLastNormal + " = " +  (currentTime - mLastNormal) + " > " + myNormalInterval);
-        Log.d(LOG_TAG, "myAlarmInterval: " + currentTime + " - " + mLastAlarm + " = " +  (currentTime - mLastAlarm) + " ? " + myAlarmInterval);
-        Log.d(LOG_TAG, "myNormalInterval: " + currentTime + " - " + mLastNormal + " = " +  (currentTime - mLastNormal) + " ? " + myNormalInterval);
+        Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
+        Log.d(LOG_TAG, "myNormalInterval: " + mCurrentTime + " - " + mLastNormal + " = " +  (mCurrentTime - mLastNormal) + " ? " + myNormalInterval);
 
-        // true если тревога
-        boolean alarmType;
-        if (serviseJobON && (currentTime - mLastAlarm > myAlarmInterval)) {
-            mLastAlarm = currentTime;
+        if (mCurrentTime - mLastAlarm > myAlarmInterval){
+            mLastAlarm = mCurrentTime;
             alarmType = true;
-            new JobTask(this, myNumber, myWarning, alarmType,ifSensor,tempBattery).execute(param);
+                if (ifSensor) {
+                    new JobAlarmSensor(this, myNumber,TASK_NUMBER).execute(param);
+                }
+                else {
+                batteryTemperature ();
+                new JobAlarmBattery(this, myNumber,tempBattery,TASK_NUMBER).execute(param);
+                }
         }
 
-        if (serviseJobON && (currentTime - mLastNormal > myNormalInterval)) {
-            mLastNormal = currentTime;
-            alarmType = false;
-            new JobTask(this, myNumber, myWarning, alarmType,ifSensor,tempBattery).execute(param);
+        if (mCurrentTime - mLastNormal > myNormalInterval){
+            mLastNormal = mCurrentTime;
+            alarmType = true;
+                if (ifSensor) {
+                new JobInfoSensor(this, myNumber,TASK_NUMBER).execute(param);
+                }
+                else {
+                batteryTemperature ();
+                new JobInfoBattery(this, myNumber,tempBattery,TASK_NUMBER).execute(param);
+                }
         }
 
         return true;
@@ -69,8 +78,6 @@ public class JobSchedulerService extends JobService {
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.d(LOG_TAG, "--- onStopJob --- return false");
-    //    Log.d(LOG_TAG, "mLastAlarm = " + mLastAlarm);
-    //    Log.d(LOG_TAG, "mLastNormal = " + mLastNormal);
         return false;
     }
 
@@ -95,10 +102,10 @@ public class JobSchedulerService extends JobService {
         Log.d(LOG_TAG, "readSharedPreferences: OK");
     }
 
-    public float batteryTemperature ()
-    {
+    public float batteryTemperature () {
         Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         tempBattery   = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) / 10; // Почему разделил на 10??? Да почему то выдача идет в 10 раз больше
         return tempBattery;
     }
+
 }
