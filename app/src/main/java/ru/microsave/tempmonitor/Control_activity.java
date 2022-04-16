@@ -25,7 +25,7 @@ public class Control_activity extends AppCompatActivity {
     //JobInfo jobInfo;
     private long mPeriodic;
 
-    private static int mJobId = 777;
+    private static final int mJobId = 777;
     private boolean serviceONlocal;// состояние службы дежурства, запущена или нет
     private boolean isPersisted = true; // Сохранять планировщик после рестарта устройства
 
@@ -71,7 +71,7 @@ public class Control_activity extends AppCompatActivity {
         // Прибить неприбитое?
         // mJobScheduler.cancelAll();
 
-        Log.d(LOG_TAG, "Build.VERSION.SDK_INT = " + Build.VERSION.SDK_INT);
+        Log.d(LOG_TAG, "jobPlan() Build.VERSION.SDK_INT = " + Build.VERSION.SDK_INT);
 
         ComponentName componentName = new ComponentName(this, JobSchedulerService.class);
         final JobInfo jobInfo;

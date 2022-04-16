@@ -32,7 +32,7 @@ public class JobSchedulerService extends JobService {
     @Override
     public boolean onStartJob(JobParameters param) {
         Log.d(LOG_TAG, "Запуск шедулера OK: onStartJob");
-        // readSharedPreferences();
+        readSharedPreferences();
 
         mCurrentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
