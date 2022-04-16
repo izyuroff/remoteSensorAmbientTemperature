@@ -14,19 +14,16 @@ import java.util.Date;
 public class JobSchedulerService extends JobService {
     private float tempBattery;
     private final String LOG_TAG = "myLogs";
-    private boolean serviseJobON;
     private boolean ifSensor;
-    private boolean alarmType;
 
     private String myNumber;
-    private int myWarning;
     private long myAlarmInterval;
     private long myNormalInterval;
     private long mCurrentTime;
 
     private static long mLastAlarm;
     private static long mLastNormal;
-    public static int TASK_NUMBER = 0;
+    private static int TASK_NUMBER = 0;
 
     public JobSchedulerService() {
 
@@ -34,21 +31,22 @@ public class JobSchedulerService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters param) {
-        readSharedPreferences();
-        ++TASK_NUMBER;
+        Log.d(LOG_TAG, "Запуск шедулера OK: onStartJob");
+        // readSharedPreferences();
+
         mCurrentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
 
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastNormal == 0 ){
-            mLastAlarm = mCurrentTime - 900000;
-            mLastNormal = mCurrentTime - 900000;
+            mLastAlarm = mCurrentTime;
+            mLastNormal = mCurrentTime;
         }
 
         if (mCurrentTime - mLastAlarm > myAlarmInterval){
+            ++TASK_NUMBER;
             Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
-            mLastAlarm = mCurrentTime;
-            alarmType = true;
+            mLastAlarm = mCurrentTime - 5000;
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobAlarmSensor");
                     new JobAlarmSensor(this, myNumber,TASK_NUMBER).execute(param);
@@ -61,9 +59,9 @@ public class JobSchedulerService extends JobService {
         }
 
         if (mCurrentTime - mLastNormal > myNormalInterval){
+            ++TASK_NUMBER;
             Log.d(LOG_TAG, "myNormalInterval: " + mCurrentTime + " - " + mLastNormal + " = " +  (mCurrentTime - mLastNormal) + " ? " + myNormalInterval);
-            mLastNormal = mCurrentTime;
-            alarmType = true;
+            mLastNormal = mCurrentTime - 10000;
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobInfoSensor");
                     new JobInfoSensor(this, myNumber,TASK_NUMBER).execute(param);
@@ -90,15 +88,12 @@ public class JobSchedulerService extends JobService {
     }
     @Override
     public void onCreate() {
-        readSharedPreferences();
+        //readSharedPreferences();
     }
 
     private void readSharedPreferences(){
         SharedPreferences saveJobPref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
-        serviseJobON = (saveJobPref.getBoolean("SERVICEON", false));
         myNumber = (saveJobPref.getString("NUMBER", "+7123456789"));
-        myWarning = (saveJobPref.getInt("WARNING", 16));
-
         myAlarmInterval = (saveJobPref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
         myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));

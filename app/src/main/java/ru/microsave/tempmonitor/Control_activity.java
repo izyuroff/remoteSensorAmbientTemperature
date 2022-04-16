@@ -26,11 +26,8 @@ public class Control_activity extends AppCompatActivity {
     private long mPeriodic;
 
     private static int mJobId = 777;
-    private boolean serviceONlocal;
+    private boolean serviceONlocal;// состояние службы дежурства, запущена или нет
     private boolean isPersisted = true; // Сохранять планировщик после рестарта устройства
-    //private boolean serviceON; // состояние службы дежурства, запущена или нет
-    //private boolean requireCharging = true; // требуется обязательная зарядка
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +52,7 @@ public class Control_activity extends AppCompatActivity {
     }
 
     public void stopPlanNow() {
-        Log.d(LOG_TAG, "stopPlanNow serviceONlocal = " + serviceONlocal);
+        //Log.d(LOG_TAG, "stopPlanNow serviceONlocal = " + serviceONlocal);
         serviceONlocal = false;
 
         List<JobInfo> allPendingJobs = mJobScheduler.getAllPendingJobs();
@@ -71,57 +68,43 @@ public class Control_activity extends AppCompatActivity {
     }
 
     public void jobPlan() {
-        // Инициализация планировщика два блока для разных устройств
         // Прибить неприбитое?
         // mJobScheduler.cancelAll();
 
+        Log.d(LOG_TAG, "Build.VERSION.SDK_INT = " + Build.VERSION.SDK_INT);
+
+        ComponentName componentName = new ComponentName(this, JobSchedulerService.class);
+        final JobInfo jobInfo;
+
+        // Инициализация планировщика два блока для разных устройств
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            ComponentName componentName = new ComponentName(this, JobSchedulerService.class);
-
-            final JobInfo jobInfo = new JobInfo.Builder(mJobId, componentName)
-                    // Не требовать быть на зарядке
-                    .setRequiresCharging(false)
-
-                    // Во втором параметре, значение для обязательного выполнения
-                    .setPeriodic(mPeriodic, mPeriodic)
-
-                    // Для восстановления после перезагрузки
-                    .setPersisted(isPersisted)
-
-                    //.setOverrideDeadline(60*1000)
-                    //.setMinimumLatency(3*1000)
-                    //.setMinimumLatency(16*60*1000)
-                    .build();
-            mJobScheduler.schedule(jobInfo);
-            // Код ошибки запуска планировщика
-            if (mJobScheduler.schedule(jobInfo) <= 0) {
-                Log.d(LOG_TAG, "onCreate: Some error, jobInfo = " + jobInfo);
-            }
-            else Log.d(LOG_TAG, "Job scheduled successfully");
-            // ===================================================================
-            // Для устройств менее, чем Build.VERSION_CODES.N
-        } else
-            {
-            ComponentName componentName = new ComponentName(this, JobSchedulerService.class);
-            final JobInfo jobInfo = new JobInfo.Builder(mJobId, componentName)
-                    .setRequiresCharging(false)
-                    .setPeriodic(mPeriodic) // Период запусков теста должен быть меньше(?), чем переменные *_INTERVAL
-                    .setPersisted(isPersisted)
-                    .build();
-
-            mJobScheduler.schedule(jobInfo);
-
-                // Код ошибки запуска планировщика
-            if (mJobScheduler.schedule(jobInfo) <= 0) {
-                Log.d(LOG_TAG, "onCreate: Some error, jobInfo = " + jobInfo);
-            }
-            else Log.d(LOG_TAG, "Job scheduled successfully");
-
-           // Log.d(LOG_TAG, "VERSION_CODES < N setPeriodic = 15 min, +mJobId = " + mJobId);
-           // Log.d(LOG_TAG, "onJob ControlActivity mPeriodic = " + mPeriodic);
+            jobInfo = new JobInfo.Builder(mJobId, componentName)
+                        .setRequiresCharging(false)// Не требовать быть на зарядке
+                        .setPeriodic(mPeriodic, mPeriodic+60000)// Во втором параметре, значение для обязательного выполнения
+                        .setPersisted(isPersisted)// Для восстановления после перезагрузки
+                        .build();
             }
 
-        // ==========================
+        // Для устройств менее, чем Build.VERSION_CODES.N
+        else {
+                jobInfo = new JobInfo.Builder(mJobId, componentName)
+                        .setRequiresCharging(false)
+                        .setPeriodic(mPeriodic) // Период запусков теста должен быть меньше(?), чем переменные *_INTERVAL
+                        .setPersisted(isPersisted)
+                        .build();
+            }
+        mJobScheduler.schedule(jobInfo);
+
+        // Код ошибки запуска планировщика
+        if (mJobScheduler.schedule(jobInfo) <= 0) {
+            Log.d(LOG_TAG, "onCreate: Some error, jobInfo = " + jobInfo);
+        }
+        else Log.d(LOG_TAG, "Job scheduled successfully");
+
+        // ========================== Прочие параметры
+        // builder.setOverrideDeadline(60*1000)
+        // builder.setMinimumLatency(3*1000)
+        // builder.setMinimumLatency(16*60*1000)
         // builder.setRequiresCharging(requireCharging);
         // builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
 
