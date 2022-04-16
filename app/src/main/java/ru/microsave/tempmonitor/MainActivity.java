@@ -1,5 +1,6 @@
 package ru.microsave.tempmonitor;
 /*
+ Проблемная ветка!!!!!!!!!!!
 tempmonitor
 Temperature monitor with alarm SMS
 

@@ -73,7 +73,7 @@ public class Control_activity extends AppCompatActivity {
     public void jobPlan() {
         // Инициализация планировщика два блока для разных устройств
         // Прибить неприбитое?
-        mJobScheduler.cancelAll();
+        // mJobScheduler.cancelAll();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             ComponentName componentName = new ComponentName(this, JobSchedulerService.class);
@@ -83,7 +83,7 @@ public class Control_activity extends AppCompatActivity {
                     .setRequiresCharging(false)
 
                     // Во втором параметре, значение для обязательного выполнения
-                    .setPeriodic(mPeriodic, 16 * 60 * 1000)
+                    .setPeriodic(mPeriodic, mPeriodic)
 
                     // Для восстановления после перезагрузки
                     .setPersisted(isPersisted)

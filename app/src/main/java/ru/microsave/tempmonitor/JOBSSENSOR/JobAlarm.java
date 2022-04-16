@@ -26,7 +26,7 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.util.Date;
 
-class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements SensorEventListener {
+class JobAlarm extends AsyncTask <JobParameters, Void, JobParameters> implements SensorEventListener {
     private float mTempBattery;
     private String MY_NUMBER_LOCAL;
     private int WARNING_TEMP_LOCAL;
@@ -43,7 +43,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
     private String textMessage;
 
 
-    public JobTask(JobService jobService, String num, int war, Boolean al, Boolean sen, float tempBat) {
+    public JobAlarm(JobService jobService, String num, int war, Boolean al, Boolean sen, float tempBat) {
 
         MY_NUMBER_LOCAL = num;
         WARNING_TEMP_LOCAL = war;

@@ -32,15 +32,15 @@ public class JobSchedulerService extends JobService {
     @Override
     public boolean onStartJob(JobParameters param) {
        // Toast.makeText(getApplicationContext(), "Job Started", Toast.LENGTH_SHORT).show();
-        readSharedPreferences();
-      //  batteryTemperature ();
+        // readSharedPreferences();
+        batteryTemperature ();
 
         long currentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastNormal == 0 ){
-            mLastAlarm = currentTime - 100;
-            mLastNormal = currentTime - 100;
+            mLastAlarm = currentTime - mLastAlarm;
+            mLastNormal = currentTime - mLastNormal;
         }
 
 //        Log.d(LOG_TAG, "--- onStartJob ---");
@@ -52,23 +52,23 @@ public class JobSchedulerService extends JobService {
         // true если тревога
         boolean alarmType;
         if (serviseJobON && (currentTime - mLastAlarm > myAlarmInterval)) {
-            mLastAlarm = currentTime - 60000;
+            mLastAlarm = currentTime;
             alarmType = true;
             new JobTask(this, myNumber, myWarning, alarmType,ifSensor,tempBattery).execute(param);
         }
 
         if (serviseJobON && (currentTime - mLastNormal > myNormalInterval)) {
-            mLastNormal = currentTime - 90000;
+            mLastNormal = currentTime;
             alarmType = false;
             new JobTask(this, myNumber, myWarning, alarmType,ifSensor,tempBattery).execute(param);
         }
 
-        return false;
+        return true;
     }
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        Log.d(LOG_TAG, "--- onStopJob --- return true");
+        Log.d(LOG_TAG, "--- onStopJob --- return false");
     //    Log.d(LOG_TAG, "mLastAlarm = " + mLastAlarm);
     //    Log.d(LOG_TAG, "mLastNormal = " + mLastNormal);
         return false;
@@ -80,7 +80,7 @@ public class JobSchedulerService extends JobService {
     }
     @Override
     public void onCreate() {
-     //   readSharedPreferences();
+        readSharedPreferences();
     }
 
     private void readSharedPreferences(){
