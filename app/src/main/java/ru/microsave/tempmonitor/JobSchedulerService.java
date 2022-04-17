@@ -23,7 +23,7 @@ public class JobSchedulerService extends JobService {
 
     private static long mLastAlarm;
     private static long mLastNormal;
-    private static int TASK_NUMBER = 0;
+    private static int TASK_NUMBER;
 
     public JobSchedulerService() {
 
@@ -31,7 +31,7 @@ public class JobSchedulerService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters param) {
-        Log.d(LOG_TAG, "Запуск шедулера OK: onStartJob");
+       // Log.d(LOG_TAG, "Запуск шедулера OK: onStartJob");
         readSharedPreferences();
 
         mCurrentTime = System.currentTimeMillis();
@@ -41,12 +41,15 @@ public class JobSchedulerService extends JobService {
         if (mLastAlarm == 0 && mLastNormal == 0 ){
             mLastAlarm = mCurrentTime;
             mLastNormal = mCurrentTime;
+            TASK_NUMBER=0;
         }
 
+        // Вычисление периода тревоги
         if (mCurrentTime - mLastAlarm > myAlarmInterval){
             ++TASK_NUMBER;
+            saveSharedPreferences();
             Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
-            mLastAlarm = mCurrentTime - 5000;
+            mLastAlarm = mCurrentTime - 10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobAlarmSensor");
                     new JobAlarmSensor(this, myNumber,TASK_NUMBER).execute(param);
@@ -57,11 +60,12 @@ public class JobSchedulerService extends JobService {
                     new JobAlarmBattery(this, myNumber,tempBattery,TASK_NUMBER).execute(param);
                 }
         }
-
+        // Вычисление периода информации
         if (mCurrentTime - mLastNormal > myNormalInterval){
             ++TASK_NUMBER;
+            saveSharedPreferences();
             Log.d(LOG_TAG, "myNormalInterval: " + mCurrentTime + " - " + mLastNormal + " = " +  (mCurrentTime - mLastNormal) + " ? " + myNormalInterval);
-            mLastNormal = mCurrentTime - 10000;
+            mLastNormal = mCurrentTime - 10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobInfoSensor");
                     new JobInfoSensor(this, myNumber,TASK_NUMBER).execute(param);
@@ -78,7 +82,7 @@ public class JobSchedulerService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        Log.d(LOG_TAG, "--- onStopJob --- return false");
+       // Log.d(LOG_TAG, "--- onStopJob --- return false");
         return false;
     }
 
@@ -97,7 +101,19 @@ public class JobSchedulerService extends JobService {
         myAlarmInterval = (saveJobPref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
         myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));
-        Log.d(LOG_TAG, "readSharedPreferences: OK");
+        TASK_NUMBER = (saveJobPref.getInt("TASK_NUMBER", 0));
+      //  Log.d(LOG_TAG, "readSharedPreferences: OK");
+    }
+
+
+    private void saveSharedPreferences() {
+        SharedPreferences savePref;
+        savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
+        SharedPreferences.Editor ed = savePref.edit();
+
+        ed.putInt("TASK_NUMBER", TASK_NUMBER);
+        ed.apply();
+        ed.commit();
     }
 
     public float batteryTemperature () {

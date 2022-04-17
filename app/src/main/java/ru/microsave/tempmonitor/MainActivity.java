@@ -82,7 +82,7 @@ import androidx.appcompat.widget.ButtonBarLayout;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
-    private final long mainPeriodic = 1000 * 60 * 15;
+    private final long mainPeriodic = 1000 * 60 * 1;
 
     // Для обновления температуры батареи в UI
     private Handler mHandler = new Handler();
@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,dataLabel,numberLabel;
 
     private final String LOG_TAG = "myLogs";
+    private int mTASK_NUMBER;
     // private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
 
     @Override
@@ -234,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if (sensorExist)temperatureLabel.setText(mDEGREES + getString(R.string.symbol_degrees));
         Log.d(LOG_TAG, "MainActivity sensorExist = " + sensorExist);
-
+        mTASK_NUMBER = 0; // Сбросить счетчик сообщений
         saveSharedPreferences();
         Log.d(LOG_TAG, "--- stopSheduler MainActivity --- serviceON = " + serviseON);
 
@@ -294,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         SharedPreferences.Editor ed = savePref.edit();
-
+        ed.putInt("TASK_NUMBER", mTASK_NUMBER);
         ed.putString("NUMBER", MY_NUMBER);
         ed.putInt("WARNING", WARNING_TEMP);
 
