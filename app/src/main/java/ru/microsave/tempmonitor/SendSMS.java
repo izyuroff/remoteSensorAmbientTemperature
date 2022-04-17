@@ -1,5 +1,9 @@
 package ru.microsave.tempmonitor;
+/*
 
+Класс не нужен, только как пример отправки СМС в фоновом режиме
+
+ */
 import android.os.AsyncTask;
 import android.util.Log;
 

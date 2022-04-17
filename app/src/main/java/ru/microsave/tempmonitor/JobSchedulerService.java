@@ -17,6 +17,7 @@ public class JobSchedulerService extends JobService {
     private boolean ifSensor;
 
     private String myNumber;
+    private int myWarningTemperature;
     private long myAlarmInterval;
     private long myNormalInterval;
     private long mCurrentTime;
@@ -52,12 +53,12 @@ public class JobSchedulerService extends JobService {
             mLastAlarm = mCurrentTime - 10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobAlarmSensor");
-                    new JobAlarmSensor(this, myNumber,TASK_NUMBER).execute(param);
+                    new JobAlarmSensor(this, myNumber,TASK_NUMBER,myWarningTemperature).execute(param);
                 }
                 else {
                 batteryTemperature ();
                     Log.d(LOG_TAG, "new: JobAlarmBattery");
-                    new JobAlarmBattery(this, myNumber,tempBattery,TASK_NUMBER).execute(param);
+                    new JobAlarmBattery(this, myNumber,tempBattery,TASK_NUMBER,myWarningTemperature).execute(param);
                 }
         }
         // Вычисление периода информации
@@ -98,6 +99,7 @@ public class JobSchedulerService extends JobService {
     private void readSharedPreferences(){
         SharedPreferences saveJobPref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         myNumber = (saveJobPref.getString("NUMBER", "+7123456789"));
+        myWarningTemperature = (saveJobPref.getInt("WARNING", 15));
         myAlarmInterval = (saveJobPref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
         myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));

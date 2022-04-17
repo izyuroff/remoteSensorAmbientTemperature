@@ -1,5 +1,11 @@
 package ru.microsave.tempmonitor;
 
+/*
+
+Класс не нужен, только как пример остановки сервисов
+
+ */
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;

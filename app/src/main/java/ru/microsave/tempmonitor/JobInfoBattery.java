@@ -1,13 +1,7 @@
 package ru.microsave.tempmonitor;
 /*
 Этот класс для выполнения работы в отдельном потоке и вызывается из JobSchedulerService
-    Здесь производится измерение температуры и отправка СМС сообщения
-
-    MainActivity
-    ControlActivity
-    JobSchedulerService
-    JobTask
-
+    Здесь производится измерение температуры батареи и отправка СМС сообщения по стандартному интервалу
  */
 
 import android.app.job.JobParameters;

@@ -1,13 +1,7 @@
 package ru.microsave.tempmonitor;
 /*
 Этот класс для выполнения работы в отдельном потоке и вызывается из JobSchedulerService
-    Здесь производится измерение температуры и отправка СМС сообщения
-
-    MainActivity
-    ControlActivity
-    JobSchedulerService
-    JobTask
-
+    Здесь производится измерение температуры батареи и отправка СМС сообщения, если температура ниже аварийного порога
  */
 
 import android.app.job.JobParameters;
@@ -28,24 +22,21 @@ import java.util.Date;
 
 class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
     private float mTempBattery;
+
     private String MY_NUMBER_LOCAL;
     private int WARNING_TEMP_LOCAL;
-    private Boolean mALARM_TYPE;
-    private Boolean ifSensor;
     private static int DEGREES_LOCAL; // Похоже только static работает
 
-    private static Sensor mJobSensorTemperature;
-    private static SensorManager mJobSensorManager;
     private static int myJobTask;
 
     private final String LOG_TAG = "myLogs";
     private final JobService jobService;
     private String textMessage;
 
-
-    public JobAlarmBattery(JobService jobService, String num, float tempBat, int count) {
+    public JobAlarmBattery(JobService jobService, String num, float tempBat, int count, int war) {
 
         MY_NUMBER_LOCAL = num;
+        WARNING_TEMP_LOCAL = war;
         myJobTask = count;
         mTempBattery = tempBat;
 
@@ -74,13 +65,21 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
             Log.d(LOG_TAG, "myJobTask = " + myJobTask);
             textMessage = "#" + myJobTask + " " + timestamp +  " ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C";
+            Log.d(LOG_TAG, "1 Подготовлено: " + textMessage);
+
+        if (degrees < WARNING_TEMP_LOCAL){
+
             try {
                 SmsManager.getDefault()
                         .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
-                Log.d(LOG_TAG, textMessage);
+                        Log.d(LOG_TAG, "2 Отправлено: " + textMessage);
             } catch (Exception e) {
-                Log.d(LOG_TAG, "Failed to send AlarmBattery message: " + textMessage);
-                e.printStackTrace();
+                        Log.d(LOG_TAG, "Failed to send AlarmBattery message: " + textMessage);
+                        e.printStackTrace();
             }
+
+        }
+
+
     }
 }

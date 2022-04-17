@@ -1,13 +1,7 @@
 package ru.microsave.tempmonitor;
 /*
 Этот класс для выполнения работы в отдельном потоке и вызывается из JobSchedulerService
-    Здесь производится измерение температуры и отправка СМС сообщения
-
-    MainActivity
-    ControlActivity
-    JobSchedulerService
-    JobTask
-
+    Здесь производится измерение температуры встроенного сенсора и отправка СМС сообщения, если температура ниже аварийного порога
  */
 
 import android.app.job.JobParameters;
@@ -29,7 +23,7 @@ import java.util.Date;
 class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> implements SensorEventListener {
 
     private String MY_NUMBER_LOCAL;
-
+    private int WARNING_TEMP_LOCAL;
     private static int DEGREES_LOCAL; // Похоже только static работает
 
     private static Sensor mJobSensorTemperature;
@@ -41,9 +35,10 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> impl
     private String textMessage;
 
 
-    public JobAlarmSensor (JobService jobService, String num, int count) {
+    public JobAlarmSensor (JobService jobService, String num, int count, int war) {
 
         MY_NUMBER_LOCAL = num;
+        WARNING_TEMP_LOCAL = war;
         myJobTask = count;
 
         mJobSensorManager = (SensorManager) jobService.getSystemService(Context.SENSOR_SERVICE);
@@ -87,6 +82,7 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> impl
     }
 
     private void myMessage(int degrees){
+        if (degrees == 0) return;
         long currentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
@@ -94,14 +90,17 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> impl
             Log.d(LOG_TAG, "myJobTask = " + myJobTask);
 
             textMessage = "#" + myJobTask + " " + timestamp +  " ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C";
+        Log.d(LOG_TAG, "1 Подготовлено: " + textMessage);
+            if (degrees < WARNING_TEMP_LOCAL){
+                try {
+                    SmsManager.getDefault()
+                            .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
+                            Log.d(LOG_TAG, "2 Отправлено: " + textMessage);
+                } catch (Exception e) {
+                            Log.d(LOG_TAG, "Failed to send AlarmSensor message: " + textMessage);
+                            e.printStackTrace();
+                }
 
-            try {
-                SmsManager.getDefault()
-                        .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
-                Log.d(LOG_TAG, textMessage);
-            } catch (Exception e) {
-                Log.d(LOG_TAG, "Failed to send AlarmSensor message: " + textMessage);
-                e.printStackTrace();
             }
     }
 }
