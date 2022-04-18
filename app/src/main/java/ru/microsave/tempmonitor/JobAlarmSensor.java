@@ -62,7 +62,15 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> impl
     protected JobParameters doInBackground(JobParameters... jobParameters) {
 
                 Log.d(LOG_TAG, "EXIST A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
-                myMessage(DEGREES_LOCAL);
+
+                if(DEGREES_LOCAL == 0 && myJobTask == 0)
+                    try {
+                        onSensorChanged(null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+        myMessage(DEGREES_LOCAL);
 
         return jobParameters[0];
     }
@@ -83,6 +91,8 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> impl
 
     private void myMessage(int degrees){
         if (degrees == 0) return;
+        // TODO: 17.04.2022 Это временный костыль. А мало ли реально будет 0 градусов. Надо понять почему первый замер равен нулю.
+
         long currentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 

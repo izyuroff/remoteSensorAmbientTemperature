@@ -50,7 +50,7 @@ v.1.1
 Не обновляется автоматически, это плохо FIX
 
 Последовательность выполнения
-    MainActivity - UI
+    MainActivity - UI (листенер и измерение батареи только для вывода на экран)
     ControlActivity - Запуск шедулера
     JobSchedulerService - собственно сервис, в нем фильтр условий и запуск разных задач
     JobTask (4 штуки) - непосредственно измерения и отправка СМС
@@ -91,7 +91,7 @@ import androidx.appcompat.widget.ButtonBarLayout;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
-    private final long mainPeriodic = 1000 * 60 * 1;
+    private final long mainPeriodic = 1000 * 60 * 15;
 
     // Для обновления температуры батареи в UI
     private Handler mHandler = new Handler();
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public int mDEGREES;
     public boolean serviseON; // состояние службы боевого дежурства, запущена или нет
     public boolean sensorExist; // наличие сенсора температуры
-    public boolean messageRead; // сообщение прочитано при запуске, больше не выводить
+    public boolean messageRead; // сообщение прочитано при первом запуске, больше не выводить
     private Sensor mSensorTemperature;
     private SensorManager mSensorManager;
     private SharedPreferences savePref;
@@ -407,11 +407,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void inputAlarma(View view) {
         readSharedPreferences();
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Частота тревоги в минутах");
+        alert.setTitle(R.string.inputAlarmTitle);
 
-        alert.setMessage("Тревожные СМС отправляются,\nесли температура ниже, чем: " + WARNING_TEMP + " °С" +
-                "\n\nНастроено: " + ALARM_INTERVAL/60/1000 + " минут" +
-                "\n\nВажно: Интервал меньше, чем 15 минут установить нельзя!");
+        alert.setMessage(getString(R.string.inputAlarmMessage1) + WARNING_TEMP + (getString(R.string.symbol_degrees) +
+                getString(R.string.inputAlarmMessage2) + " " + ALARM_INTERVAL/60/1000 + " " + getString(R.string.inputAlarmMessage3)));
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -420,7 +419,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
         alert.setView(input);
 
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+        alert.setPositiveButton(R.string.buttonOK, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String value = String.valueOf(input.getText());
 
@@ -444,21 +444,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
         });
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+        alert.setNegativeButton(R.string.buttonCancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Canceled.
             }
         });
+
         alert.show();
     }
 
     public void inputNormal(View view) {
         readSharedPreferences();
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Частота СМС в минутах");
-        alert.setMessage("СМС только для информации,\nот температуры не зависят!" +
-                "\n\n Настроено: " + NORMAL_INTERVAL/60/1000 + " минут" +
-                "\n\nВажно: Интервал меньше, чем 15 минут установить нельзя!");
+        alert.setTitle(R.string.inputNormalTitle);
+        alert.setMessage(getString(R.string.inputNormalMessage1) + " " + NORMAL_INTERVAL/60/1000 + " " + getString(R.string.inputNormalMessage2));
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -467,7 +467,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
         alert.setView(input);
 
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(R.string.buttonOK, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String value = String.valueOf(input.getText());
 
@@ -490,7 +490,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
         });
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton(R.string.buttonCancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Canceled.
             }
@@ -502,10 +502,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void inputNumber(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        alert.setTitle("Номер для СМС");
+        alert.setTitle(R.string.inputNumberTitle);
         // TODO: 12.04.2022 Что то тут не так, проверка нужна на правильность ввода номера 
-        alert.setMessage("Без \"+\"  и кода страны СМС не работают!" +
-                "\n\n Настроено: " + MY_NUMBER);
+        alert.setMessage(getString(R.string.inputNumberMessage) + " " +  MY_NUMBER);
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -515,12 +514,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         input.setInputType(InputType.TYPE_CLASS_PHONE);  //установит клавиатуру для ввода номера телефона
         alert.setView(input);
 
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(R.string.buttonOK, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String value = String.valueOf(input.getText());
                 
                 // Проверяем поля на пустоту
-
                 if (TextUtils.isEmpty(input.getText().toString())) {
                     Toast.makeText(getApplicationContext(),"Выход без изменений!",Toast.LENGTH_LONG).show();
                     return;
@@ -528,12 +526,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // TODO: 12.04.2022 Хорошо бы добавить проверку введенного номера на правильность
                 MY_NUMBER = value;
-                numberLabel.setText("Сохранен номер: " + value);
+                numberLabel.setText("Сохранен номер:" + " " + value);
                 saveSharedPreferences();
-                msg("Сохранен номер: " + value);
+                msg("Сохранен номер:" + " " + value);
             }
         });
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton(R.string.buttonCancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Canceled.
             }
@@ -544,10 +542,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void inputWarning(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        alert.setTitle("Минимальная температура");
-        alert.setMessage("Это для тревожных СМС" + "\n\nВажно:\nНельзя установить 0°С и ниже!" +
-                "\n\n Настроено: " + WARNING_TEMP + "°С"
-        );
+        alert.setTitle(R.string.inputWarningTitle);
+        alert.setMessage(getString(R.string.inputWarningMessage) +  " " + WARNING_TEMP +  " " + (getString(R.string.symbol_degrees)));
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -557,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
         alert.setView(input);
 
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(R.string.buttonOK, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String value = String.valueOf(input.getText());
 
@@ -580,7 +576,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
         });
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alert.setNegativeButton(R.string.buttonCancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Canceled.
             }
@@ -592,19 +588,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             Log.d(LOG_TAG, "33 MainActivity sensorExist = " + sensorExist);
             if (!sensorExist) {
-            alert.setTitle("Термометр не обнаружен!");
-            alert.setMessage("Измерения производятся на аккумуляторе. Это дает погрешность при включенном экране." +
-                    "\n\nОставьте телефон в покое примерно на один час." +
-                    "\nДатчик начнет выдавать значения, близкие к реальной температуре воздуха.");
+            alert.setTitle(R.string.infoBatteryTitle);
+            alert.setMessage(R.string.infoBatteryMessage);
             }
             else {
-                alert.setTitle("Термометр обнаружен!");
-                alert.setMessage(
-                        "Имеется встроенный датчик температуры окружающего воздуха" +
-                        "\n\nВсе измерения производятся именно на нем"+
-                        "\n\nПоказания батареи выводятся только для информации!");
+                alert.setTitle(R.string.infoSensorTitle);
+                alert.setMessage(R.string.infoSensorMessage);
             }
-            alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            alert.setPositiveButton(R.string.buttonOK, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     messageRead = true;
                     saveSharedPreferences();
