@@ -2,16 +2,22 @@ package ru.microsave.tempmonitor;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.BatteryManager;
 import android.util.Log;
 
 import java.text.DateFormat;
 import java.util.Date;
 
-public class JobSchedulerService extends JobService {
+public class JobSchedulerService extends JobService implements SensorEventListener {
+    private float tempSensor;
     private float tempBattery;
     private final String LOG_TAG = "myLogs";
     private boolean ifSensor;
@@ -25,8 +31,28 @@ public class JobSchedulerService extends JobService {
     private static long mLastAlarm;
     private static long mLastNormal;
     private static int TASK_NUMBER;
+    private static Sensor mJobSensorTemperature;
+    private static SensorManager mJobSensorManager;
 
     public JobSchedulerService() {
+    }
+
+    @Override
+    public void onCreate() {
+        //readSharedPreferences();
+        this.mJobSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+        mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+        mJobSensorManager.registerListener(this, mJobSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        tempSensor = sensorEvent.values[0];
+        //Log.d(LOG_TAG, "sensorEvent: OK");
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
 
@@ -34,7 +60,7 @@ public class JobSchedulerService extends JobService {
     public boolean onStartJob(JobParameters param) {
        // Log.d(LOG_TAG, "Запуск шедулера OK: onStartJob");
         readSharedPreferences();
-
+        onCreate(); // Избыточно поди
         mCurrentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
 
@@ -51,16 +77,17 @@ public class JobSchedulerService extends JobService {
             saveSharedPreferences();
             Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
             mLastAlarm = mCurrentTime - 10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
-                if (ifSensor) {
-                    Log.d(LOG_TAG, "new: JobAlarmSensor");
-                    new JobAlarmSensor(this, myNumber,TASK_NUMBER,myWarningTemperature).execute(param);
-                }
-                else {
+            if (ifSensor) {
+                Log.d(LOG_TAG, "new: JobAlarmSensor");
+                new JobAlarmSensor(this, myNumber, tempSensor, TASK_NUMBER, myWarningTemperature).execute(param);
+            }
+            else {
                 batteryTemperature ();
-                    Log.d(LOG_TAG, "new: JobAlarmBattery");
-                    new JobAlarmBattery(this, myNumber,tempBattery,TASK_NUMBER,myWarningTemperature).execute(param);
-                }
+                Log.d(LOG_TAG, "new: JobAlarmBattery");
+                new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature).execute(param);
+            }
         }
+
         // Вычисление периода информации
         if (mCurrentTime - mLastNormal > myNormalInterval){
             ++TASK_NUMBER;
@@ -69,12 +96,12 @@ public class JobSchedulerService extends JobService {
             mLastNormal = mCurrentTime - 10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobInfoSensor");
-                    new JobInfoSensor(this, myNumber,TASK_NUMBER).execute(param);
+                    new JobInfoSensor(this, myNumber, tempSensor, TASK_NUMBER).execute(param);
                 }
                 else {
                 batteryTemperature ();
                     Log.d(LOG_TAG, "new: JobInfoBattery");
-                    new JobInfoBattery(this, myNumber,tempBattery,TASK_NUMBER).execute(param);
+                    new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER).execute(param);
                 }
         }
 
@@ -90,10 +117,16 @@ public class JobSchedulerService extends JobService {
     @Override
     public void onDestroy() {
     //    stopService(new Intent(this, JobSchedulerService.class));
-    }
-    @Override
-    public void onCreate() {
-        //readSharedPreferences();
+        try {
+            if (mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null){
+                mJobSensorManager.unregisterListener(this);
+                Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
+            }
+
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "mJobSensorManager.unregisterListener = null");
+            e.printStackTrace();
+        }
     }
 
     private void readSharedPreferences(){

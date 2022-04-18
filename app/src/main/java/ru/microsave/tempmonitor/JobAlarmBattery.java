@@ -25,7 +25,7 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
     private String MY_NUMBER_LOCAL;
     private int WARNING_TEMP_LOCAL;
-    private static int DEGREES_LOCAL; // Похоже только static работает
+    private int DEGREES_LOCAL; // Похоже только static работает
 
     private static int myJobTask;
 

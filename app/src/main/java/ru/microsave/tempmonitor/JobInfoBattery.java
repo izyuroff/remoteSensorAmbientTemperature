@@ -24,7 +24,7 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
     private float mTempBattery;
     private String MY_NUMBER_LOCAL;
 
-    private static int DEGREES_LOCAL; // Похоже только static работает
+    private int DEGREES_LOCAL; // Похоже только static работает
 
     private static Sensor mJobSensorTemperature;
     private static SensorManager mJobSensorManager;

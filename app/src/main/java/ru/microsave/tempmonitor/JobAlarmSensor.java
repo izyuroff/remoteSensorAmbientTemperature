@@ -20,55 +20,36 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.util.Date;
 
-class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> implements SensorEventListener {
+class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
 
     private String MY_NUMBER_LOCAL;
     private int WARNING_TEMP_LOCAL;
-    private static int DEGREES_LOCAL; // Похоже только static работает
+    private int DEGREES_LOCAL; // Похоже только static работает
 
-    private static Sensor mJobSensorTemperature;
-    private static SensorManager mJobSensorManager;
-    private static int myJobTask;
+    private static Sensor mJobSensorTemperatureAlarm;
+    private static SensorManager mJobSensorManagerAlarm;
+    private int myJobTaskAlarm;
 
     private final String LOG_TAG = "myLogs";
     private final JobService jobService;
     private String textMessage;
 
 
-    public JobAlarmSensor (JobService jobService, String num, int count, int war) {
+    public JobAlarmSensor(JobService jobService, String num, float tempSensor, int count, int war) {
 
         MY_NUMBER_LOCAL = num;
+        DEGREES_LOCAL = (int)tempSensor;
+        myJobTaskAlarm = count;
         WARNING_TEMP_LOCAL = war;
-        myJobTask = count;
 
-        mJobSensorManager = (SensorManager) jobService.getSystemService(Context.SENSOR_SERVICE);
-        mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-        mJobSensorManager.registerListener(this, mJobSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
 
         this.jobService = jobService;
-    }
-
-
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        DEGREES_LOCAL = (int)sensorEvent.values[0];
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
     }
 
     @Override
     protected JobParameters doInBackground(JobParameters... jobParameters) {
 
-                Log.d(LOG_TAG, "EXIST A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
-
-                if(DEGREES_LOCAL == 0 && myJobTask == 0)
-                    try {
-                        onSensorChanged(null);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                //Log.d(LOG_TAG, "EXIST A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
 
         myMessage(DEGREES_LOCAL);
 
@@ -76,36 +57,27 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> impl
     }
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
-/*        try {
-            if (mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null){
-                mJobSensorManager.unregisterListener(this);
-            Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
-        }
 
-        } catch (Exception e) {
-            Log.d(LOG_TAG, "mJobSensorManager.unregisterListener = null");
-            e.printStackTrace();
-        }*/
-            jobService.jobFinished(jobParameters, true);
-    }
+        jobService.jobFinished(jobParameters, true);
+}
 
     private void myMessage(int degrees){
-        if (degrees == 0) return;
+
+        //if (degrees == 0) return;
         // TODO: 17.04.2022 Это временный костыль. А мало ли реально будет 0 градусов. Надо понять почему первый замер равен нулю.
 
         long currentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
 
-            Log.d(LOG_TAG, "myJobTask = " + myJobTask);
+            Log.d(LOG_TAG, "myJobTask = " + myJobTaskAlarm);
 
-            textMessage = "#" + myJobTask + " " + timestamp +  " ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C";
-        Log.d(LOG_TAG, "1 Подготовлено: " + textMessage);
+            textMessage = "#" + myJobTaskAlarm + " " + timestamp +  " ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C";
             if (degrees < WARNING_TEMP_LOCAL){
                 try {
                     SmsManager.getDefault()
                             .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
-                            Log.d(LOG_TAG, "2 Отправлено: " + textMessage);
+                            Log.d(LOG_TAG, textMessage);
                 } catch (Exception e) {
                             Log.d(LOG_TAG, "Failed to send AlarmSensor message: " + textMessage);
                             e.printStackTrace();

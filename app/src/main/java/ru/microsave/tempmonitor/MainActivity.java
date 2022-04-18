@@ -91,7 +91,7 @@ import androidx.appcompat.widget.ButtonBarLayout;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
-    private final long mainPeriodic = 1000 * 60 * 15;
+    private final long mainPeriodic = 1000 * 60 * 1;
 
     // Для обновления температуры батареи в UI
     private Handler mHandler = new Handler();

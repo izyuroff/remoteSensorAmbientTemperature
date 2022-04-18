@@ -20,14 +20,12 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.util.Date;
 
-class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> implements SensorEventListener {
+class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
 
     private String MY_NUMBER_LOCAL;
 
-    private static int DEGREES_LOCAL; // Похоже только static работает
+    private int DEGREES_LOCAL; // Похоже только static работает
 
-    private static Sensor mJobSensorTemperature;
-    private static SensorManager mJobSensorManager;
     private static int myJobTask;
 
     private final String LOG_TAG = "myLogs";
@@ -35,31 +33,17 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> imple
     private String textMessage;
 
 
-    public JobInfoSensor (JobService jobService, String num, int count) {
+    public JobInfoSensor(JobService jobService, String num, float tempSensor, int count) {
 
         MY_NUMBER_LOCAL = num;
         myJobTask = count;
-
-        mJobSensorManager = (SensorManager) jobService.getSystemService(Context.SENSOR_SERVICE);
-        mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-        mJobSensorManager.registerListener(this, mJobSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
-
+        DEGREES_LOCAL = (int)tempSensor;
         this.jobService = jobService;
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        DEGREES_LOCAL = (int)sensorEvent.values[0];
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
     }
 
     @Override
     protected JobParameters doInBackground(JobParameters... jobParameters) {
 
-                Log.d(LOG_TAG, "EXIST A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
                 myMessage(DEGREES_LOCAL);
 
         return jobParameters[0];
