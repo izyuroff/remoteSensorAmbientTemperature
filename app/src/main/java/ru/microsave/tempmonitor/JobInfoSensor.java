@@ -57,7 +57,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
         long currentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
-            Log.d(LOG_TAG, "myJobTask = " + myJobTask);
+            // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
             textMessage = "#" + myJobTask + " " + timestamp +  " ИНФО: " + degrees + Character.toString ((char) 176) + "C";
 
             try {
@@ -65,7 +65,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
                         .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
                 Log.d(LOG_TAG, textMessage);
             } catch (Exception e) {
-                Log.d(LOG_TAG, "Failed to send InfoSensor message" + textMessage);
+                Log.d(LOG_TAG, "Failed to send Info Sensor message: " + textMessage);
                 e.printStackTrace();
             }
     }

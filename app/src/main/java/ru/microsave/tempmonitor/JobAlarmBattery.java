@@ -45,10 +45,10 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
     @Override
     protected JobParameters doInBackground(JobParameters... jobParameters) {
-            Log.d(LOG_TAG, "mTempBattery = " + mTempBattery);
+          //  Log.d(LOG_TAG, "mTempBattery = " + mTempBattery);
 
                 DEGREES_LOCAL = (int) mTempBattery;
-                Log.d(LOG_TAG, "NO A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
+              //  Log.d(LOG_TAG, "NO A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
                 myMessage(DEGREES_LOCAL);
 
         return jobParameters[0];
@@ -63,16 +63,16 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
         long currentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
-            Log.d(LOG_TAG, "myJobTask = " + myJobTask);
+          //  Log.d(LOG_TAG, "myJobTask = " + myJobTask);
             textMessage = "#" + myJobTask + " " + timestamp +  " ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C";
-            Log.d(LOG_TAG, "1 Подготовлено: " + textMessage);
+          //  Log.d(LOG_TAG, "1 Подготовлено: " + textMessage);
 
         if (degrees < WARNING_TEMP_LOCAL){
 
             try {
                 SmsManager.getDefault()
                         .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
-                        Log.d(LOG_TAG, "2 Отправлено: " + textMessage);
+                        Log.d(LOG_TAG, textMessage);
             } catch (Exception e) {
                         Log.d(LOG_TAG, "Failed to send AlarmBattery message: " + textMessage);
                         e.printStackTrace();

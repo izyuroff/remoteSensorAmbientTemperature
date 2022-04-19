@@ -46,11 +46,11 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
     @Override
     protected JobParameters doInBackground(JobParameters... jobParameters) {
-            Log.d(LOG_TAG, "mTempBattery = " + mTempBattery);
+          //  Log.d(LOG_TAG, "mTempBattery = " + mTempBattery);
 
                 // получаем и отправляем температуру батареи
                 DEGREES_LOCAL = (int) mTempBattery;
-                Log.d(LOG_TAG, "NO A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
+              //  Log.d(LOG_TAG, "NO A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
                 myMessage(DEGREES_LOCAL);
 
         return jobParameters[0];
@@ -65,7 +65,7 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
         long currentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
-            Log.d(LOG_TAG, "myJobTask = " + myJobTask);
+           // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
             textMessage = "#" + myJobTask + " " + timestamp +  " ИНФО: " + degrees + Character.toString ((char) 176) + "C";
             try {
                 SmsManager.getDefault()

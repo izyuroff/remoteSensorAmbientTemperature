@@ -73,34 +73,43 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
         // Вычисление периода тревоги
         if (mCurrentTime - mLastAlarm > myAlarmInterval){
-            ++TASK_NUMBER;
-            saveSharedPreferences();
-            Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
-            mLastAlarm = mCurrentTime - 10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
-            if (ifSensor) {
-                Log.d(LOG_TAG, "new: JobAlarmSensor");
-                new JobAlarmSensor(this, myNumber, tempSensor, TASK_NUMBER, myWarningTemperature).execute(param);
+
+        //    Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
+            mLastAlarm = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
+
+            if(tempSensor < myWarningTemperature){
+
+                ++TASK_NUMBER;
+                saveSharedPreferences();
+
+                if (ifSensor) {
+                    // Log.d(LOG_TAG, "new: JobAlarmSensor");
+                    new JobAlarmSensor(this, myNumber, tempSensor, TASK_NUMBER, myWarningTemperature).execute(param);
+                }
+                else {
+                    batteryTemperature ();
+                    // Log.d(LOG_TAG, "new: JobAlarmBattery");
+                    new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature).execute(param);
+                }
+
             }
-            else {
-                batteryTemperature ();
-                Log.d(LOG_TAG, "new: JobAlarmBattery");
-                new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature).execute(param);
-            }
+
+
         }
 
         // Вычисление периода информации
         if (mCurrentTime - mLastNormal > myNormalInterval){
             ++TASK_NUMBER;
             saveSharedPreferences();
-            Log.d(LOG_TAG, "myNormalInterval: " + mCurrentTime + " - " + mLastNormal + " = " +  (mCurrentTime - mLastNormal) + " ? " + myNormalInterval);
-            mLastNormal = mCurrentTime - 10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
+       //     Log.d(LOG_TAG, "myNormalInterval: " + mCurrentTime + " - " + mLastNormal + " = " +  (mCurrentTime - mLastNormal) + " ? " + myNormalInterval);
+            mLastNormal = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
                 if (ifSensor) {
-                    Log.d(LOG_TAG, "new: JobInfoSensor");
+                  //  Log.d(LOG_TAG, "new: JobInfoSensor");
                     new JobInfoSensor(this, myNumber, tempSensor, TASK_NUMBER).execute(param);
                 }
                 else {
                 batteryTemperature ();
-                    Log.d(LOG_TAG, "new: JobInfoBattery");
+                 //   Log.d(LOG_TAG, "new: JobInfoBattery");
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER).execute(param);
                 }
         }
@@ -120,11 +129,11 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         try {
             if (mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null){
                 mJobSensorManager.unregisterListener(this);
-                Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
+             //   Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
             }
 
         } catch (Exception e) {
-            Log.d(LOG_TAG, "mJobSensorManager.unregisterListener = null");
+           // Log.d(LOG_TAG, "mJobSensorManager.unregisterListener = null");
             e.printStackTrace();
         }
     }

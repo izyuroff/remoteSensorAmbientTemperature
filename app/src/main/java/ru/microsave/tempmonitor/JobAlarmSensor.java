@@ -70,7 +70,7 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
 
-            Log.d(LOG_TAG, "myJobTask = " + myJobTaskAlarm);
+          //  Log.d(LOG_TAG, "myJobTask = " + myJobTaskAlarm);
 
             textMessage = "#" + myJobTaskAlarm + " " + timestamp +  " ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C";
             if (degrees < WARNING_TEMP_LOCAL){

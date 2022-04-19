@@ -4,6 +4,10 @@ package ru.microsave.tempmonitor;
  #1 17 Апр 2022 г. 13:08:14 ТРЕВОГА: 0°C
 
 
+Vivo Y81, наблюдал - после удаления приложения и установки заново - все настройки сохранялись,
+очевидно в оболочке Funtouch от Vivo как то сохраняется этот файл,
+таким образом хорошо бы добавить кнопку сброса настроек в дефолтные начальные для подобных случаев
+
 Temperature monitor with alarm SMS
 
 RemoteTemperatureGSM
@@ -25,7 +29,7 @@ v.1.1
 Получение температуры окружающей среды и сигнализация о слишком низком уровне
 
 ---= Уже реализовано =---
-Проверка на наличие датчика - и никаких действий если его нет
+Проверка на наличие датчика - и (никаких действий если его нет) измерение на аккумуляторе
 
 Ввод номера телефона пользователем
 Ввод уровня низкой температуры,
@@ -91,7 +95,7 @@ import androidx.appcompat.widget.ButtonBarLayout;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
-    private final long mainPeriodic = 1000 * 60 * 1;
+    private final long mainPeriodic = 1000 * 60 * 5;
 
     // Для обновления температуры батареи в UI
     private Handler mHandler = new Handler();
