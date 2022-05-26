@@ -31,8 +31,9 @@
         android:insetTop="8dp"
         android:insetRight="0dp"
         android:insetBottom="8dp"
-        android:onClick="inputWarning"
-        android:text="МИНИМАЛЬНАЯ t°C"
+
+        android:onClick="inputNumber"
+        android:text="ВВЕДИТЕ НОМЕР ДЛЯ СМС"
         android:textAlignment="viewStart"
         android:textAllCaps="false"
         android:textStyle="bold"
@@ -49,8 +50,8 @@
         android:gravity="start|center_vertical"
         android:insetTop="8dp"
         android:insetBottom="8dp"
-        android:onClick="inputNumber"
-        android:text="НОМЕР ТЕЛЕФОНА"
+        android:onClick="inputWarning"
+        android:text="МИНИМАЛЬНАЯ t°C"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/button0" />
@@ -64,7 +65,7 @@
         android:insetTop="8dp"
         android:insetBottom="8dp"
         android:onClick="inputAlarma"
-        android:text="ТРЕВОЖНЫЕ СМС"
+        android:text="ТРЕВОГА, минуты:"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/button3" />
@@ -78,7 +79,7 @@
         android:insetTop="8dp"
         android:insetBottom="8dp"
         android:onClick="inputNormal"
-        android:text="СТАНДАРТНЫЕ СМС"
+        android:text="СТАНДАРТ, минуты:"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/button4" />
@@ -154,7 +155,7 @@
         android:layout_marginEnd="16dp"
         android:clickable="false"
         android:text="-----"
-        android:textSize="26sp"
+        android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView0" />
 
@@ -165,18 +166,7 @@
         android:layout_marginTop="5dp"
         android:clickable="false"
         android:text="-----"
-        android:textSize="26sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button0"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:clickable="false"
-        android:text="-----"
+        android:textAlignment="viewEnd"
         android:textSize="26sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button3"
@@ -189,6 +179,7 @@
         android:layout_marginTop="5dp"
         android:clickable="false"
         android:text="-----"
+        android:textAlignment="viewEnd"
         android:textSize="26sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button4"
@@ -201,6 +192,7 @@
         android:layout_marginTop="5dp"
         android:clickable="false"
         android:text="-----"
+        android:textAlignment="viewEnd"
         android:textSize="26sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button5"

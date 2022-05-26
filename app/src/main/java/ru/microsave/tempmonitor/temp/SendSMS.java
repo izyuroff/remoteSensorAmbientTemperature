@@ -1,4 +1,4 @@
-package ru.microsave.tempmonitor;
+package ru.microsave.tempmonitor.temp;
 /*
 
 Класс не нужен, только как пример отправки СМС в фоновом режиме

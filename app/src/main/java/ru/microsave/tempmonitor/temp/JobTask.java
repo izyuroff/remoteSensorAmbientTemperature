@@ -1,4 +1,4 @@
-package ru.microsave.tempmonitor;
+package ru.microsave.tempmonitor.temp;
 /*
 Этот класс больше не нужен, из него сделал 4 разных
 

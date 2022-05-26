@@ -1,4 +1,4 @@
-package ru.microsave.tempmonitor;
+package ru.microsave.tempmonitor.temp;
 
 /*
 Полезняшки которые возможно надо использовать

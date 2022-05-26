@@ -20,7 +20,8 @@
     <string name="inputNormalMessage2">минут\n\nВажно: Интервал меньше, чем 15 минут установить нельзя!</string>
 
     <string name="inputNumberTitle">Номер для СМС</string>
-    <string name="inputNumberMessage">Без \"+\"  и кода страны СМС не работают!\n\n Настроено: </string>
+<!--    <string name="inputNumberMessage">Без \"+\"  и кода страны СМС не работают!\n\n Настроено: </string>-->
+    <string name="inputNumberMessage">Обязательно \"+\"  и код страны!\n\n Настроено: </string>
 
     <string name="inputAlarmTitle">Частота тревоги в минутах</string>
     <string name="inputAlarmMessage1">Тревожные СМС отправляются,\nесли температура ниже, чем: </string>

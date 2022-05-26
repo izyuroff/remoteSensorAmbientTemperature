@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private Button mButton0,mButton1,mButton2,mButton3,mButton4,mButton5;
 
-    private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,dataLabel,numberLabel;
+    private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,dataLabel,numberLabel,tvMinimum,tvAlarm,tvStandart;
 
     private final String LOG_TAG = "myLogs";
     private int mTASK_NUMBER;
@@ -144,6 +144,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         dataLabel = findViewById(R.id.textView3);
         numberLabel = findViewById(R.id.textView4);
         batteryLabel = findViewById(R.id.textView5);
+        tvMinimum = findViewById(R.id.textView6);
+        tvAlarm = findViewById(R.id.textView8);
+        tvStandart = findViewById(R.id.textView9);
 
         // Прежде всего получим сенсор менеджер
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -177,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         mButton2.setOnClickListener(view -> startSheduler());
+        dataLabel.setText("______________________________________");
     }
 
 
@@ -205,7 +209,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
     // mainPeriodic сделал константой  на 15 минут
     //    dataLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
-        dataLabel.setText("Минимальная темп.: " + WARNING_TEMP + getString(R.string.symbol_degrees) + "\nЧастота тревоги: " + pAlarm + " минут" + "\nЧастота норм смс: " + pNormal + " минут");
+        tvMinimum.setText(WARNING_TEMP + getString(R.string.symbol_degrees));
+        tvAlarm.setText("" + pAlarm);
+        tvStandart.setText("" + pNormal);
         numberLabel.setText("Номер для СМС: " + MY_NUMBER);
         invertButton(serviseON);
     }
@@ -303,9 +309,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60);
         String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
 
-        // dataLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
-        dataLabel.setText("Минимальная темп.: " + WARNING_TEMP + getString(R.string.symbol_degrees) + "\nЧастота тревоги: " + pAlarm + " минут" + "\nЧастота норм смс: " + pNormal + " минут");
-
+        tvMinimum.setText(WARNING_TEMP + getString(R.string.symbol_degrees));
+        tvAlarm.setText("" + pAlarm);
+        tvStandart.setText("" + pNormal);
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         SharedPreferences.Editor ed = savePref.edit();
         ed.putInt("TASK_NUMBER", mTASK_NUMBER);
