@@ -16,7 +16,7 @@
 
 
     <string name="inputNormalTitle">Частота СМС в минутах</string>
-    <string name="inputNormalMessage1">СМС только для информации,\nот температуры не зависят!\n\n Настроено: </string>
+    <string name="inputNormalMessage1">Стандарт СМС - информация,\nот температуры не зависит!\n\n Настроено: </string>
     <string name="inputNormalMessage2">минут\n\nВажно: Интервал меньше, чем 15 минут установить нельзя!</string>
 
     <string name="inputNumberTitle">Номер для СМС</string>
@@ -24,7 +24,7 @@
     <string name="inputNumberMessage">Обязательно \"+\"  и код страны!\n\n Настроено: </string>
 
     <string name="inputAlarmTitle">Частота тревоги в минутах</string>
-    <string name="inputAlarmMessage1">Тревожные СМС отправляются,\nесли температура ниже, чем: </string>
+    <string name="inputAlarmMessage1">Такие СМС отправляются,\nесли температура ниже, чем: </string>
     <string name="inputAlarmMessage2">\n\nНастроено: </string>
     <string name="inputAlarmMessage3"> минут\n\nВажно: Интервал меньше, чем 15 минут установить нельзя!</string>
 

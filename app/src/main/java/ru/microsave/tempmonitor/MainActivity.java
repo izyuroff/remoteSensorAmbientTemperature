@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private Button mButton0,mButton1,mButton2,mButton3,mButton4,mButton5;
 
-    private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,dataLabel,numberLabel,tvMinimum,tvAlarm,tvStandart;
+    private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,numberLabel,tvMinimum,tvAlarm,tvStandart;
 
     private final String LOG_TAG = "myLogs";
     private int mTASK_NUMBER;
@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorLabel = findViewById(R.id.textView);
         temperatureLabel = findViewById(R.id.textView1);
         statusLabel = findViewById(R.id.textView2);
-        dataLabel = findViewById(R.id.textView3);
         numberLabel = findViewById(R.id.textView4);
         batteryLabel = findViewById(R.id.textView5);
         tvMinimum = findViewById(R.id.textView6);
@@ -180,7 +179,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         mButton2.setOnClickListener(view -> startSheduler());
-        dataLabel.setText("______________________________________");
     }
 
 
@@ -419,8 +417,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(R.string.inputAlarmTitle);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         alert.setMessage(getString(R.string.inputAlarmMessage1) + WARNING_TEMP + (getString(R.string.symbol_degrees) +
                 getString(R.string.inputAlarmMessage2) + " " + ALARM_INTERVAL/60/1000 + " " + getString(R.string.inputAlarmMessage3)));
+
+        else
+        alert.setMessage(getString(R.string.inputAlarmMessage1) + WARNING_TEMP + (getString(R.string.symbol_degrees) +
+                getString(R.string.inputAlarmMessage2) + " " + ALARM_INTERVAL/60/1000));
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -468,7 +471,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         readSharedPreferences();
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(R.string.inputNormalTitle);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         alert.setMessage(getString(R.string.inputNormalMessage1) + " " + NORMAL_INTERVAL/60/1000 + " " + getString(R.string.inputNormalMessage2));
+        else
+        alert.setMessage(getString(R.string.inputNormalMessage1) + " " + NORMAL_INTERVAL/60/1000);
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -513,8 +521,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle(R.string.inputNumberTitle);
-        // TODO: 12.04.2022 Что то тут не так, проверка нужна на правильность ввода номера 
         alert.setMessage(getString(R.string.inputNumberMessage) + " " +  MY_NUMBER);
+        // TODO: 12.04.2022 Что то тут не так, проверка нужна на правильность ввода номера
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
