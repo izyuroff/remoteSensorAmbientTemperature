@@ -85,7 +85,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -95,8 +94,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ButtonBarLayout;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -433,6 +432,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
 
+       // input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
         input.requestFocus();
         input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
         alert.setView(input);
@@ -486,6 +486,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
 
+       // input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
         input.requestFocus();
         input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
         alert.setView(input);
@@ -531,9 +532,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
+       // input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
         input.requestFocus();
         //getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
         input.setInputType(InputType.TYPE_CLASS_PHONE);  //установит клавиатуру для ввода номера телефона
         alert.setView(input);
 
@@ -570,9 +571,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
-
+        //input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
         input.requestFocus();
-
         input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
         alert.setView(input);
 
