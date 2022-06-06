@@ -1,4 +1,10 @@
 package ru.microsave.tempmonitor;
+/*
+
+TASK_NUMBER был не всегда стабилен, иногда обнулялся ни  того ни с сего
+
+
+ */
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
@@ -39,7 +45,8 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
     @Override
     public void onCreate() {
-        //readSharedPreferences();
+        Log.d(LOG_TAG, "JobSchedulerService onCreate: OK");
+        readSharedPreferences();
         this.mJobSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         mJobSensorManager.registerListener(this, mJobSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
@@ -48,7 +55,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         tempSensor = sensorEvent.values[0];
-        //Log.d(LOG_TAG, "sensorEvent: OK");
+        Log.d(LOG_TAG, "sensorEvent: OK");
     }
 
     @Override
@@ -58,9 +65,10 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
     @Override
     public boolean onStartJob(JobParameters param) {
-       // Log.d(LOG_TAG, "Запуск шедулера OK: onStartJob");
+        Log.d(LOG_TAG, "JobSchedulerService onStartJob: OK");
         readSharedPreferences();
-        onCreate(); // Избыточно поди
+        // TODO: 06.06.2022 Очень интересно, почему надо вызывать onCreate 
+         onCreate(); // Избыточно поди (Вот почему то нет!  Если закомментить - вообще перестает все работать!)
         mCurrentTime = System.currentTimeMillis();
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
 
@@ -68,7 +76,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         if (mLastAlarm == 0 && mLastNormal == 0 ){
             mLastAlarm = mCurrentTime;
             mLastNormal = mCurrentTime;
-            TASK_NUMBER=0;
+            TASK_NUMBER = 0;
         }
 
         // Вычисление периода тревоги
