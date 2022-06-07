@@ -40,12 +40,15 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     private static Sensor mJobSensorTemperature;
     private static SensorManager mJobSensorManager;
 
+    private int numlog = 0;
+
     public JobSchedulerService() {
     }
 
     @Override
     public void onCreate() {
-        Log.d(LOG_TAG, "JobSchedulerService onCreate: OK");
+        numlog++;
+        Log.d(LOG_TAG, "JobSchedulerService onCreate: " + numlog);
         readSharedPreferences();
         this.mJobSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
@@ -55,7 +58,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         tempSensor = sensorEvent.values[0];
-        Log.d(LOG_TAG, "sensorEvent: OK");
+       // Log.d(LOG_TAG, "sensorEvent: OK");
     }
 
     @Override
@@ -65,7 +68,8 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
     @Override
     public boolean onStartJob(JobParameters param) {
-        Log.d(LOG_TAG, "JobSchedulerService onStartJob: OK");
+        numlog++;
+        Log.d(LOG_TAG, "JobSchedulerService onStartJob: " + numlog);
         readSharedPreferences();
         // TODO: 06.06.2022 Очень интересно, почему надо вызывать onCreate 
          onCreate(); // Избыточно поди (Вот почему то нет!  Если закомментить - вообще перестает все работать!)
