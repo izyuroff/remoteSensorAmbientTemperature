@@ -695,6 +695,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         String message = String.valueOf(temp) + Character.toString ((char) 176) + "C";
         batteryLabel.setText(message);
+        readCounter();
+
+    }
+
+    private void readCounter(){
+        savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
+        mTASK_NUMBER = (savePref.getInt("TASK_NUMBER", 0));
         tvCounter.setText("" + mTASK_NUMBER);
     }
 }

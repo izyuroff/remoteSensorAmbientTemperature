@@ -18,7 +18,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.BatteryManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -95,7 +94,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                 ++TASK_NUMBER;
                 saveSharedPreferences();
 
-                Toast.makeText(getApplicationContext(),TASK_NUMBER,Toast.LENGTH_LONG).show();
+                Log.d(LOG_TAG, "ALARM TASK_NUMBER: " + TASK_NUMBER);
 
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobAlarmSensor");
@@ -116,7 +115,8 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         if (mCurrentTime - mLastNormal > myNormalInterval){
             ++TASK_NUMBER;
             saveSharedPreferences();
-       //     Log.d(LOG_TAG, "myNormalInterval: " + mCurrentTime + " - " + mLastNormal + " = " +  (mCurrentTime - mLastNormal) + " ? " + myNormalInterval);
+            Log.d(LOG_TAG, "INFO TASK_NUMBER: " + TASK_NUMBER);
+
             mLastNormal = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
                 if (ifSensor) {
                   //  Log.d(LOG_TAG, "new: JobInfoSensor");
