@@ -80,7 +80,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         if (mLastAlarm == 0 && mLastNormal == 0 ){
             mLastAlarm = mCurrentTime;
             mLastNormal = mCurrentTime;
-            TASK_NUMBER = 0;
+          //  TASK_NUMBER = 0;
         }
 
         // Вычисление периода тревоги

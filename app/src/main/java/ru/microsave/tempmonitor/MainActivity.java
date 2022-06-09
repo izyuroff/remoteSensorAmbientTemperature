@@ -89,6 +89,8 @@ import android.provider.Settings;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -185,6 +187,39 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mButton2.setOnClickListener(view -> startSheduler());
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch(id){
+
+            case R.id.action_count:
+                reset_counter();
+                return true;
+
+            case R.id.action_settings :
+                return true;
+
+            case R.id.open_privacy:
+                return true;
+
+            case R.id.open_about:
+                return true;
+        }
+        //headerView.setText(item.getTitle());
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void reset_counter() {
+        mTASK_NUMBER = 0; // Сбросить счетчик сообщений
+        saveSharedPreferences();
+    }
 
     // Описание Runnable-объекта
     // Тут у нас цикличный опрос температуры батареи
@@ -256,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if (sensorExist)temperatureLabel.setText(mDEGREES + getString(R.string.symbol_degrees));
         Log.d(LOG_TAG, "MainActivity sensorExist = " + sensorExist);
-        mTASK_NUMBER = 0; // Сбросить счетчик сообщений
+
         saveSharedPreferences();
         Log.d(LOG_TAG, "--- stopSheduler MainActivity --- serviceON = " + serviseON);
 
@@ -642,7 +677,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             sensorExist = false;
             temperatureLabel.setText("-----");
         }
-        if (!messageRead) messageBattery (null);
+        if (!messageRead) {
+            reset_counter();
+            messageBattery (null);
+        }
         saveSharedPreferences();
     }
 
