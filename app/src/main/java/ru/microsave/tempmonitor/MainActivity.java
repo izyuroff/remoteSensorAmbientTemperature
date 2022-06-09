@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private Button mButton0,mButton1,mButton2,mButton3,mButton4,mButton5;
 
-    private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,numberLabel,tvMinimum,tvAlarm,tvStandart;
+    private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,numberLabel,tvMinimum,tvAlarm,tvStandart,tvCounter;
 
     private final String LOG_TAG = "myLogs";
     private int mTASK_NUMBER;
@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         tvMinimum = findViewById(R.id.textView6);
         tvAlarm = findViewById(R.id.textView8);
         tvStandart = findViewById(R.id.textView9);
+        tvCounter = findViewById(R.id.textView11);
 
         // Прежде всего получим сенсор менеджер
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -694,5 +695,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         String message = String.valueOf(temp) + Character.toString ((char) 176) + "C";
         batteryLabel.setText(message);
+        tvCounter.setText("" + mTASK_NUMBER);
     }
 }

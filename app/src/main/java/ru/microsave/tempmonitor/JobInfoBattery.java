@@ -6,17 +6,10 @@ package ru.microsave.tempmonitor;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
-import android.content.Context;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
-import android.telephony.SmsManager;
-import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -67,13 +60,13 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
            // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
             textMessage = "#" + myJobTask + " " + timestamp +  " ИНФО: " + degrees + Character.toString ((char) 176) + "C";
-            try {
+/*            try {
                 SmsManager.getDefault()
                         .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
                 Log.d(LOG_TAG, textMessage);
             } catch (Exception e) {
                 Log.d(LOG_TAG, "Failed to send InfoBattery message: " + textMessage);
                 e.printStackTrace();
-            }
+            }*/
     }
 }

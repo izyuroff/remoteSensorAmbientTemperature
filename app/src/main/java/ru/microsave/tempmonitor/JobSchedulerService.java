@@ -18,6 +18,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.BatteryManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -93,6 +94,8 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
                 ++TASK_NUMBER;
                 saveSharedPreferences();
+
+                Toast.makeText(getApplicationContext(),TASK_NUMBER,Toast.LENGTH_LONG).show();
 
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobAlarmSensor");
