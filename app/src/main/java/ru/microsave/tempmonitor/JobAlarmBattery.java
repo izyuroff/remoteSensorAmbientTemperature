@@ -57,7 +57,7 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
         android.text.format.DateFormat df = new android.text.format.DateFormat();
         CharSequence timesTampChar = df.format("dd-MM-yyyy kk:mm", new Date());
 
-        textMessage = "# " + myJobTask + ", " + timesTampChar + ", " + " ТРЕВОГА:" + degrees + Character.toString ((char) 176) + "C";
+        textMessage = "SMS:" + myJobTask + ", " + timesTampChar + ", " + " ТРЕВОГА:" + degrees + Character.toString ((char) 176) + "C";
 
         if (degrees < WARNING_TEMP_LOCAL){
 
