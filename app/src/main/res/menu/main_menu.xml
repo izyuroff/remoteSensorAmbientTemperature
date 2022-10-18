@@ -6,6 +6,11 @@
         android:title="Сбросить счетчик СМС" />
 
     <item
+        android:id="@+id/action_inc_count"
+        android:orderInCategory="1"
+        android:title="Увеличить счетчик СМС" />
+
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="2"
         android:title="Открыть настройки" />

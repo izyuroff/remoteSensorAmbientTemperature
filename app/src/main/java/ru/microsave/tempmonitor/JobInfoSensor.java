@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import java.text.DateFormat;
 import java.util.Date;
 
 class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
@@ -47,11 +46,22 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
     }
 
     private void myMessage(int degrees){
-        long currentTime = System.currentTimeMillis();
-        String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
-            // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
-            textMessage = "#" + myJobTask + " " + timestamp +  " ИНФО: " + degrees + Character.toString ((char) 176) + "C";
+        // Один вариант таймштампа
+       // long currentTime = System.currentTimeMillis();
+       // SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+       // String timeStampString = formatter.format(new Date(Long.parseLong(String.valueOf(currentTime))));
+
+        // Второй вариант оформления метки времени
+        android.text.format.DateFormat df = new android.text.format.DateFormat();
+        CharSequence timesTampChar = df.format("dd-MM-yyyy kk:mm", new Date());
+
+        // Третий вариант, он был раньше, без форматирования
+        // long currentTime = System.currentTimeMillis();
+        // String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
+
+        // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
+            textMessage = "sms#" + myJobTask + ", " + timesTampChar + ", " + " ИНФО:" + degrees + Character.toString ((char) 176) + "C";
 
             try {
                  SmsManager.getDefault()

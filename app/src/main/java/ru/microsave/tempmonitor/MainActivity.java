@@ -99,7 +99,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity  implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
     private final long mainPeriodic = 1000 * 60 * 5;
 
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,numberLabel,tvMinimum,tvAlarm,tvStandart,tvCounter;
 
     private final String LOG_TAG = "myLogs";
-    private int mTASK_NUMBER;
+    private int mTASK_NUMBER; //Счетчик отправленных сообщений
     // private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
 
     @Override
@@ -204,6 +204,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 reset_counter();
                 return true;
 
+            case R.id.action_inc_count:
+                inc_counter();
+                return true;
+
             case R.id.action_settings :
                 return true;
 
@@ -215,11 +219,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         //headerView.setText(item.getTitle());
         return super.onOptionsItemSelected(item);
-    }
-
-    private void reset_counter() {
-        mTASK_NUMBER = 0; // Сбросить счетчик сообщений
-        saveSharedPreferences();
     }
 
     // Описание Runnable-объекта
@@ -323,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Запретить оптимизировать батарею
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        //    msg("Служба запускается для API > 22 ");
+            //msg("Служба запускается для API > 22 ");
             String packageName = getPackageName();
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
@@ -644,6 +643,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void messageBattery (View view) {
+
+        // Сообщение при первом запуске было прочитано
+        if (!messageRead) {
+            messageRead = true;
+            saveSharedPreferences();
+        }
+
+        // Собственно диалоговое окно с информацией
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
             Log.d(LOG_TAG, "33 MainActivity sensorExist = " + sensorExist);
             if (!sensorExist) {
@@ -656,10 +663,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
             alert.setPositiveButton(R.string.buttonOK, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    messageRead = true;
-                    saveSharedPreferences();
                 }
             });
+
             alert.show();
     }
 
@@ -679,29 +685,42 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             temperatureLabel.setText("-----");
         }
         if (!messageRead) {
-            reset_counter();
             messageBattery (null);
         }
         saveSharedPreferences();
     }
 
-
-
-
     public void batteryTemp ()
     {
-        Intent intent = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        int  temp   = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) /10;
+        Intent getTempBat = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        int temp   = (getTempBat.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) /10;
 
+        // Строка для вывод значения температуры батареи
         String message = String.valueOf(temp) + Character.toString ((char) 176) + "C";
         batteryLabel.setText(message);
+
+
+        // Также каждые три секунды проверяем изменение счетчика СМС в сохраненном файле
         readCounter();
 
+    }
+
+
+    private void inc_counter() {
+        mTASK_NUMBER++;
+        tvCounter.setText("" + mTASK_NUMBER);
+        saveSharedPreferences();
     }
 
     private void readCounter(){
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         mTASK_NUMBER = (savePref.getInt("TASK_NUMBER", 0));
-        tvCounter.setText("" + mTASK_NUMBER);
+        tvCounter.setText(": " + mTASK_NUMBER);
     }
+
+    private void reset_counter() {
+        mTASK_NUMBER = 0; // Сбросить счетчик сообщений можно через меню
+        saveSharedPreferences();
+    }
+
 }

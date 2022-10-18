@@ -32,7 +32,7 @@ public class Control_activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_control);
+       // setContentView(R.layout.activity_control);
         mJobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
         Intent intent = getIntent();

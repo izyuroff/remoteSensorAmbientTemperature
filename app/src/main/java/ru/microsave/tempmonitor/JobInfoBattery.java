@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import java.text.DateFormat;
 import java.util.Date;
 
 class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
@@ -57,12 +56,14 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
     }
 
     private void myMessage(int degrees){
-        long currentTime = System.currentTimeMillis();
-        String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
-           // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
-            textMessage = "#" + myJobTask + " " + timestamp +  " ИНФО: " + degrees + Character.toString ((char) 176) + "C";
-            try {
+        // Второй вариант оформления метки времени
+        android.text.format.DateFormat df = new android.text.format.DateFormat();
+        CharSequence timesTampChar = df.format("dd-MM-yyyy kk:mm", new Date());
+
+        textMessage = "sms#" + myJobTask + ", " + timesTampChar + ", " + " ИНФО:" + degrees + Character.toString ((char) 176) + "C";
+
+        try {
                 SmsManager.getDefault()
                         .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
                 Log.d(LOG_TAG, textMessage);

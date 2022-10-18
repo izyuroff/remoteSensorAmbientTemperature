@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import java.text.DateFormat;
 import java.util.Date;
 
 class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
@@ -61,14 +60,15 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
         //if (degrees == 0) return;
         // TODO: 17.04.2022 Это временный костыль. А мало ли реально будет 0 градусов. Надо понять почему первый замер равен нулю.
 
-        long currentTime = System.currentTimeMillis();
-        String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
+        // Второй вариант оформления метки времени
+        android.text.format.DateFormat df = new android.text.format.DateFormat();
+        CharSequence timesTampChar = df.format("dd-MM-yyyy kk:mm", new Date());
 
 
-          //  Log.d(LOG_TAG, "myJobTask = " + myJobTaskAlarm);
+        textMessage = "sms#" + myJobTaskAlarm + ", " + timesTampChar + ", " + " ТРЕВОГА:" + degrees + Character.toString ((char) 176) + "C";
 
-            textMessage = "#" + myJobTaskAlarm + " " + timestamp +  " ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C";
-            if (degrees < WARNING_TEMP_LOCAL){
+
+        if (degrees < WARNING_TEMP_LOCAL){
                 try {
                     SmsManager.getDefault()
                             .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
