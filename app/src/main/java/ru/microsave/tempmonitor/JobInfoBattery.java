@@ -61,7 +61,7 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
         android.text.format.DateFormat df = new android.text.format.DateFormat();
         CharSequence timesTampChar = df.format("dd-MM-yyyy kk:mm", new Date());
 
-        textMessage = "sms#" + myJobTask + ", " + timesTampChar + ", " + " ИНФО:" + degrees + Character.toString ((char) 176) + "C";
+        textMessage = "# " + myJobTask + ", " + timesTampChar + ", " + " ИНФО:" + degrees + Character.toString ((char) 176) + "C";
 
         try {
                 SmsManager.getDefault()

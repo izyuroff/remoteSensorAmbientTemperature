@@ -65,7 +65,7 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
         CharSequence timesTampChar = df.format("dd-MM-yyyy kk:mm", new Date());
 
 
-        textMessage = "sms#" + myJobTaskAlarm + ", " + timesTampChar + ", " + " ТРЕВОГА:" + degrees + Character.toString ((char) 176) + "C";
+        textMessage = "# " + myJobTaskAlarm + ", " + timesTampChar + ", " + " ТРЕВОГА:" + degrees + Character.toString ((char) 176) + "C";
 
 
         if (degrees < WARNING_TEMP_LOCAL){

@@ -10,7 +10,7 @@ import android.os.AsyncTask;
 import android.telephony.SmsManager;
 import android.util.Log;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 
 class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
 
@@ -54,14 +54,17 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
 
         // Второй вариант оформления метки времени
         android.text.format.DateFormat df = new android.text.format.DateFormat();
-        CharSequence timesTampChar = df.format("dd-MM-yyyy kk:mm", new Date());
+     //   CharSequence timesTampChar = df.format("DD-MM-yyyy kk:mm", new Date());
+        SimpleDateFormat fmt = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        String formatted = fmt.format(df);
+
 
         // Третий вариант, он был раньше, без форматирования
         // long currentTime = System.currentTimeMillis();
         // String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
         // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
-            textMessage = "sms#" + myJobTask + ", " + timesTampChar + ", " + " ИНФО:" + degrees + Character.toString ((char) 176) + "C";
+            textMessage = "# " + myJobTask + ", " + formatted + ", " + " ИНФО:" + degrees + Character.toString ((char) 176) + "C";
 
             try {
                  SmsManager.getDefault()

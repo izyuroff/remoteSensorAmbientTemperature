@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
         // Тут проверка наличия сенсора и чтение сохраненных настроек
         Log.d(LOG_TAG, "1 MainActivity.sensorExist = " + sensorExist);
         readSharedPreferences();
+        Log.d(LOG_TAG, "mTASK_NUMBER AFTER READ = " + mTASK_NUMBER);
         Log.d(LOG_TAG, "2 MainActivity sensorExist = " + sensorExist);
         updateScreen();
 
@@ -257,7 +258,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
     public void onSensorChanged(SensorEvent sensor) {
     // В этом методе не нужно ничего лишнего! Если есть сенсор, то здесь большая цикличная работа
     // Метод кстати не связан с отправкой СМС, это только для вывода температуры на экран, когда приложение активно,
-    // для СМС работает аналогичный метод в классе JobTask
+    // для отправки СМС работает другой аналогичный метод в классе JobTask
         mDEGREES = (int)sensor.values[0];
         temperatureLabel.setText(mDEGREES + getString(R.string.symbol_degrees));
 
@@ -301,12 +302,6 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
         intent.putExtra("serviceIntentON", serviseON);
         startActivity(intent);
     }
-
-
-
-
-
-
 
     // Метод для кнопочки БОЕВОЕ ДЕЖУРСТВО, то есть СТАРТ
     public void startSheduler (){
@@ -374,6 +369,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
         NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
         MY_NUMBER = (savePref.getString("NUMBER", "+7123456789"));
         WARNING_TEMP = (savePref.getInt("WARNING", 15));
+        mTASK_NUMBER = (savePref.getInt("TASK_NUMBER", 0));
 
         sensorExist = (savePref.getBoolean("IFSENSOR", false));
         messageRead = (savePref.getBoolean("MESSAGEREAD", false));
@@ -692,6 +688,9 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
 
     public void batteryTemp ()
     {
+        // Также каждые три секунды проверяем изменение счетчика СМС в сохраненном файле
+        readCounter();
+
         Intent getTempBat = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         int temp   = (getTempBat.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) /10;
 
@@ -700,8 +699,8 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
         batteryLabel.setText(message);
 
 
-        // Также каждые три секунды проверяем изменение счетчика СМС в сохраненном файле
-        readCounter();
+
+
 
     }
 
@@ -715,7 +714,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
     private void readCounter(){
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         mTASK_NUMBER = (savePref.getInt("TASK_NUMBER", 0));
-        tvCounter.setText(": " + mTASK_NUMBER);
+        tvCounter.setText("# " + mTASK_NUMBER);
     }
 
     private void reset_counter() {
