@@ -5,6 +5,7 @@ package ru.microsave.tempmonitor;
 
 
  Добавить таймер - отметку времени сколько служба работает, и постить это в смс
+ И надо бы и температуру батареи всегда отправлять в СМС
 
 
 Vivo Y81, наблюдал - после удаления приложения и установки заново - все настройки сохранялись,
@@ -102,9 +103,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity  implements SensorEventListener {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
-    private final long mainPeriodic = 1000 * 60 * 5;
+    private final long mainPeriodic = 1000 * 60 * 15;
 
     // Для обновления температуры батареи в UI
     private Handler mHandler = new Handler();
@@ -125,10 +126,20 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
 
     private Button mButton0,mButton1,mButton2,mButton3,mButton4,mButton5;
 
-    private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,numberLabel,tvMinimum,tvAlarm,tvStandart,tvCounter;
+    private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,numberLabel,tvMinimum,tvAlarm,tvStandart,tvCounter,tvTimer, tvTitleTimer;
 
     private final String LOG_TAG = "myLogs";
     private int mTASK_NUMBER; //Счетчик отправленных сообщений
+
+    // Подсчет времени работы сервиса
+    private long mStartTime; // При запуске службы
+    private long mStopTime; // При остановке службы
+    private long mTimeNow; // Текущее время в методе countTime()
+    // mCountedTime = (mCurrentTime - mStartTime);
+    private long mCountedTime; // Подсчитанное время работы текущего сеанса работы
+    private long mLongTime; // Подсчитанное время работы прошлого запуска
+
+
     // private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
 
     @Override
@@ -156,20 +167,22 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
         tvAlarm = findViewById(R.id.textView8);
         tvStandart = findViewById(R.id.textView9);
         tvCounter = findViewById(R.id.textView11);
+        tvTitleTimer = findViewById(R.id.textView3);
+        tvTimer = findViewById(R.id.textView7);
 
         // Прежде всего получим сенсор менеджер
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         // Тут проверка наличия сенсора и чтение сохраненных настроек
-        Log.d(LOG_TAG, "1 MainActivity.sensorExist = " + sensorExist);
+       // Log.d(LOG_TAG, "1 MainActivity sensorExist = " + sensorExist);
         readSharedPreferences();
         Log.d(LOG_TAG, "mTASK_NUMBER AFTER READ = " + mTASK_NUMBER);
-        Log.d(LOG_TAG, "2 MainActivity sensorExist = " + sensorExist);
+       // Log.d(LOG_TAG, "2 MainActivity sensorExist = " + sensorExist);
         updateScreen();
 
         checkSensor();
 
-        Log.d(LOG_TAG, "4 MainActivity sensorExist = " + sensorExist);
+        Log.d(LOG_TAG, "MainActivity sensorExist = " + sensorExist);
 
         // Только после проверки регистрируем листенер
         if (sensorExist)
@@ -203,6 +216,10 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch(id){
+
+            case R.id.action_info:
+                messageBattery();
+                return true;
 
             case R.id.action_count:
                 reset_counter();
@@ -253,7 +270,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
         tvMinimum.setText(WARNING_TEMP + getString(R.string.symbol_degrees));
         tvAlarm.setText("" + pAlarm);
         tvStandart.setText("" + pNormal);
-        numberLabel.setText("Номер для СМС: " + MY_NUMBER);
+        numberLabel.setText(MY_NUMBER);
         invertButton(serviseON);
     }
 
@@ -290,11 +307,14 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
         serviseON = false;
         invertButton(serviseON);
 
+        mStopTime = System.currentTimeMillis();
+        mLongTime = mStopTime - mStartTime;
+
         statusLabel.setText("Служба остановлена.");
-        Log.d(LOG_TAG, "6 MainActivity sensorExist = " + sensorExist);
+        // Log.d(LOG_TAG, "6 MainActivity sensorExist = " + sensorExist);
 
         if (sensorExist)temperatureLabel.setText(mDEGREES + getString(R.string.symbol_degrees));
-        Log.d(LOG_TAG, "MainActivity sensorExist = " + sensorExist);
+        // Log.d(LOG_TAG, "MainActivity sensorExist = " + sensorExist);
 
         saveSharedPreferences();
         Log.d(LOG_TAG, "--- stopSheduler MainActivity --- serviceON = " + serviseON);
@@ -311,6 +331,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
         msg("Служба запущена успешно!");
         serviseON = true;
         invertButton(serviseON);
+        mStartTime = System.currentTimeMillis();
         saveSharedPreferences();
         statusLabel.setText("Служба выполняется");
 
@@ -320,7 +341,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
 
         // Запретить оптимизировать батарею
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            //msg("Служба запускается для API > 22 ");
+            msg("Служба запускается для API > 22 ");
             String packageName = getPackageName();
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
@@ -332,7 +353,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
             }
         }
         else {
-        //    msg("Служба запускается для API < 22");
+            msg("Служба запускается для API < 22");
             intent.putExtra("serviceIntentON", serviseON);
             intent.putExtra("schedulerPeriodic", mainPeriodic);
             startActivity(intent);
@@ -348,6 +369,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
         tvAlarm.setText("" + pAlarm);
         tvStandart.setText("" + pNormal);
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
+
         SharedPreferences.Editor ed = savePref.edit();
         ed.putInt("TASK_NUMBER", mTASK_NUMBER);
         ed.putString("NUMBER", MY_NUMBER);
@@ -356,6 +378,9 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
         // ed.putLong("PERIOD_INTERVAL", mainPeriodic);
         ed.putLong("NORMAL_INTERVAL", NORMAL_INTERVAL);
         ed.putLong("ALARM_INTERVAL", ALARM_INTERVAL);
+        ed.putLong("START_TIME", mStartTime);
+        ed.putLong("STOP_TIME", mStopTime);
+        ed.putLong("LONG_TIME", mLongTime);
 
         ed.putBoolean("IFSENSOR", sensorExist);
         ed.putBoolean("MESSAGEREAD", messageRead);
@@ -366,10 +391,13 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
     }
     private void readSharedPreferences(){
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
-
         // mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 15));
         ALARM_INTERVAL = (savePref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
         NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
+        mStartTime = (savePref.getLong("START_TIME", 0));
+        mStopTime = (savePref.getLong("STOP_TIME", 0));
+        mLongTime = (savePref.getLong("LONG_TIME", 0));
+
         MY_NUMBER = (savePref.getString("NUMBER", "+7123456789"));
         WARNING_TEMP = (savePref.getInt("WARNING", 15));
         mTASK_NUMBER = (savePref.getInt("TASK_NUMBER", 0));
@@ -582,6 +610,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
                     return;
                 }
 
+
                 // TODO: 12.04.2022 Хорошо бы добавить проверку введенного номера на правильность
                 MY_NUMBER = value;
                 numberLabel.setText("Сохранен номер:" + " " + value);
@@ -641,7 +670,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
         alert.show();
     }
 
-    public void messageBattery (View view) {
+    public void messageBattery () {
 
         // Сообщение при первом запуске было прочитано
         if (!messageRead) {
@@ -651,7 +680,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
 
         // Собственно диалоговое окно с информацией
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            Log.d(LOG_TAG, "33 MainActivity sensorExist = " + sensorExist);
+            // Log.d(LOG_TAG, "33 MainActivity sensorExist = " + sensorExist);
             if (!sensorExist) {
             alert.setTitle(R.string.infoBatteryTitle);
             alert.setMessage(R.string.infoBatteryMessage);
@@ -684,7 +713,7 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
             temperatureLabel.setText("-----");
         }
         if (!messageRead) {
-            messageBattery (null);
+            messageBattery ();
         }
         saveSharedPreferences();
     }
@@ -693,9 +722,9 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
     {
         // Также каждые три секунды проверяем изменение счетчика СМС в сохраненном файле
         readCounter();
-
-        Intent getTempBat = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        int temp   = (getTempBat.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) /10;
+        // countTime();
+        Intent intent = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        int  temp   = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) /10;
 
         // Строка для вывод значения температуры батареи
         String message = String.valueOf(temp) + Character.toString ((char) 176) + "C";
@@ -723,6 +752,87 @@ public class MainActivity extends AppCompatActivity  implements SensorEventListe
     private void reset_counter() {
         mTASK_NUMBER = 0; // Сбросить счетчик сообщений можно через меню
         saveSharedPreferences();
+    }
+    private void countTime(){
+        if (serviseON) {
+
+            tvTitleTimer.setText("Текущая сессия:");
+            mTimeNow = System.currentTimeMillis();
+        //    Log.d(LOG_TAG, "Текущая сессия mTimeNow: " + mTimeNow);
+
+
+            savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
+            mStartTime = (savePref.getLong("START_TIME", 0));
+        //    Log.d(LOG_TAG, "Текущая сессия mStartTime: " + mStartTime);
+
+            mCountedTime = mTimeNow - mStartTime;
+        //    Log.d(LOG_TAG, "Текущая сессия mTimeNow - mStartTime: " + mCountedTime);
+
+
+            //String workedTime = DateFormat.getDateTimeInstance().format(new Date(mCountedTime));
+
+           // long weeks = mCountedTime / 604800;
+            //long days = (mCountedTime % 604800) / 86400;
+
+/*            long days = TimeUnit.MILLISECONDS.toDays(mCountedTime);
+            long hours = TimeUnit.MILLISECONDS.toHours(mCountedTime);
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(mCountedTime);
+
+            days = days % 365;
+            hours = hours % 24;
+            minutes = minutes % 60;*/
+
+                    //    long days = mCountedTime / (365 * 24 * 60 * 60 * 1000) % 86400000;
+        //    long hours = mCountedTime / (60 * 60 * 1000) % 24;
+        //    long minutes = (mCountedTime / (60 * 1000) % 60);
+
+
+          //  long hours = ((mCountedTime % 604800) % 86400) / 3600;
+          //  long minutes = (((mCountedTime % 604800) % 86400) % 3600) / 60;
+          //  long seconds = (((mCountedTime % 604800) % 86400) % 3600) % 60;
+
+        //    tvTimer.setText( days +" дн, " + hours + " час, " + minutes + " мин");
+            //tvTimer.setText(mCountedTime + "");
+        //    Log.d(LOG_TAG, days +" дней, " + hours + " часов, " + minutes + " минут");
+
+/*            if (mCountedTime/1000/60 < 60) {
+                tvTimer.setText(mCountedTime / 1000 / 60 + " мин.");
+
+                if (mCountedTime/1000/60 < 1440) {
+                    tvTimer.setText(mCountedTime / 1000 / 60 + " часы и минуты");
+                }
+            }
+            else
+                tvTimer.setText((mCountedTime/1000/60 ) + " дней часов минут");
+                Log.d(LOG_TAG, "mCountedTime = " + mCountedTime/1000/60);*/
+        }
+        else {
+            tvTitleTimer.setText("Прошлая сессия:");
+
+/*            long days = TimeUnit.MILLISECONDS.toDays(mLongTime);
+            long hours = TimeUnit.MILLISECONDS.toHours(mLongTime);
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(mLongTime);
+
+            hours = hours % 24;
+            minutes = minutes % 60;
+
+            tvTimer.setText( days +" ДН, " + hours + " ЧАС, " + minutes + "МИН");*/
+            //long mLongTime = (24 * 60 * 60 * 1000) * 365;
+
+        //    Log.d(LOG_TAG, " mLongTime:" + mLongTime);
+
+        //    Log.d(LOG_TAG, "ЛЕТ " + String.valueOf(mLongTime / (31 * 24 * 60 * 60 * 1000) % 12));
+        //    Log.d(LOG_TAG, "МЕСЯЦЕВ " + String.valueOf(mLongTime / (1000 * 60 * 60 * 24 * 30) % 12));
+
+
+        //    Log.d(LOG_TAG, "ДНЕЙ " + String.valueOf(mLongTime / (24 * 60 * 60 * 1000)));
+        //    Log.d(LOG_TAG, "ЧАСОВ " + String.valueOf(mLongTime / (60 * 60 * 1000) % 24));
+        //    Log.d(LOG_TAG, "МИНУТ " + String.valueOf(mLongTime / (60 * 1000) % 60));
+        }
+    }
+
+    private void writeTime(){
+
     }
 
 }

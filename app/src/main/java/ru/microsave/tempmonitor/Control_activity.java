@@ -32,7 +32,7 @@ public class Control_activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // setContentView(R.layout.activity_control);
+        setContentView(R.layout.activity_control);
         mJobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
         Intent intent = getIntent();
@@ -99,7 +99,7 @@ public class Control_activity extends AppCompatActivity {
         if (mJobScheduler.schedule(jobInfo) <= 0) {
             Log.d(LOG_TAG, "onCreate: Some error, jobInfo = " + jobInfo);
         }
-        else Log.d(LOG_TAG, "Job scheduled successfully");
+        else Log.d(LOG_TAG, "Job scheduled successfully Все запланировалось успешно");
 
         // ========================== Прочие параметры
         // builder.setOverrideDeadline(60*1000)

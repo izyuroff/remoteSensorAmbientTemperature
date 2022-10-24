@@ -18,7 +18,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
 
     private int DEGREES_LOCAL; // Похоже только static работает
 
-    private static int myJobTask;
+    private static int myJobTaskNorm;
 
     private final String LOG_TAG = "myLogs";
     private final JobService jobService;
@@ -28,7 +28,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
     public JobInfoSensor(JobService jobService, String num, float tempSensor, int count) {
 
         MY_NUMBER_LOCAL = num;
-        myJobTask = count;
+        myJobTaskNorm = count;
         DEGREES_LOCAL = (int)tempSensor;
         this.jobService = jobService;
     }
@@ -54,7 +54,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
 
         // Второй вариант оформления метки времени
         android.text.format.DateFormat df = new android.text.format.DateFormat();
-        CharSequence timeStampChar = df.format("dd-MM-yyyy kk:mm", new Date());
+        CharSequence timeStampChar = df.format("kk:mm, dd-MM-yyyy", new Date());
         String timeStampString = (String) timeStampChar;
         
                 // Третий вариант, он был раньше, без форматирования
@@ -62,7 +62,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
         // String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
         // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
-            textMessage = "SMS:" + myJobTask + ", " + timeStampString + ", " + " НОРМАЛЬНО:" + degrees + Character.toString ((char) 176) + "C";
+            textMessage = "НОРМА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampString + ", #" + myJobTaskNorm;
 
             try {
                  SmsManager.getDefault()

@@ -19,7 +19,7 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
     private int WARNING_TEMP_LOCAL;
     private int DEGREES_LOCAL; // Похоже только static работает
 
-    private static int myJobTask;
+    private static int myJobTaskAlarm;
 
     private final String LOG_TAG = "myLogs";
     private final JobService jobService;
@@ -29,7 +29,7 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
         MY_NUMBER_LOCAL = num;
         WARNING_TEMP_LOCAL = war;
-        myJobTask = count;
+        myJobTaskAlarm = count;
         mTempBattery = tempBat;
 
         this.jobService = jobService;
@@ -55,9 +55,9 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
         // Второй вариант оформления метки времени
         android.text.format.DateFormat df = new android.text.format.DateFormat();
-        CharSequence timesTampChar = df.format("dd-MM-yyyy kk:mm", new Date());
+        CharSequence timeStampChar = df.format("kk:mm, dd-MM-yyyy", new Date());
 
-        textMessage = "SMS:" + myJobTask + ", " + timesTampChar + ", " + " ТРЕВОГА:" + degrees + Character.toString ((char) 176) + "C";
+        textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ", #" + myJobTaskAlarm;
 
         if (degrees < WARNING_TEMP_LOCAL){
 

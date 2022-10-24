@@ -58,7 +58,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         tempSensor = sensorEvent.values[0];
-       // Log.d(LOG_TAG, "sensorEvent: OK");
+      //  Log.d(LOG_TAG, "sensorEvent: OK");
     }
 
     @Override
@@ -74,6 +74,11 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // TODO: 06.06.2022 Очень интересно, почему надо вызывать onCreate 
          onCreate(); // Избыточно поди (Вот почему то нет!  Если закомментить - вообще перестает все работать!)
         mCurrentTime = System.currentTimeMillis();
+        Log.d(LOG_TAG, "mCurrentTime: " + mCurrentTime);
+        Log.d(LOG_TAG, "mLastAlarm: " + mLastAlarm);
+        Log.d(LOG_TAG, "mLastNormal: " + mLastNormal);
+
+
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
 
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
@@ -86,7 +91,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // Вычисление периода тревоги
         if (mCurrentTime - mLastAlarm > myAlarmInterval){
 
-        //    Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
+            Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
             mLastAlarm = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
 
             if(tempSensor < myWarningTemperature){
@@ -97,12 +102,12 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                 Log.d(LOG_TAG, "ALARM TASK_NUMBER: " + TASK_NUMBER);
 
                 if (ifSensor) {
-                    // Log.d(LOG_TAG, "new: JobAlarmSensor");
+                     Log.d(LOG_TAG, "new: JobAlarmSensor");
                     new JobAlarmSensor(this, myNumber, tempSensor, TASK_NUMBER, myWarningTemperature).execute(param);
                 }
                 else {
                     batteryTemperature ();
-                    // Log.d(LOG_TAG, "new: JobAlarmBattery");
+                     Log.d(LOG_TAG, "new: JobAlarmBattery");
                     new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature).execute(param);
                 }
 
@@ -119,12 +124,12 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
             mLastNormal = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
                 if (ifSensor) {
-                  //  Log.d(LOG_TAG, "new: JobInfoSensor");
+                    Log.d(LOG_TAG, "new: JobInfoSensor");
                     new JobInfoSensor(this, myNumber, tempSensor, TASK_NUMBER).execute(param);
                 }
                 else {
                 batteryTemperature ();
-                 //   Log.d(LOG_TAG, "new: JobInfoBattery");
+                    Log.d(LOG_TAG, "new: JobInfoBattery");
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER).execute(param);
                 }
         }
@@ -134,7 +139,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
     @Override
     public boolean onStopJob(JobParameters params) {
-       // Log.d(LOG_TAG, "--- onStopJob --- return false");
+        Log.d(LOG_TAG, "--- onStopJob --- return false");
         return false;
     }
 
@@ -144,11 +149,11 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         try {
             if (mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null){
                 mJobSensorManager.unregisterListener(this);
-             //   Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
+                Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
             }
 
         } catch (Exception e) {
-           // Log.d(LOG_TAG, "mJobSensorManager.unregisterListener = null");
+            Log.d(LOG_TAG, "mJobSensorManager.unregisterListener = null");
             e.printStackTrace();
         }
     }
@@ -161,7 +166,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));
         TASK_NUMBER = (saveJobPref.getInt("TASK_NUMBER", 0));
-      //  Log.d(LOG_TAG, "readSharedPreferences: OK");
+        Log.d(LOG_TAG, "readSharedPreferences: OK");
     }
 
 

@@ -22,7 +22,7 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
     private static Sensor mJobSensorTemperature;
     private static SensorManager mJobSensorManager;
-    private static int myJobTask;
+    private static int myJobTaskNorm;
 
     private final String LOG_TAG = "myLogs";
     private final JobService jobService;
@@ -32,7 +32,7 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
     public JobInfoBattery(JobService jobService, String num, float tempBat, int count) {
 
         MY_NUMBER_LOCAL = num;
-        myJobTask = count;
+        myJobTaskNorm = count;
         mTempBattery = tempBat;
 
         this.jobService = jobService;
@@ -59,9 +59,9 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
         // Второй вариант оформления метки времени
         android.text.format.DateFormat df = new android.text.format.DateFormat();
-        CharSequence timesTampChar = df.format("dd-MM-yyyy kk:mm", new Date());
+        CharSequence timeStampChar = df.format("kk:mm, dd-MM-yyyy", new Date());
 
-        textMessage = "SMS:" + myJobTask + ", " + timesTampChar + ", " + " НОРМАЛЬНО:" + degrees + Character.toString ((char) 176) + "C";
+        textMessage = "НОРМА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ", #" + myJobTaskNorm;
 
         try {
                 SmsManager.getDefault()

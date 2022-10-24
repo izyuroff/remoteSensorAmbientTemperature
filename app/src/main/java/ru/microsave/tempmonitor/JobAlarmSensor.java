@@ -22,7 +22,7 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
 
     private static Sensor mJobSensorTemperatureAlarm;
     private static SensorManager mJobSensorManagerAlarm;
-    private int myJobTaskAlarm;
+    private static int myJobTaskAlarm;
 
     private final String LOG_TAG = "myLogs";
     private final JobService jobService;
@@ -62,10 +62,10 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
 
         // Второй вариант оформления метки времени
         android.text.format.DateFormat df = new android.text.format.DateFormat();
-        CharSequence timesTampChar = df.format("dd-MM-yyyy kk:mm", new Date());
+        CharSequence timeStampChar = df.format("kk:mm, dd-MM-yyyy", new Date());
 
 
-        textMessage = "SMS:" + myJobTaskAlarm + ", " + timesTampChar + ", " + " ТРЕВОГА:" + degrees + Character.toString ((char) 176) + "C";
+        textMessage = "ТРЕВОГА:" + degrees + Character.toString ((char) 176) + "C" + ", " +timeStampChar + ", #" + myJobTaskAlarm;
 
 
         if (degrees < WARNING_TEMP_LOCAL){
