@@ -101,6 +101,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.concurrent.TimeUnit;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
@@ -722,7 +724,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     {
         // Также каждые три секунды проверяем изменение счетчика СМС в сохраненном файле
         readCounter();
-        // countTime();
+        //countTime();
         Intent intent = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         int  temp   = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) /10;
 
@@ -747,6 +749,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         mTASK_NUMBER = (savePref.getInt("TASK_NUMBER", 0));
         tvCounter.setText("# " + mTASK_NUMBER);
+        countTime();
     }
 
     private void reset_counter() {
@@ -774,13 +777,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
            // long weeks = mCountedTime / 604800;
             //long days = (mCountedTime % 604800) / 86400;
 
-/*            long days = TimeUnit.MILLISECONDS.toDays(mCountedTime);
+            long days = TimeUnit.MILLISECONDS.toDays(mCountedTime);
             long hours = TimeUnit.MILLISECONDS.toHours(mCountedTime);
             long minutes = TimeUnit.MILLISECONDS.toMinutes(mCountedTime);
 
             days = days % 365;
             hours = hours % 24;
-            minutes = minutes % 60;*/
+            minutes = minutes % 60;
 
                     //    long days = mCountedTime / (365 * 24 * 60 * 60 * 1000) % 86400000;
         //    long hours = mCountedTime / (60 * 60 * 1000) % 24;
@@ -791,7 +794,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
           //  long minutes = (((mCountedTime % 604800) % 86400) % 3600) / 60;
           //  long seconds = (((mCountedTime % 604800) % 86400) % 3600) % 60;
 
-        //    tvTimer.setText( days +" дн, " + hours + " час, " + minutes + " мин");
+            tvTimer.setText( days +" дн, " + hours + " час, " + minutes + " мин");
             //tvTimer.setText(mCountedTime + "");
         //    Log.d(LOG_TAG, days +" дней, " + hours + " часов, " + minutes + " минут");
 
@@ -809,14 +812,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         else {
             tvTitleTimer.setText("Прошлая сессия:");
 
-/*            long days = TimeUnit.MILLISECONDS.toDays(mLongTime);
+            long days = TimeUnit.MILLISECONDS.toDays(mLongTime);
             long hours = TimeUnit.MILLISECONDS.toHours(mLongTime);
             long minutes = TimeUnit.MILLISECONDS.toMinutes(mLongTime);
 
             hours = hours % 24;
             minutes = minutes % 60;
 
-            tvTimer.setText( days +" ДН, " + hours + " ЧАС, " + minutes + "МИН");*/
+            tvTimer.setText( days +" ДН, " + hours + " ЧАС, " + minutes + "МИН");
             //long mLongTime = (24 * 60 * 60 * 1000) * 365;
 
         //    Log.d(LOG_TAG, " mLongTime:" + mLongTime);

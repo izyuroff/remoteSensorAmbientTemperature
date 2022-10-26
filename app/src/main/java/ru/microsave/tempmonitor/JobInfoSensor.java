@@ -7,8 +7,6 @@ package ru.microsave.tempmonitor;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.os.AsyncTask;
-import android.telephony.SmsManager;
-import android.util.Log;
 
 import java.util.Date;
 
@@ -64,7 +62,11 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
         // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
             textMessage = "НОРМА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampString + ", #" + myJobTaskNorm;
 
-            try {
+
+            new sendSMS(MY_NUMBER_LOCAL, textMessage);
+
+
+/*            try {
                  SmsManager.getDefault()
                         .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
                 Log.d(LOG_TAG, textMessage);
@@ -72,5 +74,10 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
                 Log.d(LOG_TAG, "Failed to send Info Sensor message: " + textMessage);
                 e.printStackTrace();
             }
+ */
+
+
+
+
     }
 }

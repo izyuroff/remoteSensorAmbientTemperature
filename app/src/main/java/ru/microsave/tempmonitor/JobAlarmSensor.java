@@ -9,8 +9,6 @@ import android.app.job.JobService;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
-import android.telephony.SmsManager;
-import android.util.Log;
 
 import java.util.Date;
 
@@ -65,18 +63,19 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
         CharSequence timeStampChar = df.format("kk:mm, dd-MM-yyyy", new Date());
 
 
-        textMessage = "ТРЕВОГА:" + degrees + Character.toString ((char) 176) + "C" + ", " +timeStampChar + ", #" + myJobTaskAlarm;
+        textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", " +timeStampChar + ", #" + myJobTaskAlarm;
 
 
         if (degrees < WARNING_TEMP_LOCAL){
-                try {
+            new sendSMS(MY_NUMBER_LOCAL, textMessage);
+/*                try {
                     SmsManager.getDefault()
                             .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
                             Log.d(LOG_TAG, textMessage);
                 } catch (Exception e) {
                             Log.d(LOG_TAG, "Failed to send AlarmSensor message: " + textMessage);
                             e.printStackTrace();
-                }
+                }*/
 
             }
     }
