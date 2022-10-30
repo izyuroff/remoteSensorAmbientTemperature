@@ -22,7 +22,7 @@ class SendBackgroundSMS extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... mess) {
-
+        Log.d(LOG_TAG, "Тест, doInBackground " + NUMBER_SMS);
         try {
             SmsManager.getDefault()
                     .sendTextMessage(NUMBER_SMS, null,TEXT_SMS, null, null);

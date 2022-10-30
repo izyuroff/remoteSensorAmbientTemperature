@@ -13,7 +13,6 @@ class sendSMS {
 
         NUMBER_SMS = num;
         TEXT_SMS = message;
-
         try {
             SmsManager.getDefault()
                     .sendTextMessage(NUMBER_SMS, null, TEXT_SMS, null, null);

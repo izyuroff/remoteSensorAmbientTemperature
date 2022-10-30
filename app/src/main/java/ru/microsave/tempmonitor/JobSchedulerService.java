@@ -90,7 +90,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
         // Вычисление периода тревоги
         if (mCurrentTime - mLastAlarm > myAlarmInterval){
-            Log.d(LOG_TAG, "tempSensor: " + tempSensor);
+
             Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
             mLastAlarm = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
 
@@ -102,13 +102,14 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                 Log.d(LOG_TAG, "ALARM TASK_NUMBER: " + TASK_NUMBER);
 
                 if (ifSensor) {
-                     Log.d(LOG_TAG, "new: JobAlarmSensor");
-                    new JobAlarmSensor(this, myNumber, tempSensor, TASK_NUMBER, myWarningTemperature).execute(param);
+                    Log.d(LOG_TAG, "new: JobAlarmSensor");
+                    Log.d(LOG_TAG, "tempSensor: " + tempSensor);
+                    new JobAlarmSensor(this, myNumber, tempSensor, TASK_NUMBER, myWarningTemperature, getString(R.string.app_name)).execute(param);
                 }
                 else {
                     batteryTemperature ();
                      Log.d(LOG_TAG, "new: JobAlarmBattery");
-                    new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature).execute(param);
+                    new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, getString(R.string.app_name)).execute(param);
                 }
             }
         }
@@ -122,12 +123,12 @@ public class JobSchedulerService extends JobService implements SensorEventListen
             mLastNormal = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobInfoSensor");
-                    new JobInfoSensor(this, myNumber, tempSensor, TASK_NUMBER).execute(param);
+                    new JobInfoSensor(this, myNumber, tempSensor, TASK_NUMBER, getString(R.string.app_name)).execute(param);
                 }
                 else {
                 batteryTemperature ();
                     Log.d(LOG_TAG, "new: JobInfoBattery");
-                    new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER).execute(param);
+                    new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, getString(R.string.app_name)).execute(param);
                 }
         }
         return true;

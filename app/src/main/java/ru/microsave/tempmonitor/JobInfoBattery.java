@@ -25,13 +25,15 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
     private final String LOG_TAG = "myLogs";
     private final JobService jobService;
     private String textMessage;
+    private String mAppname;
 
-
-    public JobInfoBattery(JobService jobService, String num, float tempBat, int count) {
+    public JobInfoBattery(JobService jobService, String num, float tempBat, int count, String appname) {
 
         MY_NUMBER_LOCAL = num;
-        myJobTaskNorm = count;
         mTempBattery = tempBat;
+        myJobTaskNorm = count;
+        mAppname = appname;
+
 
         this.jobService = jobService;
     }
@@ -57,11 +59,14 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
         // Второй вариант оформления метки времени
         android.text.format.DateFormat df = new android.text.format.DateFormat();
-        CharSequence timeStampChar = df.format("kk:mm, dd-MM-yyyy", new Date());
+        CharSequence timeStampChar = df.format("kk:mm, dd/MM/yyyy", new Date());
+        String timeStampString = (String) timeStampChar;
 
-        textMessage = "НОРМА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ", #" + myJobTaskNorm;
+        textMessage = degrees + Character.toString ((char) 176) + "C" + ", " + timeStampString + ", СМС#" + myJobTaskNorm +  ". " + mAppname;
+
+        //textMessage = "НОРМА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampString + ", #" + myJobTaskNorm;
         // Отправляем созданный номер задачи и текст в класс для отправки СМС
         //new sendSMS(MY_NUMBER_LOCAL, textMessage);
-        new SendHandlerSMS(MY_NUMBER_LOCAL, textMessage);
+        new sendSMS(MY_NUMBER_LOCAL, textMessage);
     }
 }

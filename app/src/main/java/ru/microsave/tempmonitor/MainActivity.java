@@ -223,6 +223,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 messageBattery();
                 return true;
 
+            case R.id.action_test:
+                testSMS();
+                return true;
+
             case R.id.action_count:
                 reset_counter();
                 return true;
@@ -829,8 +833,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    private void writeTime(){
+    private void testSMS(){
 
+        mTASK_NUMBER++;
+
+        String text = mDEGREES + Character.toString ((char) 176) + "C" + ", #" + mTASK_NUMBER+ ". " + (getString(R.string.app_name));
+
+        new sendSMS (MY_NUMBER, text);
+       // new SendHandlerSMS(MY_NUMBER, "Тест, отправлено " + mTASK_NUMBER);
+        saveSharedPreferences();
+        Log.d(LOG_TAG, text);
     }
 
 }

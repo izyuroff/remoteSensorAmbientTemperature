@@ -17,17 +17,15 @@ class SendHandlerSMS extends Activity {
         TEXT_SMS = message;
     }
 
-
-
-
     // Описание Runnable-объекта
     private Runnable timeUpdaterRunnable = new Runnable() {
         public void run() {
             try {
                 SmsManager.getDefault()
                         .sendTextMessage(NUMBER_SMS, null,TEXT_SMS, null, null);
+                Log.d(LOG_TAG, "class SendHandlerSMS well to send message");
             } catch (Exception e) {
-                Log.d(LOG_TAG, "class SendBackgroundSMS failed to send message");
+                Log.d(LOG_TAG, "class SendHandlerSMS failed to send message");
                 e.printStackTrace();
             }
         }

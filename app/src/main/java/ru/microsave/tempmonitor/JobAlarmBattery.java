@@ -22,13 +22,15 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
     private final String LOG_TAG = "myLogs";
     private final JobService jobService;
     private String textMessage;
+    private String mAppname;
 
-    public JobAlarmBattery(JobService jobService, String num, float tempBat, int count, int war) {
+    public JobAlarmBattery(JobService jobService, String num, float tempBat, int count, int war, String appname) {
 
         MY_NUMBER_LOCAL = num;
-        WARNING_TEMP_LOCAL = war;
-        myJobTaskAlarm = count;
         mTempBattery = tempBat;
+        myJobTaskAlarm = count;
+        WARNING_TEMP_LOCAL = war;
+        mAppname = appname;
 
         this.jobService = jobService;
     }
@@ -55,12 +57,12 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
         android.text.format.DateFormat df = new android.text.format.DateFormat();
         CharSequence timeStampChar = df.format("kk:mm, dd-MM-yyyy", new Date());
 
-        textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ", #" + myJobTaskAlarm;
+        textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ", СМС#" + myJobTaskAlarm +  ". " + mAppname;
 
         if (degrees < WARNING_TEMP_LOCAL){
             // Отправляем созданный номер задачи и текст в класс для отправки СМС
             //new sendSMS(MY_NUMBER_LOCAL, textMessage);
-            new SendHandlerSMS(MY_NUMBER_LOCAL, textMessage);
+            new sendSMS(MY_NUMBER_LOCAL, textMessage);
         }
     }
 }
