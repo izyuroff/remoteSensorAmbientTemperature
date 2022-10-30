@@ -809,8 +809,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 Log.d(LOG_TAG, "mCountedTime = " + mCountedTime/1000/60);*/
         }
         else {
-            tvTitleTimer.setText("Прошлая сессия:");
-
+            tvTitleTimer.setText("Прошлая сессия: ");
             long days = TimeUnit.MILLISECONDS.toDays(mLongTime);
             long hours = TimeUnit.MILLISECONDS.toHours(mLongTime);
             long minutes = TimeUnit.MILLISECONDS.toMinutes(mLongTime);
@@ -818,7 +817,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             hours = hours % 24;
             minutes = minutes % 60;
 
-            tvTimer.setText( days +" ДН, " + hours + " ЧАС, " + minutes + "МИН");
+            tvTimer.setText( days +" ДН, " + hours + " ЧАС, " + minutes + " МИН");
             //long mLongTime = (24 * 60 * 60 * 1000) * 365;
 
         //    Log.d(LOG_TAG, " mLongTime:" + mLongTime);
