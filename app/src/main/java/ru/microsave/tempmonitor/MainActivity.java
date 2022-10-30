@@ -731,11 +731,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Строка для вывод значения температуры батареи
         String message = String.valueOf(temp) + Character.toString ((char) 176) + "C";
         batteryLabel.setText(message);
-
-
-
-
-
     }
 
 

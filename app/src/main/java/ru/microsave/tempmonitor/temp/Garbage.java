@@ -34,7 +34,7 @@ class Garbage {
         if ((currentTime - mLastUpdated) > NORMAL_INTERVAL_MILLIS) {
             messageText = "Нормальное сообщение: " + degrees + "°C";
             mLastUpdated = currentTime;
-            // new SendSMS().execute(messageText);
+            // new SendBackgroundSMS().execute(messageText);
             msg(messageText);
         }
 
@@ -42,7 +42,7 @@ class Garbage {
         if ((degrees < WARNING_TEMP) && ((currentTime - mLastMessage) > ALARM_INTERVAL_MILLIS)) {
             messageText = "Аварийная температура: " + degrees + "°C";
             mLastMessage = currentTime;
-           // new SendSMS().execute(messageText);
+           // new SendBackgroundSMS().execute(messageText);
             msg(messageText);
         }
     }*/

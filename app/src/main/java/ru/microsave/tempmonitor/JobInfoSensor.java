@@ -62,22 +62,8 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
         // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
             textMessage = "НОРМА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampString + ", #" + myJobTaskNorm;
 
-
-            new sendSMS(MY_NUMBER_LOCAL, textMessage);
-
-
-/*            try {
-                 SmsManager.getDefault()
-                        .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
-                Log.d(LOG_TAG, textMessage);
-            } catch (Exception e) {
-                Log.d(LOG_TAG, "Failed to send Info Sensor message: " + textMessage);
-                e.printStackTrace();
-            }
- */
-
-
-
-
+            // Отправляем созданный номер задачи и текст в класс для отправки СМС
+            // new sendSMS(MY_NUMBER_LOCAL, textMessage);
+            new SendHandlerSMS(MY_NUMBER_LOCAL, textMessage);
     }
 }

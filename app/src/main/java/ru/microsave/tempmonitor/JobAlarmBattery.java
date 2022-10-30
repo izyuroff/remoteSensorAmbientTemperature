@@ -15,7 +15,7 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
     private String MY_NUMBER_LOCAL;
     private int WARNING_TEMP_LOCAL;
-    private int DEGREES_LOCAL; // Похоже только static работает
+    private static int DEGREES_LOCAL; // Похоже только static работает
 
     private static int myJobTaskAlarm;
 
@@ -58,20 +58,9 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
         textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ", #" + myJobTaskAlarm;
 
         if (degrees < WARNING_TEMP_LOCAL){
-
-            new sendSMS(MY_NUMBER_LOCAL, textMessage);
-
-/*            try {
-                SmsManager.getDefault()
-                        .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
-                        Log.d(LOG_TAG, textMessage);
-            } catch (Exception e) {
-                        Log.d(LOG_TAG, "Failed to send AlarmBattery message: " + textMessage);
-                        e.printStackTrace();
-            }*/
-
+            // Отправляем созданный номер задачи и текст в класс для отправки СМС
+            //new sendSMS(MY_NUMBER_LOCAL, textMessage);
+            new SendHandlerSMS(MY_NUMBER_LOCAL, textMessage);
         }
-
-
     }
 }

@@ -67,16 +67,9 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
 
 
         if (degrees < WARNING_TEMP_LOCAL){
-            new sendSMS(MY_NUMBER_LOCAL, textMessage);
-/*                try {
-                    SmsManager.getDefault()
-                            .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
-                            Log.d(LOG_TAG, textMessage);
-                } catch (Exception e) {
-                            Log.d(LOG_TAG, "Failed to send AlarmSensor message: " + textMessage);
-                            e.printStackTrace();
-                }*/
-
+            // Отправляем созданный номер задачи и текст в класс для отправки СМС
+            //new sendSMS(MY_NUMBER_LOCAL, textMessage);
+            new SendHandlerSMS(MY_NUMBER_LOCAL, textMessage);
             }
     }
 }

@@ -1,5 +1,6 @@
 package ru.microsave.tempmonitor;
 
+import android.content.Intent;
 import android.telephony.SmsManager;
 import android.util.Log;
 
@@ -24,6 +25,26 @@ class sendSMS {
     }
 
 
+    
+    public void sendEmail(){
 
 
+
+    }
+
+    private void sendMessage(String message) {
+
+        // Creating new intent
+        Intent intent = new Intent(Intent.ACTION_SEND);
+
+        intent.setType("text/plain");
+        intent.setPackage("com.whatsapp");
+
+        // Give your message here
+        intent.putExtra(Intent.EXTRA_TEXT,message);
+
+        // Starting Whatsapp
+        //startActivity(intent);
+
+    }
 }
