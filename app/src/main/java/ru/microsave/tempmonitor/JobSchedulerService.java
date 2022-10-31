@@ -74,7 +74,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         //numlog++;
         //Log.d(LOG_TAG, "JobSchedulerService onStartJob: " + numlog);
         readSharedPreferences();
-        // TODO: 06.06.2022 Очень интересно, почему надо вызывать onCreate 
+        // TODO: 06.06.2022 Очень интересно, почему надо вызывать onCreate
          onCreate(); // Избыточно поди (Вот почему то нет!  Если закомментить - вообще перестает все работать!)
         mCurrentTime = System.currentTimeMillis();
     //    Log.d(LOG_TAG, "mCurrentTime: " + mCurrentTime);
@@ -86,8 +86,10 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastNormal == 0 ){
-            mLastAlarm = mCurrentTime - myAlarmInterval;
-            mLastNormal = mCurrentTime - myNormalInterval;
+            //mLastAlarm = mCurrentTime - myAlarmInterval;
+            //mLastNormal = mCurrentTime - myNormalInterval;
+            mLastAlarm = mCurrentTime;
+            mLastNormal = mCurrentTime;
         }
 
         // Вычисление периода тревоги
@@ -148,7 +150,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         try {
             if (mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null){
                 mJobSensorManager.unregisterListener(this);
-                Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
+            //    Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
             }
 
         } catch (Exception e) {
