@@ -55,7 +55,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
 
         // Второй вариант оформления метки времени
         android.text.format.DateFormat df = new android.text.format.DateFormat();
-        CharSequence timeStampChar = df.format("kk:mm, dd/MM/yyyy", new Date());
+        CharSequence timeStampChar = df.format("kk:mm dd/MM/yy", new Date());
         String timeStampString = (String) timeStampChar;
         
                 // Третий вариант, он был раньше, без форматирования
@@ -63,7 +63,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
         // String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
         // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
-            textMessage = degrees + Character.toString ((char) 176) + "C" + ", " + timeStampString + ", СМС#" + myJobTaskNorm + ". " + mAppname;
+            textMessage = degrees + Character.toString ((char) 176) + "C" + ", #" + myJobTaskNorm + ", " + timeStampString + ". " + mAppname;
 
             // Отправляем созданный номер задачи и текст в класс для отправки СМС
             // new sendSMS(MY_NUMBER_LOCAL, textMessage);

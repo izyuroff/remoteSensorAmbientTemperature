@@ -61,11 +61,11 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
 
         // Второй вариант оформления метки времени
         android.text.format.DateFormat df = new android.text.format.DateFormat();
-        CharSequence timeStampChar = df.format("kk:mm, dd-MM-yyyy", new Date());
+        CharSequence timeStampChar = df.format("kk:mm dd/MM/yy", new Date());
 
 
-        textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", " +timeStampChar + ", СМС#"  + myJobTaskAlarm +  ". " + mAppname;
-
+       // textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", " +timeStampChar + ", СМС#"  + myJobTaskAlarm +  ". " + mAppname;
+        textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", #" + myJobTaskAlarm + ", " + timeStampChar + ". " + mAppname;
 
         if (degrees < WARNING_TEMP_LOCAL){
             // Отправляем созданный номер задачи и текст в класс для отправки СМС

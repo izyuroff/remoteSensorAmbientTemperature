@@ -5,6 +5,7 @@ package ru.microsave.tempmonitor;
 В нем настраивается и вызывается служба шедулера
 
  */
+
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -123,5 +124,9 @@ public class Control_activity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    protected void onAlarmManager() {
+
     }
 }

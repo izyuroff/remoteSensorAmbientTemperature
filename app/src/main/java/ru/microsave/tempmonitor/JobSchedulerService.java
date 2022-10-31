@@ -28,6 +28,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     private final String LOG_TAG = "myLogs";
     private boolean ifSensor;
 
+    private String myApp;
     private String myNumber;
     private int myWarningTemperature;
     private long myAlarmInterval;
@@ -53,6 +54,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         this.mJobSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         mJobSensorManager.registerListener(this, mJobSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
+        myApp = getString(R.string.app_name);
     }
 
     @Override
@@ -104,12 +106,12 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobAlarmSensor");
                     Log.d(LOG_TAG, "tempSensor: " + tempSensor);
-                    new JobAlarmSensor(this, myNumber, tempSensor, TASK_NUMBER, myWarningTemperature, getString(R.string.app_name)).execute(param);
+                    new JobAlarmSensor(this, myNumber, tempSensor, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                 }
                 else {
                     batteryTemperature ();
                      Log.d(LOG_TAG, "new: JobAlarmBattery");
-                    new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, getString(R.string.app_name)).execute(param);
+                    new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                 }
             }
         }
@@ -123,12 +125,12 @@ public class JobSchedulerService extends JobService implements SensorEventListen
             mLastNormal = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobInfoSensor");
-                    new JobInfoSensor(this, myNumber, tempSensor, TASK_NUMBER, getString(R.string.app_name)).execute(param);
+                    new JobInfoSensor(this, myNumber, tempSensor, TASK_NUMBER, myApp).execute(param);
                 }
                 else {
                 batteryTemperature ();
                     Log.d(LOG_TAG, "new: JobInfoBattery");
-                    new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, getString(R.string.app_name)).execute(param);
+                    new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
                 }
         }
         return true;
