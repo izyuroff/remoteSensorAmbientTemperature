@@ -70,47 +70,47 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
     @Override
     public boolean onStartJob(JobParameters param) {
-        Log.d(LOG_TAG, "--- onStartJob --- return true ---  СЕРВИС ЗАПУЩЕН!!!!!!!!!");
+    //    Log.d(LOG_TAG, "--- onStartJob --- return true ---  СЕРВИС ЗАПУЩЕН!!!!!!!!!");
         //numlog++;
         //Log.d(LOG_TAG, "JobSchedulerService onStartJob: " + numlog);
         readSharedPreferences();
         // TODO: 06.06.2022 Очень интересно, почему надо вызывать onCreate 
          onCreate(); // Избыточно поди (Вот почему то нет!  Если закомментить - вообще перестает все работать!)
         mCurrentTime = System.currentTimeMillis();
-        Log.d(LOG_TAG, "mCurrentTime: " + mCurrentTime);
-        Log.d(LOG_TAG, "mLastAlarm: " + mLastAlarm);
-        Log.d(LOG_TAG, "mLastNormal: " + mLastNormal);
+    //    Log.d(LOG_TAG, "mCurrentTime: " + mCurrentTime);
+    //    Log.d(LOG_TAG, "mLastAlarm: " + mLastAlarm);
+    //    Log.d(LOG_TAG, "mLastNormal: " + mLastNormal);
 
 
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
 
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastNormal == 0 ){
-            mLastAlarm = mCurrentTime - myAlarmInterval + 1000;
-            mLastNormal = mCurrentTime - myNormalInterval + 1000;
+            mLastAlarm = mCurrentTime - myAlarmInterval;
+            mLastNormal = mCurrentTime - myNormalInterval;
         }
 
         // Вычисление периода тревоги
         if (mCurrentTime - mLastAlarm > myAlarmInterval){
 
-            Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
-            mLastAlarm = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
+        //    Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
+            mLastAlarm = mCurrentTime - 10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
 
             if(ifSensor && tempSensor < myWarningTemperature){
 
                 ++TASK_NUMBER;
                 saveSharedPreferences();
 
-                Log.d(LOG_TAG, "ALARM TASK_NUMBER: " + TASK_NUMBER);
+               // Log.d(LOG_TAG, "ALARM TASK_NUMBER: " + TASK_NUMBER);
 
                 if (ifSensor) {
-                    Log.d(LOG_TAG, "new: JobAlarmSensor");
-                    Log.d(LOG_TAG, "tempSensor: " + tempSensor);
+                //    Log.d(LOG_TAG, "new: JobAlarmSensor");
+                //    Log.d(LOG_TAG, "tempSensor: " + tempSensor);
                     new JobAlarmSensor(this, myNumber, tempSensor, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                 }
                 else {
                     batteryTemperature ();
-                     Log.d(LOG_TAG, "new: JobAlarmBattery");
+                //     Log.d(LOG_TAG, "new: JobAlarmBattery");
                     new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                 }
             }
@@ -120,16 +120,16 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         if (mCurrentTime - mLastNormal > myNormalInterval){
             ++TASK_NUMBER;
             saveSharedPreferences();
-            Log.d(LOG_TAG, "INFO TASK_NUMBER: " + TASK_NUMBER);
-            Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastNormal + " = " +  (mCurrentTime - mLastNormal) + " ? " + myNormalInterval);
-            mLastNormal = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
+        //    Log.d(LOG_TAG, "INFO TASK_NUMBER: " + TASK_NUMBER);
+        //    Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastNormal + " = " +  (mCurrentTime - mLastNormal) + " ? " + myNormalInterval);
+            mLastNormal = mCurrentTime - 10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
                 if (ifSensor) {
-                    Log.d(LOG_TAG, "new: JobInfoSensor");
+                //    Log.d(LOG_TAG, "new: JobInfoSensor");
                     new JobInfoSensor(this, myNumber, tempSensor, TASK_NUMBER, myApp).execute(param);
                 }
                 else {
                 batteryTemperature ();
-                    Log.d(LOG_TAG, "new: JobInfoBattery");
+                //    Log.d(LOG_TAG, "new: JobInfoBattery");
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
                 }
         }
@@ -165,7 +165,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));
         TASK_NUMBER = (saveJobPref.getInt("TASK_NUMBER", 0));
-        Log.d(LOG_TAG, "readSharedPreferences: OK");
+        // Log.d(LOG_TAG, "readSharedPreferences: OK");
     }
 
 

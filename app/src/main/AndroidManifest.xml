@@ -9,7 +9,6 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.Temperature">
-        <activity android:name=".Alarm.AlarmManagerActivity"></activity>
         <activity
             android:name=".Control_activity"
             android:screenOrientation="portrait"
@@ -29,11 +28,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <receiver
-            android:name=".Alarm.AlarmManagerBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true" />
 
         <service
             android:name=".StopService"
