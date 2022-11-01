@@ -131,8 +131,4 @@ public class Control_activity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
-
-    protected void onAlarmManager() {
-
-    }
 }

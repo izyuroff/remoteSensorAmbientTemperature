@@ -13,7 +13,7 @@
     <item
         android:id="@+id/action_count"
         android:orderInCategory="1"
-        android:title="Сбросить счетчик СМС" />
+        android:title="Сбросить счетчик СМС и времени" />
 
     <item
         android:id="@+id/action_inc_count"

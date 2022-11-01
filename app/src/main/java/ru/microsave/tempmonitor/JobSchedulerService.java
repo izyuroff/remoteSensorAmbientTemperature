@@ -35,9 +35,9 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     private long myNormalInterval;
     private long mCurrentTime;
 
-    private static long mLastAlarm;
-    private static long mLastNormal;
-    private static int TASK_NUMBER;
+    private long mLastAlarm;
+    private long mLastInfo;
+    private int TASK_NUMBER;
     private static Sensor mJobSensorTemperature;
     private static SensorManager mJobSensorManager;
 
@@ -85,11 +85,11 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
 
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
-        if (mLastAlarm == 0 && mLastNormal == 0 ){
+        if (mLastAlarm == 0 && mLastInfo == 0 ){
             //mLastAlarm = mCurrentTime - myAlarmInterval;
             //mLastNormal = mCurrentTime - myNormalInterval;
             mLastAlarm = mCurrentTime;
-            mLastNormal = mCurrentTime;
+            mLastInfo = mCurrentTime;
         }
 
         // Вычисление периода тревоги
@@ -119,12 +119,12 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         }
 
         // Вычисление периода регулярной информации
-        if (mCurrentTime - mLastNormal > myNormalInterval){
+        if (mCurrentTime - mLastInfo > myNormalInterval){
             ++TASK_NUMBER;
             saveSharedPreferences();
         //    Log.d(LOG_TAG, "INFO TASK_NUMBER: " + TASK_NUMBER);
         //    Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastNormal + " = " +  (mCurrentTime - mLastNormal) + " ? " + myNormalInterval);
-            mLastNormal = mCurrentTime - 10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
+            mLastInfo = mCurrentTime - 10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
                 if (ifSensor) {
                 //    Log.d(LOG_TAG, "new: JobInfoSensor");
                     new JobInfoSensor(this, myNumber, tempSensor, TASK_NUMBER, myApp).execute(param);
@@ -142,6 +142,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     public boolean onStopJob(JobParameters params) {
         Log.d(LOG_TAG, "--- onStopJob --- return true --- СЕРВИС ОСТАНОВЛЕН!!!!!!!!!");
         return true;
+
     }
 
     @Override
@@ -166,6 +167,8 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         myAlarmInterval = (saveJobPref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
         myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));
+        mLastAlarm = (saveJobPref.getLong("LAST_ALARM", 0L));
+        mLastInfo = (saveJobPref.getLong("LAST_INFO", 0L));
         TASK_NUMBER = (saveJobPref.getInt("TASK_NUMBER", 0));
         // Log.d(LOG_TAG, "readSharedPreferences: OK");
     }
@@ -176,6 +179,8 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         SharedPreferences.Editor ed = savePref.edit();
 
+        ed.putLong("LAST_ALARM", mLastAlarm);
+        ed.putLong("LAST_INFO", mLastInfo);
         ed.putInt("TASK_NUMBER", TASK_NUMBER);
         ed.apply();
         ed.commit();
