@@ -70,13 +70,7 @@ public class Control_activity extends AppCompatActivity {
 
     public void jobPlan() {
         // Прибить неприбитое?
-
-        try {
-            mJobScheduler.cancelAll();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-        }
+        // mJobScheduler.cancelAll();
 
         Log.d(LOG_TAG, "jobPlan() Build.VERSION.SDK_INT = " + Build.VERSION.SDK_INT);
 

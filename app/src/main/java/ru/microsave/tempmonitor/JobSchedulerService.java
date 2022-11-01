@@ -44,12 +44,13 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     //private int numlog = 0;
 
     public JobSchedulerService() {
+        //readSharedPreferences();
     }
 
     @Override
     public void onCreate() {
        // numlog++;
-       // Log.d(LOG_TAG, "JobSchedulerService onCreate: " + numlog);
+        Log.d(LOG_TAG, "JobSchedulerService onCreate");
         //readSharedPreferences();
         this.mJobSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
@@ -73,58 +74,62 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     //    Log.d(LOG_TAG, "--- onStartJob --- return true ---  СЕРВИС ЗАПУЩЕН!!!!!!!!!");
         //numlog++;
         //Log.d(LOG_TAG, "JobSchedulerService onStartJob: " + numlog);
-        readSharedPreferences();
+         readSharedPreferences();
         // TODO: 06.06.2022 Очень интересно, почему надо вызывать onCreate
          onCreate(); // Избыточно поди (Вот почему то нет!  Если закомментить - вообще перестает все работать!)
         mCurrentTime = System.currentTimeMillis();
     //    Log.d(LOG_TAG, "mCurrentTime: " + mCurrentTime);
-        Log.d(LOG_TAG, "mLastAlarm: " + mLastAlarm);
-        Log.d(LOG_TAG, "mLastInfo: " + mLastInfo);
+        Log.d(LOG_TAG, "mLastAlarm 1: " + mLastAlarm);
+        Log.d(LOG_TAG, "mLastInfo 1: " + mLastInfo);
 
 
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
 
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastInfo == 0 ){
-            mLastAlarm = mCurrentTime - myAlarmInterval;
-            mLastInfo = mCurrentTime - myNormalInterval;
-            //mLastAlarm = mCurrentTime;
-            //mLastInfo = mCurrentTime;
+            //mLastAlarm = mCurrentTime - myAlarmInterval;
+            //mLastInfo = mCurrentTime - myNormalInterval;
+            mLastAlarm = mCurrentTime;
+            mLastInfo = mCurrentTime;
+            Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
+            Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
+            saveSharedPreferences();
         }
 
         // Вычисление периода тревоги
         if (mCurrentTime - mLastAlarm > myAlarmInterval){
 
-        //    Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
-            mLastAlarm = mCurrentTime - 10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
+            Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
+            mLastAlarm = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
+            Log.d(LOG_TAG, "mLastAlarm 3: " + mLastAlarm);
 
+            saveSharedPreferences();
+            batteryTemperature ();
+
+            // Для сенсора
             if(ifSensor && tempSensor < myWarningTemperature){
-
                 ++TASK_NUMBER;
                 saveSharedPreferences();
+                new JobAlarmSensor(this, myNumber, tempSensor, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
+            }
 
-               // Log.d(LOG_TAG, "ALARM TASK_NUMBER: " + TASK_NUMBER);
-
-                if (ifSensor) {
-                //    Log.d(LOG_TAG, "new: JobAlarmSensor");
-                //    Log.d(LOG_TAG, "tempSensor: " + tempSensor);
-                    new JobAlarmSensor(this, myNumber, tempSensor, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
-                }
-                else {
-                    batteryTemperature ();
-                //     Log.d(LOG_TAG, "new: JobAlarmBattery");
-                    new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
-                }
+            // Для батареи
+            if (!ifSensor && tempBattery < myWarningTemperature) {
+                ++TASK_NUMBER;
+                saveSharedPreferences();
+                new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
             }
         }
 
         // Вычисление периода регулярной информации
         if (mCurrentTime - mLastInfo > myNormalInterval){
+            Log.d(LOG_TAG, "myNormalInterval: " + mCurrentTime + " - " + mLastInfo + " = " +  (mCurrentTime - mLastInfo) + " ? " + myNormalInterval);
+            mLastInfo = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
+            Log.d(LOG_TAG, "mLastInfo 3: " + mLastInfo);
+
             ++TASK_NUMBER;
             saveSharedPreferences();
-        //    Log.d(LOG_TAG, "INFO TASK_NUMBER: " + TASK_NUMBER);
-        //    Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastNormal + " = " +  (mCurrentTime - mLastNormal) + " ? " + myNormalInterval);
-            mLastInfo = mCurrentTime - 10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
+
                 if (ifSensor) {
                 //    Log.d(LOG_TAG, "new: JobInfoSensor");
                     new JobInfoSensor(this, myNumber, tempSensor, TASK_NUMBER, myApp).execute(param);
@@ -163,12 +168,12 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     private void readSharedPreferences(){
         SharedPreferences saveJobPref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         myNumber = (saveJobPref.getString("NUMBER", "+7123456789"));
-        myWarningTemperature = (saveJobPref.getInt("WARNING", 15));
+        myWarningTemperature = (saveJobPref.getInt("WARNING", 5));
         myAlarmInterval = (saveJobPref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
-        myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
+        myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 6));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));
-        mLastAlarm = (saveJobPref.getLong("LAST_ALARM", 0L));
-        mLastInfo = (saveJobPref.getLong("LAST_INFO", 0L));
+        mLastAlarm = (saveJobPref.getLong("LAST_ALARM", 0));
+        mLastInfo = (saveJobPref.getLong("LAST_INFO", 0));
         TASK_NUMBER = (saveJobPref.getInt("TASK_NUMBER", 0));
         // Log.d(LOG_TAG, "readSharedPreferences: OK");
     }
