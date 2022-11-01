@@ -35,9 +35,9 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     private long myNormalInterval;
     private long mCurrentTime;
 
-    private long mLastAlarm;
-    private long mLastInfo;
-    private int TASK_NUMBER;
+    private static long mLastAlarm;
+    private static long mLastInfo;
+    private static int TASK_NUMBER;
     private static Sensor mJobSensorTemperature;
     private static SensorManager mJobSensorManager;
 
@@ -78,18 +78,18 @@ public class JobSchedulerService extends JobService implements SensorEventListen
          onCreate(); // Избыточно поди (Вот почему то нет!  Если закомментить - вообще перестает все работать!)
         mCurrentTime = System.currentTimeMillis();
     //    Log.d(LOG_TAG, "mCurrentTime: " + mCurrentTime);
-    //    Log.d(LOG_TAG, "mLastAlarm: " + mLastAlarm);
-    //    Log.d(LOG_TAG, "mLastNormal: " + mLastNormal);
+        Log.d(LOG_TAG, "mLastAlarm: " + mLastAlarm);
+        Log.d(LOG_TAG, "mLastInfo: " + mLastInfo);
 
 
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
 
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastInfo == 0 ){
-            //mLastAlarm = mCurrentTime - myAlarmInterval;
-            //mLastNormal = mCurrentTime - myNormalInterval;
-            mLastAlarm = mCurrentTime;
-            mLastInfo = mCurrentTime;
+            mLastAlarm = mCurrentTime - myAlarmInterval;
+            mLastInfo = mCurrentTime - myNormalInterval;
+            //mLastAlarm = mCurrentTime;
+            //mLastInfo = mCurrentTime;
         }
 
         // Вычисление периода тревоги

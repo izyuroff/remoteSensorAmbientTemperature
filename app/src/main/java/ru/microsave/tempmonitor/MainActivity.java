@@ -314,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //    stopService(new Intent(this, JobSchedulerService.class));
         serviseON = false;
         invertButton(serviseON);
-
+        reset_timer();
         mStopTime = System.currentTimeMillis();
         mLongTime = mStopTime - mStartTime;
 
@@ -759,10 +759,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void reset_counter() {
         mTASK_NUMBER = 0; // Сбросить счетчик сообщений можно через меню
-        mLastAlarm = 0;
-        mLastInfo = 0;
+        // reset_timer();
         saveSharedPreferences();
     }
+       private void reset_timer() {
+        mLastAlarm = 0;
+        mLastInfo = 0;
+    }
+
     private void countTime(){
         if (serviseON) {
 

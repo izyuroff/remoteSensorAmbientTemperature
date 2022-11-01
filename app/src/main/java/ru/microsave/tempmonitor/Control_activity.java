@@ -87,7 +87,7 @@ public class Control_activity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                         .setRequiresCharging(false)// Не требовать быть на зарядке
-                        .setPeriodic(mPeriodic, 1000 * 60 * 30)// Во втором параметре, значение для обязательного выполнения
+                        .setPeriodic(mPeriodic, 1000 * 60 * 15)// Во втором параметре, значение для обязательного выполнения
                         .setPersisted(isPersisted)// Для восстановления после перезагрузки
                         .build();
             }
