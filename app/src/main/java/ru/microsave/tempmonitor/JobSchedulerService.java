@@ -71,40 +71,42 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
     @Override
     public boolean onStartJob(JobParameters param) {
-    //    Log.d(LOG_TAG, "--- onStartJob --- return true ---  СЕРВИС ЗАПУЩЕН!!!!!!!!!");
+        Log.d(LOG_TAG, "--- onStartJob --- return true ---  СЕРВИС ЗАПУЩЕН!!!!!!!!!");
         //numlog++;
         //Log.d(LOG_TAG, "JobSchedulerService onStartJob: " + numlog);
          readSharedPreferences();
         // TODO: 06.06.2022 Очень интересно, почему надо вызывать onCreate
          onCreate(); // Избыточно поди (Вот почему то нет!  Если закомментить - вообще перестает все работать!)
         mCurrentTime = System.currentTimeMillis();
-    //    Log.d(LOG_TAG, "mCurrentTime: " + mCurrentTime);
+        Log.d(LOG_TAG, "mCurrentTime 1: " + mCurrentTime);
         Log.d(LOG_TAG, "mLastAlarm 1: " + mLastAlarm);
-        Log.d(LOG_TAG, "mLastInfo 1: " + mLastInfo);
+        Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm)/1000/60 + " ? " + myAlarmInterval/1000/60);
+
+        //Log.d(LOG_TAG, "--------------------------");
+        //Log.d(LOG_TAG, "mLastInfo 1: " + mLastInfo);
 
 
         String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
 
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         if (mLastAlarm == 0 && mLastInfo == 0 ){
-            //mLastAlarm = mCurrentTime - myAlarmInterval;
-            //mLastInfo = mCurrentTime - myNormalInterval;
             mLastAlarm = mCurrentTime;
             mLastInfo = mCurrentTime;
+            Log.d(LOG_TAG, "myAlarmInterval 2: " + myAlarmInterval);
+           // Log.d(LOG_TAG, "myNormalInterval 2: " + myNormalInterval);
             Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
-            Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
+           // Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
             saveSharedPreferences();
         }
 
         // Вычисление периода тревоги
-        if (mCurrentTime - mLastAlarm > myAlarmInterval){
+        if ((mCurrentTime - mLastAlarm) > myAlarmInterval){
 
-            Log.d(LOG_TAG, "myAlarmInterval: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval);
-            mLastAlarm = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
+            Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm)/1000/60 + " ? " + myAlarmInterval/1000/60);
+            mLastAlarm = mCurrentTime-10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
             Log.d(LOG_TAG, "mLastAlarm 3: " + mLastAlarm);
-
             saveSharedPreferences();
-            batteryTemperature ();
+
 
             // Для сенсора
             if(ifSensor && tempSensor < myWarningTemperature){
@@ -114,6 +116,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
             }
 
             // Для батареи
+            batteryTemperature ();
             if (!ifSensor && tempBattery < myWarningTemperature) {
                 ++TASK_NUMBER;
                 saveSharedPreferences();
@@ -123,9 +126,9 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
         // Вычисление периода регулярной информации
         if (mCurrentTime - mLastInfo > myNormalInterval){
-            Log.d(LOG_TAG, "myNormalInterval: " + mCurrentTime + " - " + mLastInfo + " = " +  (mCurrentTime - mLastInfo) + " ? " + myNormalInterval);
-            mLastInfo = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
-            Log.d(LOG_TAG, "mLastInfo 3: " + mLastInfo);
+        //    Log.d(LOG_TAG, "myNormalInterval: " + mCurrentTime + " - " + mLastInfo + " = " +  (mCurrentTime - mLastInfo)/1000/60 + " ? " + myNormalInterval/1000/60);
+            mLastInfo = mCurrentTime-10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
+        //    Log.d(LOG_TAG, "mLastInfo 3: " + mLastInfo);
 
             ++TASK_NUMBER;
             saveSharedPreferences();

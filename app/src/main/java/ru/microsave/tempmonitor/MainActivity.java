@@ -74,6 +74,7 @@ v.1.1
  */
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -209,6 +210,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         mButton2.setOnClickListener(view -> startSheduler());
+
+        // TODO: 02.11.2022  Блокировка экрана, чтоб не выключался (для отладки, потом убрать)
+        PowerManager pm=(PowerManager) this.getSystemService(Context.POWER_SERVICE);
+        @SuppressLint("InvalidWakeLockTag")
+        PowerManager.WakeLock wl= pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"MYTAG");
+//Осуществляем блокировку
+        wl.acquire();
     }
 
     @Override
@@ -323,14 +331,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         statusLabel.setText("Служба остановлена.");
         // Log.d(LOG_TAG, "6 MainActivity sensorExist = " + sensorExist);
 
+        // Это зачем тут было не помню
         if (sensorExist)temperatureLabel.setText(mDEGREES + getString(R.string.symbol_degrees));
         // Log.d(LOG_TAG, "MainActivity sensorExist = " + sensorExist);
 
-        saveSharedPreferences();
         Log.d(LOG_TAG, "--- stopSheduler MainActivity --- serviceON = " + serviseON);
+        saveSharedPreferences();
 
         // Может быть надо раскомментировать?
         // mSensorManager.unregisterListener(this);
+
         Intent intent = new Intent(this, Control_activity.class);
         intent.putExtra("serviceIntentON", serviseON);
         startActivity(intent);
