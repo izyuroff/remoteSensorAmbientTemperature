@@ -19,9 +19,6 @@ import android.hardware.SensorManager;
 import android.os.BatteryManager;
 import android.util.Log;
 
-import java.text.DateFormat;
-import java.util.Date;
-
 public class JobSchedulerService extends JobService implements SensorEventListener {
     private float tempSensor;
     private float tempBattery;
@@ -71,32 +68,48 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
     @Override
     public boolean onStartJob(JobParameters param) {
-        Log.d(LOG_TAG, "--- onStartJob --- return true ---  СЕРВИС ЗАПУЩЕН!!!!!!!!!");
+    //    Log.d(LOG_TAG, "--- onStartJob --- return true ---  СЕРВИС ЗАПУЩЕН!!!!!!!!!");
         //numlog++;
         //Log.d(LOG_TAG, "JobSchedulerService onStartJob: " + numlog);
          readSharedPreferences();
+         readSharedPreferences();
+         readSharedPreferences();
         // TODO: 06.06.2022 Очень интересно, почему надо вызывать onCreate
          onCreate(); // Избыточно поди (Вот почему то нет!  Если закомментить - вообще перестает все работать!)
+
+        batteryTemperature ();
+
         mCurrentTime = System.currentTimeMillis();
-        Log.d(LOG_TAG, "mCurrentTime 1: " + mCurrentTime);
-        Log.d(LOG_TAG, "mLastAlarm 1: " + mLastAlarm);
+    //    Log.d(LOG_TAG, "mCurrentTime 1: " + mCurrentTime);
+
         Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm)/1000/60 + " ? " + myAlarmInterval/1000/60);
+        Log.d(LOG_TAG, "myNormalInterval 1: " + mCurrentTime + " - " + mLastInfo + " = " +  (mCurrentTime - mLastInfo)/1000/60 + " ? " + myNormalInterval/1000/60);
 
         //Log.d(LOG_TAG, "--------------------------");
-        //Log.d(LOG_TAG, "mLastInfo 1: " + mLastInfo);
+        Log.d(LOG_TAG, "mLastAlarm 1: " + mLastAlarm);
+        Log.d(LOG_TAG, "mLastInfo 1: " + mLastInfo);
 
-
-        String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
+        // не использую нигде
+        // String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
 
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
+        // Не надо поправку, некорректно отсчитывается
         if (mLastAlarm == 0 && mLastInfo == 0 ){
             mLastAlarm = mCurrentTime;
             mLastInfo = mCurrentTime;
-            Log.d(LOG_TAG, "myAlarmInterval 2: " + myAlarmInterval);
-           // Log.d(LOG_TAG, "myNormalInterval 2: " + myNormalInterval);
+           // Log.d(LOG_TAG, "myAlarmInterval 2: " + myAlarmInterval/1000/60);
+           // Log.d(LOG_TAG, "myNormalInterval 2: " + myNormalInterval/1000/60);
             Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
-           // Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
+            Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
             saveSharedPreferences();
+            Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
+            Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
+            saveSharedPreferences();
+            Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
+            Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
+            saveSharedPreferences();
+            Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
+            Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
         }
 
         // Вычисление периода тревоги
@@ -106,40 +119,41 @@ public class JobSchedulerService extends JobService implements SensorEventListen
             mLastAlarm = mCurrentTime-10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
             Log.d(LOG_TAG, "mLastAlarm 3: " + mLastAlarm);
             saveSharedPreferences();
+            saveSharedPreferences();
 
+                // Для сенсора
+                if(ifSensor && tempSensor < myWarningTemperature){
+                    ++TASK_NUMBER;
+                    saveSharedPreferences();
+                    saveSharedPreferences();
+                    new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
+                }
 
-            // Для сенсора
-            if(ifSensor && tempSensor < myWarningTemperature){
-                ++TASK_NUMBER;
-                saveSharedPreferences();
-                new JobAlarmSensor(this, myNumber, tempSensor, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
-            }
-
-            // Для батареи
-            batteryTemperature ();
-            if (!ifSensor && tempBattery < myWarningTemperature) {
-                ++TASK_NUMBER;
-                saveSharedPreferences();
-                new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
-            }
+                // Для батареи
+                if (!ifSensor && tempBattery < myWarningTemperature) {
+                    ++TASK_NUMBER;
+                    saveSharedPreferences();
+                    saveSharedPreferences();
+                    new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
+                }
         }
 
         // Вычисление периода регулярной информации
         if (mCurrentTime - mLastInfo > myNormalInterval){
-        //    Log.d(LOG_TAG, "myNormalInterval: " + mCurrentTime + " - " + mLastInfo + " = " +  (mCurrentTime - mLastInfo)/1000/60 + " ? " + myNormalInterval/1000/60);
+            Log.d(LOG_TAG, "myNormalInterval 3: " + mCurrentTime + " - " + mLastInfo + " = " +  (mCurrentTime - mLastInfo)/1000/60 + " ? " + myNormalInterval/1000/60);
             mLastInfo = mCurrentTime-10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
-        //    Log.d(LOG_TAG, "mLastInfo 3: " + mLastInfo);
+            Log.d(LOG_TAG, "mLastInfo 3: " + mLastInfo);
 
             ++TASK_NUMBER;
             saveSharedPreferences();
+            saveSharedPreferences();
 
                 if (ifSensor) {
-                //    Log.d(LOG_TAG, "new: JobInfoSensor");
-                    new JobInfoSensor(this, myNumber, tempSensor, TASK_NUMBER, myApp).execute(param);
+                    Log.d(LOG_TAG, "new: JobInfoSensor");
+                    new JobInfoSensor(this, myNumber, tempSensor,tempBattery, TASK_NUMBER, myApp).execute(param);
                 }
                 else {
-                batteryTemperature ();
-                //    Log.d(LOG_TAG, "new: JobInfoBattery");
+                    Log.d(LOG_TAG, "new: JobInfoBattery");
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
                 }
         }

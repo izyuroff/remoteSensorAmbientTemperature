@@ -17,6 +17,7 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
     private String MY_NUMBER_LOCAL;
     private int WARNING_TEMP_LOCAL;
     private int DEGREES_LOCAL; // Похоже только static работает
+    private int DEGREES_LOCAL_BAT; // Похоже только static работает
 
     private static Sensor mJobSensorTemperatureAlarm;
     private static SensorManager mJobSensorManagerAlarm;
@@ -27,10 +28,11 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
     private String textMessage;
     private String mAppname;
 
-    public JobAlarmSensor(JobService jobService, String num, float tempSensor, int count, int war, String appname) {
+    public JobAlarmSensor(JobService jobService, String num, float tempSensor, float tempBat, int count, int war, String appname) {
 
         MY_NUMBER_LOCAL = num;
         DEGREES_LOCAL = (int)tempSensor;
+        DEGREES_LOCAL_BAT = (int)tempBat;
         myJobTaskAlarm = count;
         WARNING_TEMP_LOCAL = war;
         mAppname = appname;
@@ -65,7 +67,7 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
 
 
        // textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", " +timeStampChar + ", СМС#"  + myJobTaskAlarm +  ". " + mAppname;
-        textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", #" + myJobTaskAlarm + ", " + timeStampChar + ". " + mAppname;
+        textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C"  + ", БАТАРЕЯ: " + DEGREES_LOCAL_BAT + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ". " + mAppname+ ", #" + myJobTaskAlarm;
 
         if (degrees < WARNING_TEMP_LOCAL){
             // Отправляем созданный номер задачи и текст в класс для отправки СМС

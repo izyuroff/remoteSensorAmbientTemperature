@@ -76,6 +76,8 @@ v.1.1
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -110,11 +112,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
-    private final long mainPeriodic = 1000 * 60 * 1;
+    private final long mainPeriodic = 1000 * 60 * 15;
 
     // Для обновления температуры батареи в UI
     private Handler mHandler = new Handler();
-    private long mTime = 0L;
 
     // Для отправки СМС implements View.OnClickListener
     public String MY_NUMBER;
@@ -245,6 +246,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             case R.id.action_inc_count:
                 inc_counter();
+                return true;
+
+            case R.id.action_test_Job:
+                isJobServiceOn();
                 return true;
 
             case R.id.action_settings :
@@ -868,4 +873,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Log.d(LOG_TAG, text);
     }
 
+    public boolean isJobServiceOn() {
+        // https://overcoder.net/q/1601745/%D0%BA%D0%B0%D0%BA-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%B8%D1%82%D1%8C-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82-jobservice-%D0%B8%D0%BB%D0%B8-%D0%BD%D0%B5%D1%82-%D0%B2-android
+        // https://clck.ru/32YZ7j
+        JobScheduler scheduler = (JobScheduler) this.getSystemService(Context.JOB_SCHEDULER_SERVICE) ;
+
+        boolean hasBeenScheduled = false ;
+
+        for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
+            if (jobInfo.getId() == 777) {
+                hasBeenScheduled = true ;
+                break ;
+            }
+        }
+        if (hasBeenScheduled)
+            msg("Служба выполняется!");
+        else
+            msg("Служба не работает!");
+
+        return hasBeenScheduled ;
+    }
 }

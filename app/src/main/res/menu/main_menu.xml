@@ -11,6 +11,11 @@
         android:title="Тест отправки СМС" />
 
     <item
+        android:id="@+id/action_test_Job"
+        android:orderInCategory="1"
+        android:title="Проверка службы" />
+
+    <item
         android:id="@+id/action_count"
         android:orderInCategory="1"
         android:title="Сбросить счетчик СМС" />

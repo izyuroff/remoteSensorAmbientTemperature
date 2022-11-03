@@ -58,7 +58,7 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
         CharSequence timeStampChar = df.format("kk:mm dd/MM/yy", new Date());
 
         //textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ", СМС#" + myJobTaskAlarm +  ". " + mAppname;
-        textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", #" + myJobTaskAlarm + ", " + timeStampChar + ". " + mAppname;
+        textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ". " + mAppname+ ", #" + myJobTaskAlarm;
         if (degrees < WARNING_TEMP_LOCAL){
             // Отправляем созданный номер задачи и текст в класс для отправки СМС
             //new sendSMS(MY_NUMBER_LOCAL, textMessage);

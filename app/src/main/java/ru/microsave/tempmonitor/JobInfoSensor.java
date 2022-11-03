@@ -15,6 +15,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
     private String MY_NUMBER_LOCAL;
 
     private int DEGREES_LOCAL; // Похоже только static работает
+    private int DEGREES_LOCAL_BAT;
 
     private static int myJobTaskNorm;
 
@@ -24,10 +25,11 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
     private String mAppname;
 
 
-    public JobInfoSensor(JobService jobService, String num, float tempSensor, int count, String appname) {
+    public JobInfoSensor(JobService jobService, String num, float tempSensor,  float tempBat, int count, String appname) {
 
         MY_NUMBER_LOCAL = num;
         DEGREES_LOCAL = (int)tempSensor;
+        DEGREES_LOCAL_BAT = (int)tempBat;
         myJobTaskNorm = count;
         mAppname = appname;
 
@@ -63,7 +65,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
         // String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
         // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
-            textMessage = degrees + Character.toString ((char) 176) + "C" + ", #" + myJobTaskNorm + ", " + timeStampString + ". " + mAppname;
+        textMessage = "ИНФОРМ: " + degrees + Character.toString ((char) 176) + "C"  + ", БАТАРЕЯ: " + DEGREES_LOCAL_BAT + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ". " + mAppname+ ", #" + myJobTaskNorm;
 
             // Отправляем созданный номер задачи и текст в класс для отправки СМС
             // new sendSMS(MY_NUMBER_LOCAL, textMessage);
