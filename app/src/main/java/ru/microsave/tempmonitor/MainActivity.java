@@ -74,7 +74,6 @@ v.1.1
  */
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -112,7 +111,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
-    private final long mainPeriodic = 1000 * 60 * 15;
+    private final long mainPeriodic = 1000 * 60 * 10;
 
     // Для обновления температуры батареи в UI
     private Handler mHandler = new Handler();
@@ -213,11 +212,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mButton2.setOnClickListener(view -> startSheduler());
 
         // TODO: 02.11.2022  Блокировка экрана, чтоб не выключался (для отладки, потом убрать)
-        PowerManager pm=(PowerManager) this.getSystemService(Context.POWER_SERVICE);
+/*        PowerManager pm=(PowerManager) this.getSystemService(Context.POWER_SERVICE);
         @SuppressLint("InvalidWakeLockTag")
         PowerManager.WakeLock wl= pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"MYTAG");
 //Осуществляем блокировку
-        wl.acquire();
+        wl.acquire();*/
     }
 
     @Override

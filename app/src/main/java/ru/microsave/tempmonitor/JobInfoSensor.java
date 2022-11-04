@@ -65,7 +65,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
         // String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
         // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
-        textMessage = "ИНФОРМ: " + degrees + Character.toString ((char) 176) + "C"  + ", БАТАРЕЯ: " + DEGREES_LOCAL_BAT + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ". " + mAppname+ ", #" + myJobTaskNorm;
+        textMessage = "ДАТЧИК: " + degrees + Character.toString ((char) 176) + "C"  + ", БАТАРЕЯ: " + DEGREES_LOCAL_BAT + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ". " + mAppname+ ", #" + myJobTaskNorm;
 
             // Отправляем созданный номер задачи и текст в класс для отправки СМС
             // new sendSMS(MY_NUMBER_LOCAL, textMessage);

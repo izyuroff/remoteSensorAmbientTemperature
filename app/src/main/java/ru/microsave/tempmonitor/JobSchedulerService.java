@@ -74,10 +74,13 @@ public class JobSchedulerService extends JobService implements SensorEventListen
          readSharedPreferences();
          readSharedPreferences();
          readSharedPreferences();
-        // TODO: 06.06.2022 Очень интересно, почему надо вызывать onCreate
-         onCreate(); // Избыточно поди (Вот почему то нет!  Если закомментить - вообще перестает все работать!)
 
-        batteryTemperature ();
+
+        //Log.d(LOG_TAG, "JobSchedulerService onCreate twiced start");
+        // TODO: 06.06.2022 Очень интересно, почему надо вызывать onCreate
+        // onCreate(); // Избыточно поди (Вот почему то нет!  Если закомментить - вообще перестает все работать!)
+
+
 
         mCurrentTime = System.currentTimeMillis();
     //    Log.d(LOG_TAG, "mCurrentTime 1: " + mCurrentTime);
@@ -114,7 +117,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
         // Вычисление периода тревоги
         if ((mCurrentTime - mLastAlarm) > myAlarmInterval){
-
+            batteryTemperature ();
             Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm)/1000/60 + " ? " + myAlarmInterval/1000/60);
             mLastAlarm = mCurrentTime-10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
             Log.d(LOG_TAG, "mLastAlarm 3: " + mLastAlarm);
@@ -140,6 +143,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
         // Вычисление периода регулярной информации
         if (mCurrentTime - mLastInfo > myNormalInterval){
+            batteryTemperature ();
             Log.d(LOG_TAG, "myNormalInterval 3: " + mCurrentTime + " - " + mLastInfo + " = " +  (mCurrentTime - mLastInfo)/1000/60 + " ? " + myNormalInterval/1000/60);
             mLastInfo = mCurrentTime-10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
             Log.d(LOG_TAG, "mLastInfo 3: " + mLastInfo);
@@ -163,7 +167,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.d(LOG_TAG, "--- onStopJob --- return true --- СЕРВИС ОСТАНОВЛЕН!!!!!!!!!");
-        return true;
+        return false;
 
     }
 

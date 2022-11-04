@@ -63,7 +63,7 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
         CharSequence timeStampChar = df.format("kk:mm dd/MM/yy", new Date());
         String timeStampString = (String) timeStampChar;
 
-        textMessage = "ИНФОРМ: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampString + ". " + mAppname + ", #" + myJobTaskNorm;
+        textMessage = "БАТАРЕЯ: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampString + ". " + mAppname + ", #" + myJobTaskNorm;
 
         //textMessage = "НОРМА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampString + ", #" + myJobTaskNorm;
         // Отправляем созданный номер задачи и текст в класс для отправки СМС

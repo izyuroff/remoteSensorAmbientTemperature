@@ -79,6 +79,7 @@ public class Control_activity extends AppCompatActivity {
 
         // Инициализация планировщика два блока для разных устройств
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mPeriodic = 1000 * 60 * 15; // Решено посмотреть на разных устройствах качество срабатывания
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                         .setRequiresCharging(false)// Не требовать быть на зарядке
                         .setPeriodic(mPeriodic, 1000 * 60 * 15)// Во втором параметре, значение для обязательного выполнения
@@ -88,7 +89,8 @@ public class Control_activity extends AppCompatActivity {
 
         // Для устройств менее, чем Build.VERSION_CODES.N
         else {
-                jobInfo = new JobInfo.Builder(mJobId, componentName)
+             mPeriodic = 1000 * 60 * 5;
+             jobInfo = new JobInfo.Builder(mJobId, componentName)
                         .setRequiresCharging(false)
                         .setPeriodic(mPeriodic) // Период запусков теста должен быть меньше(?), чем переменные *_INTERVAL
                         .setPersisted(isPersisted)
