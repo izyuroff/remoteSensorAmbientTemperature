@@ -25,6 +25,7 @@ public class Control_activity extends AppCompatActivity {
     private JobScheduler mJobScheduler;
     //JobInfo jobInfo;
     private long mPeriodic;
+    private long mFlexPeriodic;
 
     private static final int mJobId = 777;
     private boolean serviceONlocal;// состояние службы дежурства, запущена или нет
@@ -78,24 +79,37 @@ public class Control_activity extends AppCompatActivity {
         final JobInfo jobInfo;
 
         // Инициализация планировщика два блока для разных устройств
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mPeriodic = 1000 * 60 * 15; // Решено посмотреть на разных устройствах качество срабатывания
+/*        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mPeriodic = 1000 * 60 * 16; // Решено посмотреть на разных устройствах качество срабатывания
+            mFlexPeriodic = 1000 * 60 * 15; // Решено посмотреть на разных устройствах качество срабатывания
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                         .setRequiresCharging(false)// Не требовать быть на зарядке
-                        .setPeriodic(mPeriodic, 1000 * 60 * 15)// Во втором параметре, значение для обязательного выполнения
+                        .setPeriodic(mPeriodic, mFlexPeriodic)// Во втором параметре, значение для обязательного выполнения
                         .setPersisted(isPersisted)// Для восстановления после перезагрузки
                         .build();
-            }
+            }*/
 
         // Для устройств менее, чем Build.VERSION_CODES.N
-        else {
+/*        else {
              mPeriodic = 1000 * 60 * 5;
              jobInfo = new JobInfo.Builder(mJobId, componentName)
                         .setRequiresCharging(false)
+                        // .setMinimumLatency(5000) - Пробовать
                         .setPeriodic(mPeriodic) // Период запусков теста должен быть меньше(?), чем переменные *_INTERVAL
                         .setPersisted(isPersisted)
                         .build();
-            }
+            }*/
+
+
+        mPeriodic = 1000 * 60 * 15;
+        jobInfo = new JobInfo.Builder(mJobId, componentName)
+                .setRequiresCharging(false)
+                // .setMinimumLatency(5000) - Пробовать
+                .setPeriodic(mPeriodic) // Период запусков теста должен быть меньше(?), чем переменные *_INTERVAL
+                .setPersisted(isPersisted)
+                .build();
+
+
         mJobScheduler.schedule(jobInfo);
 
         // Код ошибки запуска планировщика

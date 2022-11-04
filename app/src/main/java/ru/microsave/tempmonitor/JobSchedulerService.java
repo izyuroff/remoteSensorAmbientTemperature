@@ -78,7 +78,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
         //Log.d(LOG_TAG, "JobSchedulerService onCreate twiced start");
         // TODO: 06.06.2022 Очень интересно, почему надо вызывать onCreate
-        // onCreate(); // Избыточно поди (Вот почему то нет!  Если закомментить - вообще перестает все работать!)
+         onCreate(); // Избыточно поди (Вот почему то нет!  Если закомментить - вообще перестает все работать!)
 
 
 
@@ -161,13 +161,16 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
                 }
         }
+
+        // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
+        //jobFinished(param, true);
         return true;
     }
 
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.d(LOG_TAG, "--- onStopJob --- return true --- СЕРВИС ОСТАНОВЛЕН!!!!!!!!!");
-        return false;
+        return true;
 
     }
 
