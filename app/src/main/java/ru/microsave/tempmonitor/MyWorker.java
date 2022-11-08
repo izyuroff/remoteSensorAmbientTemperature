@@ -1,4 +1,10 @@
 package ru.microsave.tempmonitor;
+/*
+
+Заготовка, ничего еще не делал тут
+
+ */
+
 
 import android.content.Context;
 import android.util.Log;

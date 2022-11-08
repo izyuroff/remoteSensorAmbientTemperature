@@ -1,9 +1,6 @@
 package ru.microsave.tempmonitor;
 /*
 
-TASK_NUMBER был не всегда стабилен, иногда обнулялся ни  того ни с сего
-
-
  */
 
 import android.app.job.JobParameters;
@@ -32,9 +29,9 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     private long myNormalInterval;
     private long mCurrentTime;
 
-    private static long mLastAlarm;
-    private static long mLastInfo;
-    private static int TASK_NUMBER;
+    private long mLastAlarm;
+    private long mLastInfo;
+    private int TASK_NUMBER;
     private static Sensor mJobSensorTemperature;
     private static SensorManager mJobSensorManager;
 
@@ -48,7 +45,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     public void onCreate() {
        // numlog++;
         Log.d(LOG_TAG, "JobSchedulerService onCreate");
-        //readSharedPreferences();
+        readSharedPreferences();
         this.mJobSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         mJobSensorManager.registerListener(this, mJobSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
@@ -98,28 +95,28 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // При старте равно нулю, можно добавить поправку, в размере интервала, иначе первый тест пропускается
         // Не надо поправку, некорректно отсчитывается
         if (mLastAlarm == 0 && mLastInfo == 0 ){
-            mLastAlarm = mCurrentTime;
-            mLastInfo = mCurrentTime;
+            mLastAlarm = mCurrentTime - myAlarmInterval + (1000*60*1);
+            mLastInfo = mCurrentTime - myNormalInterval + (1000*60*1);
            // Log.d(LOG_TAG, "myAlarmInterval 2: " + myAlarmInterval/1000/60);
            // Log.d(LOG_TAG, "myNormalInterval 2: " + myNormalInterval/1000/60);
             Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
             Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
             saveSharedPreferences();
-            Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
-            Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
+            //Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
+            //Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
             saveSharedPreferences();
-            Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
-            Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
+            //Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
+            //Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
             saveSharedPreferences();
-            Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
-            Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
+            //Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
+            //Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
         }
 
         // Вычисление периода тревоги
         if ((mCurrentTime - mLastAlarm) > myAlarmInterval){
             batteryTemperature ();
             Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm)/1000/60 + " ? " + myAlarmInterval/1000/60);
-            mLastAlarm = mCurrentTime-10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
+            mLastAlarm = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
             Log.d(LOG_TAG, "mLastAlarm 3: " + mLastAlarm);
             saveSharedPreferences();
             saveSharedPreferences();
@@ -145,7 +142,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         if (mCurrentTime - mLastInfo > myNormalInterval){
             batteryTemperature ();
             Log.d(LOG_TAG, "myNormalInterval 3: " + mCurrentTime + " - " + mLastInfo + " = " +  (mCurrentTime - mLastInfo)/1000/60 + " ? " + myNormalInterval/1000/60);
-            mLastInfo = mCurrentTime-10000; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
+            mLastInfo = mCurrentTime-(1000*60*10); // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
             Log.d(LOG_TAG, "mLastInfo 3: " + mLastInfo);
 
             ++TASK_NUMBER;
@@ -163,7 +160,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         }
 
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
-        //jobFinished(param, true);
+        jobFinished(param, true);
         return true;
     }
 

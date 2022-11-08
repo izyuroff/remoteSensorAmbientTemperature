@@ -2,6 +2,7 @@ package ru.microsave.tempmonitor;
 /*
 Класс контроллер
 Сюда передаются настройки пользователя: период теста, интервалы сообщений
+(период теста теперь константа, не надо ег менять пользователям)
 В нем настраивается и вызывается служба шедулера
 
  */
@@ -40,7 +41,8 @@ public class Control_activity extends AppCompatActivity {
         Intent intent = getIntent();
         serviceONlocal = intent.getBooleanExtra("serviceIntentON",true);
 
-        mPeriodic = intent.getLongExtra("schedulerPeriodic",1000 * 60 * 15); // по умолчанию 15 минут
+        // Теперь это константа
+        // mPeriodic = intent.getLongExtra("schedulerPeriodic",1000 * 60 * 15); // по умолчанию 15 минут
         //Log.d(LOG_TAG, "--- onCreate ControlActivity serviceON = " + serviceONlocal);
 
         if (serviceONlocal){
@@ -79,18 +81,18 @@ public class Control_activity extends AppCompatActivity {
         final JobInfo jobInfo;
 
         // Инициализация планировщика два блока для разных устройств
-/*        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mPeriodic = 1000 * 60 * 16; // Решено посмотреть на разных устройствах качество срабатывания
-            mFlexPeriodic = 1000 * 60 * 15; // Решено посмотреть на разных устройствах качество срабатывания
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mPeriodic = 1000 * 60 * 20; // Решено посмотреть на разных устройствах качество срабатывания
+            mFlexPeriodic = 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                         .setRequiresCharging(false)// Не требовать быть на зарядке
-                        .setPeriodic(mPeriodic, mFlexPeriodic)// Во втором параметре, значение для обязательного выполнения
+                        .setPeriodic(mPeriodic, mFlexPeriodic)// Во втором параметре, значение для обязательного выполнения не ранее, чем.. flex
                         .setPersisted(isPersisted)// Для восстановления после перезагрузки
                         .build();
-            }*/
+            }
 
         // Для устройств менее, чем Build.VERSION_CODES.N
-/*        else {
+        else {
              mPeriodic = 1000 * 60 * 5;
              jobInfo = new JobInfo.Builder(mJobId, componentName)
                         .setRequiresCharging(false)
@@ -98,16 +100,7 @@ public class Control_activity extends AppCompatActivity {
                         .setPeriodic(mPeriodic) // Период запусков теста должен быть меньше(?), чем переменные *_INTERVAL
                         .setPersisted(isPersisted)
                         .build();
-            }*/
-
-
-        mPeriodic = 1000 * 60 * 15;
-        jobInfo = new JobInfo.Builder(mJobId, componentName)
-                .setRequiresCharging(false)
-                // .setMinimumLatency(5000) - Пробовать
-                .setPeriodic(mPeriodic) // Период запусков теста должен быть меньше(?), чем переменные *_INTERVAL
-                .setPersisted(isPersisted)
-                .build();
+            }
 
 
         mJobScheduler.schedule(jobInfo);

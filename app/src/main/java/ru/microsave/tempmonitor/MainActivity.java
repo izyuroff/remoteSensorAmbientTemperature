@@ -111,7 +111,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
-    private final long mainPeriodic = 1000 * 60 * 10;
+     // private final long mainPeriodic = 1000 * 60 * 10;
 
     // Для обновления температуры батареи в UI
     private Handler mHandler = new Handler();
@@ -209,7 +209,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         }
 
-        mButton2.setOnClickListener(view -> startSheduler());
+        mButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.this.startSheduler();
+            }
+        });
 
         // TODO: 02.11.2022  Блокировка экрана, чтоб не выключался (для отладки, потом убрать)
 /*        PowerManager pm=(PowerManager) this.getSystemService(Context.POWER_SERVICE);
@@ -365,21 +370,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Запретить оптимизировать батарею
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            msg("Служба запускается для API > 22 ");
+            msg("Служба запускается для API = " + Build.VERSION.SDK_INT);
             String packageName = getPackageName();
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                intent.setData(Uri.parse("package:" + packageName));
-                intent.putExtra("serviceIntentON", serviseON);
-                intent.putExtra("schedulerPeriodic", mainPeriodic);
-                startActivity(intent);
             }
+
+            intent.setData(Uri.parse("package:" + packageName));
+            intent.putExtra("serviceIntentON", serviseON);
+
+            // Не используется
+            //intent.putExtra("schedulerPeriodic", mainPeriodic);
+            startActivity(intent);
+
         }
         else {
             msg("Служба запускается для API < 22");
             intent.putExtra("serviceIntentON", serviseON);
-            intent.putExtra("schedulerPeriodic", mainPeriodic);
+            // Не используется
+            //intent.putExtra("schedulerPeriodic", mainPeriodic);
             startActivity(intent);
         }
     }
