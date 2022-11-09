@@ -19,18 +19,22 @@ import android.util.Log;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
-//  import static ru.microsave.tempmonitor.MainActivity.serviceON;
 
 public class Control_activity extends AppCompatActivity {
     private final String LOG_TAG = "myLogs";
     private JobScheduler mJobScheduler;
-    //JobInfo jobInfo;
+
     private long mPeriodic;
     private long mFlexPeriodic;
+
+    private int multiAlarm; // Количество часов - множитель, умножаем потом на 1000*60*60
+    private int multiNormal; // Количество часов - множитель, умножаем потом на 1000*60*60
+
 
     private static final int mJobId = 777;
     private boolean serviceONlocal;// состояние службы дежурства, запущена или нет
     private boolean isPersisted = true; // Сохранять планировщик после рестарта устройства
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +43,14 @@ public class Control_activity extends AppCompatActivity {
         mJobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
         Intent intent = getIntent();
-        serviceONlocal = intent.getBooleanExtra("serviceIntentON",true);
+        serviceONlocal = intent.getBooleanExtra("serviceIntentON", true);
+        multiAlarm = intent.getIntExtra("ALARM_HOURS", 1);
+        multiNormal = intent.getIntExtra("NORMAL_HOURS", 1);
 
-        // Теперь это константа
-        // mPeriodic = intent.getLongExtra("schedulerPeriodic",1000 * 60 * 15); // по умолчанию 15 минут
-        //Log.d(LOG_TAG, "--- onCreate ControlActivity serviceON = " + serviceONlocal);
-
-        if (serviceONlocal){
+        if (serviceONlocal) {
             Log.d(LOG_TAG, "--- jobPlan --- ");
             jobPlan();
-        }
-        else{
+        } else {
             Log.d(LOG_TAG, "--- stopPlanNow --- ");
             stopPlanNow();
         }
@@ -62,7 +63,7 @@ public class Control_activity extends AppCompatActivity {
         List<JobInfo> allPendingJobs = mJobScheduler.getAllPendingJobs();
         for (JobInfo info : allPendingJobs) {
             int id = info.getId();
-        //    Log.d(LOG_TAG, "Cancel all scheduled jobs with id = " + id);
+            //    Log.d(LOG_TAG, "Cancel all scheduled jobs with id = " + id);
             mJobScheduler.cancel(id);
         }
 
@@ -82,25 +83,38 @@ public class Control_activity extends AppCompatActivity {
 
         // Инициализация планировщика два блока для разных устройств
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mPeriodic = 1000 * 60 * 20; // Решено посмотреть на разных устройствах качество срабатывания
-            mFlexPeriodic = 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
+
+            // Дает в результате первый раз 10 минут потом по 15 минут ровно
+            //mPeriodic = 1000 * 60 * 25; // Решено посмотреть на разных устройствах качество срабатывания
+            //mFlexPeriodic = 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
+
+            // Это дало срабатывания 35, 36, 37 минут
+            // mPeriodic = 1000 * 60 * 35; // Решено посмотреть на разных устройствах качество срабатывания
+            // mFlexPeriodic = 1000 * 60 * 30; // Решено посмотреть на разных устройствах качество срабатывания
+
+            // Это дало срабатывания 5, 65, 55, 61, 64, 60, 54, 59 минут
+            mPeriodic = multiNormal * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
+            mFlexPeriodic = multiNormal * 1000 * 60 * 55; // Решено посмотреть на разных устройствах качество срабатывания
+
+
             jobInfo = new JobInfo.Builder(mJobId, componentName)
-                        .setRequiresCharging(false)// Не требовать быть на зарядке
-                        .setPeriodic(mPeriodic, mFlexPeriodic)// Во втором параметре, значение для обязательного выполнения не ранее, чем.. flex
-                        .setPersisted(isPersisted)// Для восстановления после перезагрузки
-                        .build();
-            }
+                    .setRequiresCharging(false)// Не требовать быть на зарядке
+                    .setPeriodic(mPeriodic, mFlexPeriodic)// Во втором параметре, значение flex..
+                    //.setPeriodic(JobInfo.getMinPeriodMillis(), JobInfo.getMinFlexMillis())// Во втором параметре, значение flex..
+                    .setPersisted(isPersisted)// Для восстановления после перезагрузки
+                    .build();
+        }
 
         // Для устройств менее, чем Build.VERSION_CODES.N
         else {
-             mPeriodic = 1000 * 60 * 5;
-             jobInfo = new JobInfo.Builder(mJobId, componentName)
-                        .setRequiresCharging(false)
-                        // .setMinimumLatency(5000) - Пробовать
-                        .setPeriodic(mPeriodic) // Период запусков теста должен быть меньше(?), чем переменные *_INTERVAL
-                        .setPersisted(isPersisted)
-                        .build();
-            }
+            mPeriodic = 1000 * 60 * 5;
+            jobInfo = new JobInfo.Builder(mJobId, componentName)
+                    .setRequiresCharging(false)
+                    // .setMinimumLatency(5000) - Пробовать
+                    .setPeriodic(mPeriodic) // Период запусков теста должен быть меньше(?), чем переменные *_INTERVAL
+                    .setPersisted(isPersisted)
+                    .build();
+        }
 
 
         mJobScheduler.schedule(jobInfo);
@@ -108,8 +122,7 @@ public class Control_activity extends AppCompatActivity {
         // Код ошибки запуска планировщика
         if (mJobScheduler.schedule(jobInfo) <= 0) {
             Log.d(LOG_TAG, "onCreate: Some error, jobInfo = " + jobInfo);
-        }
-        else Log.d(LOG_TAG, "Job scheduled successfully Все запланировалось успешно");
+        } else Log.d(LOG_TAG, "Job scheduled successfully Все запланировалось успешно");
 
         // ========================== Прочие параметры
         // builder.setOverrideDeadline(60*1000)
@@ -130,6 +143,7 @@ public class Control_activity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

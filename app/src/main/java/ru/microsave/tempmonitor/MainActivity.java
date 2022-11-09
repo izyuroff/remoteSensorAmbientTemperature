@@ -111,7 +111,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
-     // private final long mainPeriodic = 1000 * 60 * 10;
 
     // Для обновления температуры батареи в UI
     private Handler mHandler = new Handler();
@@ -119,8 +118,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // Для отправки СМС implements View.OnClickListener
     public String MY_NUMBER;
     public int WARNING_TEMP;
-    private long ALARM_INTERVAL; //     = 1000 * 60 * 60 * 2;
-    private long NORMAL_INTERVAL; //     = 1000 * 60 * 60 * 3;
+    private int ALARM_INTERVAL; //     теперь всё в часах
+    private int NORMAL_INTERVAL; //    НАСТРОЙКА КОЛИЧЕСТВА ЧАСОВ
+
     public int mDEGREES;
     public boolean serviseON; // состояние службы боевого дежурства, запущена или нет
     public boolean sensorExist; // наличие сенсора температуры
@@ -129,9 +129,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SensorManager mSensorManager;
     private SharedPreferences savePref;
 
-    private Button mButton0,mButton1,mButton2,mButton3,mButton4,mButton5;
+    private Button mButton0, mButton1, mButton2, mButton3, mButton4, mButton5;
 
-    private TextView sensorLabel,temperatureLabel,batteryLabel,statusLabel,numberLabel,tvMinimum,tvAlarm,tvStandart,tvCounter,tvTimer, tvTitleTimer;
+    private TextView sensorLabel, temperatureLabel, batteryLabel, statusLabel, numberLabel, tvMinimum, tvAlarm, tvStandart, tvCounter, tvTimer, tvTitleTimer;
 
     private final String LOG_TAG = "myLogs";
     private int mTASK_NUMBER; //Счетчик отправленных сообщений
@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private long mLongTime; // Подсчитанное время работы прошлого запуска
     private long mLastAlarm;
     private long mLastInfo;
+
 
 
     // private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
@@ -181,10 +182,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         // Тут проверка наличия сенсора и чтение сохраненных настроек
-       // Log.d(LOG_TAG, "1 MainActivity sensorExist = " + sensorExist);
+        // Log.d(LOG_TAG, "1 MainActivity sensorExist = " + sensorExist);
         readSharedPreferences();
         Log.d(LOG_TAG, "mTASK_NUMBER AFTER READ = " + mTASK_NUMBER);
-       // Log.d(LOG_TAG, "2 MainActivity sensorExist = " + sensorExist);
+        // Log.d(LOG_TAG, "2 MainActivity sensorExist = " + sensorExist);
         updateScreen();
 
         checkSensor();
@@ -193,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Только после проверки регистрируем листенер
         if (sensorExist)
-        mSensorManager.registerListener(this, mSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
+            mSensorManager.registerListener(this, mSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
 
         // Запрос пермишна
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -234,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch(id){
+        switch (id) {
 
             case R.id.action_info:
                 messageBattery();
@@ -256,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 isJobServiceOn();
                 return true;
 
-            case R.id.action_settings :
+            case R.id.action_settings:
                 return true;
 
             case R.id.open_privacy:
@@ -280,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             int min = second / 60;
             second = second % 60;
             // выводим время
-*/            
+*/
             batteryTemp();
             // batteryLabel.setText("" + min + ":" + String.format("%02d", second));
             // повторяем через каждые 3000 миллисекунд
@@ -290,10 +291,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void updateScreen() {
         //String period = String.valueOf((int)mainPeriodic/1000/60);
-        String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60);
-        String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
-    // mainPeriodic сделал константой  на 15 минут
-    //    dataLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
+        String pAlarm = String.valueOf((int) ALARM_INTERVAL);
+        String pNormal = String.valueOf((int) NORMAL_INTERVAL);
+        // mainPeriodic сделал константой  на 15 минут
+        //    dataLabel.setText("t°: " + WARNING_TEMP +  ", " + "Тест: " + period +  ", " + "Тревога: " + pAlarm + ", " + "Норма: " + pNormal);
         tvMinimum.setText(WARNING_TEMP + getString(R.string.symbol_degrees));
         tvAlarm.setText("" + pAlarm);
         tvStandart.setText("" + pNormal);
@@ -303,10 +304,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent sensor) {
-    // В этом методе не нужно ничего лишнего! Если есть сенсор, то здесь большая цикличная работа
-    // Метод кстати не связан с отправкой СМС, это только для вывода температуры на экран, когда приложение активно,
-    // для отправки СМС работает другой аналогичный метод в классе JobTask
-        mDEGREES = (int)sensor.values[0];
+        // В этом методе не нужно ничего лишнего! Если есть сенсор, то здесь большая цикличная работа
+        // Метод кстати не связан с отправкой СМС, это только для вывода температуры на экран, когда приложение активно,
+        // для отправки СМС работает другой аналогичный метод в классе JobTask
+        mDEGREES = (int) sensor.values[0];
         temperatureLabel.setText(mDEGREES + getString(R.string.symbol_degrees));
 
         // Поначал наделал тут проверок, ничего не нужно оказалось
@@ -328,9 +329,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     // Метод для кнопочки ОСТАНОВИТЬ СЛУЖБУ
-    public void stopSheduler (View view){
+    public void stopSheduler(View view) {
 
-    //    stopService(new Intent(this, JobSchedulerService.class));
+        //    stopService(new Intent(this, JobSchedulerService.class));
         serviseON = false;
         invertButton(serviseON);
         reset_timer();
@@ -341,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Log.d(LOG_TAG, "6 MainActivity sensorExist = " + sensorExist);
 
         // Это зачем тут было не помню
-        if (sensorExist)temperatureLabel.setText(mDEGREES + getString(R.string.symbol_degrees));
+        if (sensorExist) temperatureLabel.setText(mDEGREES + getString(R.string.symbol_degrees));
         // Log.d(LOG_TAG, "MainActivity sensorExist = " + sensorExist);
 
         Log.d(LOG_TAG, "--- stopSheduler MainActivity --- serviceON = " + serviseON);
@@ -356,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     // Метод для кнопочки БОЕВОЕ ДЕЖУРСТВО, то есть СТАРТ
-    public void startSheduler (){
+    public void startSheduler() {
         msg("Служба запущена успешно!");
         serviseON = true;
         invertButton(serviseON);
@@ -367,37 +368,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Может быть надо раскомментировать?
         // mSensorManager.unregisterListener(this);
         Intent intent = new Intent(this, Control_activity.class);
-
+        msg("Служба запускается для API = " + Build.VERSION.SDK_INT);
         // Запретить оптимизировать батарею
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            msg("Служба запускается для API = " + Build.VERSION.SDK_INT);
+
             String packageName = getPackageName();
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                msg("Оптимизация батареи, условие ОК");
             }
 
             intent.setData(Uri.parse("package:" + packageName));
             intent.putExtra("serviceIntentON", serviseON);
-
-            // Не используется
-            //intent.putExtra("schedulerPeriodic", mainPeriodic);
+            intent.putExtra("ALARM_HOURS", ALARM_INTERVAL);
+            intent.putExtra("NORMAL_HOURS", NORMAL_INTERVAL);
             startActivity(intent);
 
-        }
-        else {
-            msg("Служба запускается для API < 22");
+        } else {
             intent.putExtra("serviceIntentON", serviseON);
-            // Не используется
-            //intent.putExtra("schedulerPeriodic", mainPeriodic);
             startActivity(intent);
         }
     }
 
     private void saveSharedPreferences() {
         // String period = String.valueOf((int)mainPeriodic/1000/60);
-        String pAlarm = String.valueOf((int)ALARM_INTERVAL/1000/60);
-        String pNormal = String.valueOf((int)NORMAL_INTERVAL/1000/60);
+        String pAlarm = String.valueOf((int) ALARM_INTERVAL);
+        String pNormal = String.valueOf((int) NORMAL_INTERVAL);
 
         tvMinimum.setText(WARNING_TEMP + getString(R.string.symbol_degrees));
         tvAlarm.setText("" + pAlarm);
@@ -413,8 +410,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ed.putInt("WARNING", WARNING_TEMP);
 
         // ed.putLong("PERIOD_INTERVAL", mainPeriodic);
-        ed.putLong("NORMAL_INTERVAL", NORMAL_INTERVAL);
-        ed.putLong("ALARM_INTERVAL", ALARM_INTERVAL);
+        ed.putInt("NORMAL_INTERVAL", NORMAL_INTERVAL);
+        ed.putInt("ALARM_INTERVAL", ALARM_INTERVAL);
         ed.putLong("START_TIME", mStartTime);
         ed.putLong("STOP_TIME", mStopTime);
         ed.putLong("LONG_TIME", mLongTime);
@@ -426,11 +423,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ed.apply();
         ed.commit();
     }
-    private void readSharedPreferences(){
+
+    private void readSharedPreferences() {
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         // mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 15));
-        ALARM_INTERVAL = (savePref.getLong("ALARM_INTERVAL", 1000 * 60 * 60 * 1));
-        NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 1000 * 60 * 60 * 12));
+        ALARM_INTERVAL = (savePref.getInt("ALARM_INTERVAL", 1));
+        NORMAL_INTERVAL = (savePref.getInt("NORMAL_INTERVAL", 6));
         mStartTime = (savePref.getLong("START_TIME", 0));
         mStopTime = (savePref.getLong("STOP_TIME", 0));
         mLongTime = (savePref.getLong("LONG_TIME", 0));
@@ -452,14 +450,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // ==========================================
 
     // fast way to call Toast
-    private void msg(String s)
-    {
-        Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
+    private void msg(String s) {
+        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
     }
 
-        // Меняем кнопочки
-    private void invertButton(Boolean b)
-    {
+    // Меняем кнопочки
+    private void invertButton(Boolean b) {
         // если serviceON
         if (b) {
             mButton1.setBackgroundResource(R.drawable.red_button);
@@ -503,16 +499,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Почему то закомментировал, не помню, были проблемы вроде бы
         // Но в то же время надо бы выполнять
         // Да, точно, при уходе в другую активити (что точно? проблемы или нет?)
-       // mSensorManager.unregisterListener(this);
+        // mSensorManager.unregisterListener(this);
 
         // Удаляем Runnable-объект для прекращения задачи
         mHandler.removeCallbacks(timeUpdaterRunnable);
     }
+
     @Override
     protected void onDestroy() {
         saveSharedPreferences();
-      //  mSensorManager = null;
-      //  mSensorTemperature = null;
+        //  mSensorManager = null;
+        //  mSensorTemperature = null;
         super.onDestroy();
     }
 
@@ -522,17 +519,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         alert.setTitle(R.string.inputAlarmTitle);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-        alert.setMessage(getString(R.string.inputAlarmMessage1) + WARNING_TEMP + (getString(R.string.symbol_degrees) +
-                getString(R.string.inputAlarmMessage2) + " " + ALARM_INTERVAL/60/1000 + " " + getString(R.string.inputAlarmMessage3)));
+            alert.setMessage(getString(R.string.inputAlarmMessage1) + WARNING_TEMP + (getString(R.string.symbol_degrees) +
+                    getString(R.string.inputAlarmMessage2) + " " + ALARM_INTERVAL+ " " + getString(R.string.inputAlarmMessage3)));
 
         else
-        alert.setMessage(getString(R.string.inputAlarmMessage1) + WARNING_TEMP + (getString(R.string.symbol_degrees) +
-                getString(R.string.inputAlarmMessage2) + " " + ALARM_INTERVAL/60/1000));
+            alert.setMessage(getString(R.string.inputAlarmMessage1) + WARNING_TEMP + (getString(R.string.symbol_degrees) +
+                    getString(R.string.inputAlarmMessage2) + " " + ALARM_INTERVAL));
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
 
-       // input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
+        // input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
         input.requestFocus();
         input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
         alert.setView(input);
@@ -544,20 +541,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // Проверяем поля на пустоту
                 if (TextUtils.isEmpty(input.getText().toString())) {
-                    Toast.makeText(getApplicationContext(),"Выход без изменений!",Toast.LENGTH_LONG).show();
+                    msg("Выход без изменений!");
                     return;
                 }
 
-                int minute= (Integer.parseInt(value));
+                int hours = (Integer.parseInt(value));
                 // Проверка значения
-                if (minute < 15 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N || minute < 1){
-                    Toast.makeText(getApplicationContext(),"Нельзя устанавливать менее 15 минут или 0!",Toast.LENGTH_LONG).show();
+                if (hours < 1) {
+                    msg("Нельзя устанавливать менее 1 часа!");
                     inputAlarma(null);
-                }
-
-                else {
-                    ALARM_INTERVAL = Long.valueOf(minute * 60 * 1000);
-                    Log.d(LOG_TAG, "--- ALARM_INTERVAL ---" + ALARM_INTERVAL/1000/60);
+                } else {
+                    ALARM_INTERVAL = Integer.valueOf(hours);
+                    Log.d(LOG_TAG, "--- ALARM_INTERVAL ---" + ALARM_INTERVAL);
                     saveSharedPreferences();
                 }
             }
@@ -579,14 +574,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-        alert.setMessage(getString(R.string.inputNormalMessage1) + " " + NORMAL_INTERVAL/60/1000 + " " + getString(R.string.inputNormalMessage2));
+            alert.setMessage(getString(R.string.inputNormalMessage1) + " " + NORMAL_INTERVAL+ " " + getString(R.string.inputNormalMessage2));
         else
-        alert.setMessage(getString(R.string.inputNormalMessage1) + " " + NORMAL_INTERVAL/60/1000);
+            alert.setMessage(getString(R.string.inputNormalMessage1) + " " + NORMAL_INTERVAL);
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
 
-       // input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
+        // input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
         input.requestFocus();
         input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
         alert.setView(input);
@@ -597,19 +592,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // Проверяем поля на пустоту
                 if (TextUtils.isEmpty(input.getText().toString())) {
-                    Toast.makeText(getApplicationContext(),"Выход без изменений!",Toast.LENGTH_LONG).show();
+                    msg("Выход без изменений!");
                     return;
                 }
 
-                int minute= (Integer.parseInt(value));
+                int hours = (Integer.parseInt(value));
                 // Проверка значения
-                if (minute < 15 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N || minute < 1){
-                    Toast.makeText(getApplicationContext(),"Нельзя устанавливать менее 15 минут или 0!",Toast.LENGTH_LONG).show();
+                if (hours < 1) {
+                    msg("Нельзя устанавливать менее 1 часа!");
                     inputNormal(null);
-                }
-                else {
-                    NORMAL_INTERVAL = Long.valueOf(minute * 60 * 1000);
-                    Log.d(LOG_TAG, "--- NORMAL_INTERVAL ---" + NORMAL_INTERVAL/1000/60);
+                } else {
+                    NORMAL_INTERVAL = Integer.valueOf(hours);
+                    Log.d(LOG_TAG, "--- NORMAL_INTERVAL ---" + NORMAL_INTERVAL);
                     saveSharedPreferences();
                 }
             }
@@ -627,12 +621,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle(R.string.inputNumberTitle);
-        alert.setMessage(getString(R.string.inputNumberMessage) + " " +  MY_NUMBER);
+        alert.setMessage(getString(R.string.inputNumberMessage) + " " + MY_NUMBER);
         // TODO: 12.04.2022 Что то тут не так, проверка нужна на правильность ввода номера
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
-       // input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
+        // input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
         input.requestFocus();
         //getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         input.setInputType(InputType.TYPE_CLASS_PHONE);  //установит клавиатуру для ввода номера телефона
@@ -641,10 +635,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         alert.setPositiveButton(R.string.buttonOK, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String value = String.valueOf(input.getText());
-                
+
                 // Проверяем поля на пустоту
                 if (TextUtils.isEmpty(input.getText().toString())) {
-                    Toast.makeText(getApplicationContext(),"Выход без изменений!",Toast.LENGTH_LONG).show();
+                    msg("Выход без изменений!");
                     return;
                 }
 
@@ -663,12 +657,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
         alert.show();
     }
+
     // ==========================================
     public void inputWarning(View view) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle(R.string.inputWarningTitle);
-        alert.setMessage(getString(R.string.inputWarningMessage) +  " " + WARNING_TEMP +  " " + (getString(R.string.symbol_degrees)));
+        alert.setMessage(getString(R.string.inputWarningMessage) + " " + WARNING_TEMP + " " + (getString(R.string.symbol_degrees)));
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -683,18 +678,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // Проверяем поля на пустоту
                 if (TextUtils.isEmpty(input.getText().toString())) {
-                    Toast.makeText(getApplicationContext(),"Выход без изменений!",Toast.LENGTH_LONG).show();
+                    msg("Выход без изменений!");
                     return;
                 }
 
                 // Проверка значения, запрещено устанавливать ноль и ниже
                 int minimalTemp = (Integer.parseInt(value));
-                if (minimalTemp < 1){
-                    Toast.makeText(getApplicationContext(),"Нельзя устанавливать 0!",Toast.LENGTH_LONG).show();
+                if (minimalTemp < 1) {
+                    msg("Нельзя устанавливать 0!");
                     inputWarning(null);
-                }
-
-            else {
+                } else {
                     WARNING_TEMP = Integer.parseInt(value);
                     saveSharedPreferences();
                 }
@@ -708,7 +701,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         alert.show();
     }
 
-    public void messageBattery () {
+    public void messageBattery() {
 
         // Сообщение при первом запуске было прочитано
         if (!messageRead) {
@@ -717,28 +710,27 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         // Собственно диалоговое окно с информацией
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            // Log.d(LOG_TAG, "33 MainActivity sensorExist = " + sensorExist);
-            if (!sensorExist) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        // Log.d(LOG_TAG, "33 MainActivity sensorExist = " + sensorExist);
+        if (!sensorExist) {
             alert.setTitle(R.string.infoBatteryTitle);
             alert.setMessage(R.string.infoBatteryMessage);
+        } else {
+            alert.setTitle(R.string.infoSensorTitle);
+            alert.setMessage(R.string.infoSensorMessage);
+        }
+        alert.setPositiveButton(R.string.buttonOK, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
             }
-            else {
-                alert.setTitle(R.string.infoSensorTitle);
-                alert.setMessage(R.string.infoSensorMessage);
-            }
-            alert.setPositiveButton(R.string.buttonOK, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                }
-            });
+        });
 
-            alert.show();
+        alert.show();
     }
 
-    private void checkSensor(){
+    private void checkSensor() {
         // Проверим наличчие сенсора
 
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.ICE_CREAM_SANDWICH && mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
             sensorLabel.setText("ТЕРМОМЕТР");
             sensorExist = true;
             mSensorTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
@@ -750,22 +742,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             sensorExist = false;
             temperatureLabel.setText("-----");
         }
+
         if (!messageRead) {
-            messageBattery ();
+            // Если не читали, значит первый раз в приложении
+            messageBattery();
         }
         saveSharedPreferences();
     }
 
-    public void batteryTemp ()
-    {
+    public void batteryTemp() {
         // Также каждые три секунды проверяем изменение счетчика СМС в сохраненном файле
         readCounter();
         //countTime();
         Intent intent = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        int  temp   = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0)) /10;
+        int temp = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
 
         // Строка для вывод значения температуры батареи
-        String message = String.valueOf(temp) + Character.toString ((char) 176) + "C";
+        String message = String.valueOf(temp) + Character.toString((char) 176) + "C";
         batteryLabel.setText(message);
     }
 
@@ -776,7 +769,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         saveSharedPreferences();
     }
 
-    private void readCounter(){
+    private void readCounter() {
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         mTASK_NUMBER = (savePref.getInt("TASK_NUMBER", 0));
         tvCounter.setText("# " + mTASK_NUMBER);
@@ -788,30 +781,31 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // reset_timer();
         saveSharedPreferences();
     }
-       private void reset_timer() {
+
+    private void reset_timer() {
         mLastAlarm = 0;
         mLastInfo = 0;
     }
 
-    private void countTime(){
+    private void countTime() {
         if (serviseON) {
 
             tvTitleTimer.setText("Текущая сессия:");
             mTimeNow = System.currentTimeMillis();
-        //    Log.d(LOG_TAG, "Текущая сессия mTimeNow: " + mTimeNow);
+            //    Log.d(LOG_TAG, "Текущая сессия mTimeNow: " + mTimeNow);
 
 
             savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
             mStartTime = (savePref.getLong("START_TIME", 0));
-        //    Log.d(LOG_TAG, "Текущая сессия mStartTime: " + mStartTime);
+            //    Log.d(LOG_TAG, "Текущая сессия mStartTime: " + mStartTime);
 
             mCountedTime = mTimeNow - mStartTime;
-        //    Log.d(LOG_TAG, "Текущая сессия mTimeNow - mStartTime: " + mCountedTime);
+            //    Log.d(LOG_TAG, "Текущая сессия mTimeNow - mStartTime: " + mCountedTime);
 
 
             //String workedTime = DateFormat.getDateTimeInstance().format(new Date(mCountedTime));
 
-           // long weeks = mCountedTime / 604800;
+            // long weeks = mCountedTime / 604800;
             //long days = (mCountedTime % 604800) / 86400;
 
             long days = TimeUnit.MILLISECONDS.toDays(mCountedTime);
@@ -822,18 +816,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             hours = hours % 24;
             minutes = minutes % 60;
 
-                    //    long days = mCountedTime / (365 * 24 * 60 * 60 * 1000) % 86400000;
-        //    long hours = mCountedTime / (60 * 60 * 1000) % 24;
-        //    long minutes = (mCountedTime / (60 * 1000) % 60);
+            //    long days = mCountedTime / (365 * 24 * 60 * 60 * 1000) % 86400000;
+            //    long hours = mCountedTime / (60 * 60 * 1000) % 24;
+            //    long minutes = (mCountedTime / (60 * 1000) % 60);
 
 
-          //  long hours = ((mCountedTime % 604800) % 86400) / 3600;
-          //  long minutes = (((mCountedTime % 604800) % 86400) % 3600) / 60;
-          //  long seconds = (((mCountedTime % 604800) % 86400) % 3600) % 60;
+            //  long hours = ((mCountedTime % 604800) % 86400) / 3600;
+            //  long minutes = (((mCountedTime % 604800) % 86400) % 3600) / 60;
+            //  long seconds = (((mCountedTime % 604800) % 86400) % 3600) % 60;
 
-            tvTimer.setText( days +" дн, " + hours + " час, " + minutes + " мин");
+            tvTimer.setText(days + " дн, " + hours + " час, " + minutes + " мин");
             //tvTimer.setText(mCountedTime + "");
-        //    Log.d(LOG_TAG, days +" дней, " + hours + " часов, " + minutes + " минут");
+            //    Log.d(LOG_TAG, days +" дней, " + hours + " часов, " + minutes + " минут");
 
 /*            if (mCountedTime/1000/60 < 60) {
                 tvTimer.setText(mCountedTime / 1000 / 60 + " мин.");
@@ -845,8 +839,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             else
                 tvTimer.setText((mCountedTime/1000/60 ) + " дней часов минут");
                 Log.d(LOG_TAG, "mCountedTime = " + mCountedTime/1000/60);*/
-        }
-        else {
+        } else {
             tvTitleTimer.setText("Прошлая сессия: ");
             long days = TimeUnit.MILLISECONDS.toDays(mLongTime);
             long hours = TimeUnit.MILLISECONDS.toHours(mLongTime);
@@ -855,29 +848,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             hours = hours % 24;
             minutes = minutes % 60;
 
-            tvTimer.setText( days +" ДН, " + hours + " ЧАС, " + minutes + " МИН");
+            tvTimer.setText(days + " ДН, " + hours + " ЧАС, " + minutes + " МИН");
             //long mLongTime = (24 * 60 * 60 * 1000) * 365;
 
-        //    Log.d(LOG_TAG, " mLongTime:" + mLongTime);
+            //    Log.d(LOG_TAG, " mLongTime:" + mLongTime);
 
-        //    Log.d(LOG_TAG, "ЛЕТ " + String.valueOf(mLongTime / (31 * 24 * 60 * 60 * 1000) % 12));
-        //    Log.d(LOG_TAG, "МЕСЯЦЕВ " + String.valueOf(mLongTime / (1000 * 60 * 60 * 24 * 30) % 12));
+            //    Log.d(LOG_TAG, "ЛЕТ " + String.valueOf(mLongTime / (31 * 24 * 60 * 60 * 1000) % 12));
+            //    Log.d(LOG_TAG, "МЕСЯЦЕВ " + String.valueOf(mLongTime / (1000 * 60 * 60 * 24 * 30) % 12));
 
 
-        //    Log.d(LOG_TAG, "ДНЕЙ " + String.valueOf(mLongTime / (24 * 60 * 60 * 1000)));
-        //    Log.d(LOG_TAG, "ЧАСОВ " + String.valueOf(mLongTime / (60 * 60 * 1000) % 24));
-        //    Log.d(LOG_TAG, "МИНУТ " + String.valueOf(mLongTime / (60 * 1000) % 60));
+            //    Log.d(LOG_TAG, "ДНЕЙ " + String.valueOf(mLongTime / (24 * 60 * 60 * 1000)));
+            //    Log.d(LOG_TAG, "ЧАСОВ " + String.valueOf(mLongTime / (60 * 60 * 1000) % 24));
+            //    Log.d(LOG_TAG, "МИНУТ " + String.valueOf(mLongTime / (60 * 1000) % 60));
         }
     }
 
-    private void testSMS(){
+    private void testSMS() {
 
         mTASK_NUMBER++;
 
-        String text = mDEGREES + Character.toString ((char) 176) + "C" + ", #" + mTASK_NUMBER+ ". " + (getString(R.string.app_name));
+        String text = mDEGREES + Character.toString((char) 176) + "C" + ", #" + mTASK_NUMBER + ". " + (getString(R.string.app_name));
 
-        new sendSMS (MY_NUMBER, text);
-       // new SendHandlerSMS(MY_NUMBER, "Тест, отправлено " + mTASK_NUMBER);
+        new sendSMS(MY_NUMBER, text);
+        // new SendHandlerSMS(MY_NUMBER, "Тест, отправлено " + mTASK_NUMBER);
         saveSharedPreferences();
         Log.d(LOG_TAG, text);
     }
@@ -885,14 +878,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public boolean isJobServiceOn() {
         // https://overcoder.net/q/1601745/%D0%BA%D0%B0%D0%BA-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%B8%D1%82%D1%8C-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82-jobservice-%D0%B8%D0%BB%D0%B8-%D0%BD%D0%B5%D1%82-%D0%B2-android
         // https://clck.ru/32YZ7j
-        JobScheduler scheduler = (JobScheduler) this.getSystemService(Context.JOB_SCHEDULER_SERVICE) ;
+        JobScheduler scheduler = (JobScheduler) this.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
-        boolean hasBeenScheduled = false ;
+        boolean hasBeenScheduled = false;
 
         for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
             if (jobInfo.getId() == 777) {
-                hasBeenScheduled = true ;
-                break ;
+                hasBeenScheduled = true;
+                break;
             }
         }
         if (hasBeenScheduled)
@@ -900,6 +893,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         else
             msg("Служба не работает!");
 
-        return hasBeenScheduled ;
+        return hasBeenScheduled;
     }
 }
