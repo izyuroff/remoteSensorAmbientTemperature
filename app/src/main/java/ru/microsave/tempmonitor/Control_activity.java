@@ -5,6 +5,7 @@ package ru.microsave.tempmonitor;
 (период теста теперь константа, не надо ег менять пользователям)
 В нем настраивается и вызывается служба шедулера
 
+Планируется два разных задания - отдельно для нормал и аларм
  */
 
 import android.app.job.JobInfo;
@@ -23,15 +24,20 @@ import androidx.appcompat.app.AppCompatActivity;
 public class Control_activity extends AppCompatActivity {
     private final String LOG_TAG = "myLogs";
     private JobScheduler mJobScheduler;
+    private JobScheduler mJobSchedulerAlarm;
 
     private long mPeriodic;
     private long mFlexPeriodic;
+
+    private long mPeriodicAlarm;
+    private long mFlexPeriodicAlarm;
 
     private int multiAlarm; // Количество часов - множитель, умножаем потом на 1000*60*60
     private int multiNormal; // Количество часов - множитель, умножаем потом на 1000*60*60
 
 
     private static final int mJobId = 777;
+    private static final int mJobAlarmId = 778;
     private boolean serviceONlocal;// состояние службы дежурства, запущена или нет
     private boolean isPersisted = true; // Сохранять планировщик после рестарта устройства
 
@@ -41,6 +47,7 @@ public class Control_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control);
         mJobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        mJobSchedulerAlarm = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
         Intent intent = getIntent();
         serviceONlocal = intent.getBooleanExtra("serviceIntentON", true);
@@ -81,6 +88,10 @@ public class Control_activity extends AppCompatActivity {
         ComponentName componentName = new ComponentName(this, JobSchedulerService.class);
         final JobInfo jobInfo;
 
+        ComponentName componentNameAlarm = new ComponentName(this, JobSchedulerServiceAlarm.class);
+        final JobInfo jobInfoAlarm;
+        // ===================================================================================
+        // ======================= Планируем jobInfo ===========================================
         // Инициализация планировщика для API >= 24
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
@@ -96,7 +107,6 @@ public class Control_activity extends AppCompatActivity {
             mPeriodic = multiNormal * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
             mFlexPeriodic = multiNormal * 1000 * 60 * 55; // Решено посмотреть на разных устройствах качество срабатывания
 
-
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                     .setRequiresCharging(false)// Не требовать быть на зарядке
                     .setPeriodic(mPeriodic, mFlexPeriodic)// Во втором параметре, значение flex..
@@ -108,7 +118,7 @@ public class Control_activity extends AppCompatActivity {
         // Инициализация планировщика для API < 24
         // Для устройств менее, чем Build.VERSION_CODES.N
         else {
-            mPeriodic = 1000 * 60 * 5;
+            mPeriodic = 1000 * 60 * 6;
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                     .setRequiresCharging(false)
                     // .setMinimumLatency(5000) - Пробовать
@@ -116,22 +126,44 @@ public class Control_activity extends AppCompatActivity {
                     .setPersisted(isPersisted)
                     .build();
         }
-
-
         mJobScheduler.schedule(jobInfo);
-
         // Код ошибки запуска планировщика
         if (mJobScheduler.schedule(jobInfo) <= 0) {
             Log.d(LOG_TAG, "onCreate: Some error, jobInfo = " + jobInfo);
-        } else Log.d(LOG_TAG, "Job scheduled successfully Все запланировалось успешно");
+        } else Log.d(LOG_TAG, "jobInfo: Все запланировалось успешно");
+        // ===================================================================================
+        // ===================================================================================
+        // ======================= Планируем jobInfoAlarm ===========================================
+        // Инициализация планировщика для API >= 24
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
-        // ========================== Прочие параметры
-        // builder.setOverrideDeadline(60*1000)
-        // builder.setMinimumLatency(3*1000)
-        // builder.setMinimumLatency(16*60*1000)
-        // builder.setRequiresCharging(requireCharging);
-        // builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+            mPeriodicAlarm = multiAlarm * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
+            mFlexPeriodicAlarm = multiAlarm * 1000 * 60 * 55; // Решено посмотреть на разных устройствах качество срабатывания
 
+            jobInfoAlarm = new JobInfo.Builder(mJobAlarmId, componentNameAlarm)
+                    .setRequiresCharging(false)// Не требовать быть на зарядке
+                    .setPeriodic(mPeriodicAlarm, mFlexPeriodicAlarm)// Во втором параметре, значение flex..
+                    .setPersisted(isPersisted)// Для восстановления после перезагрузки
+                    .build();
+        }
+
+        // Инициализация планировщика для API < 24
+        // Для устройств менее, чем Build.VERSION_CODES.N
+        else {
+            mPeriodicAlarm = 1000 * 60 * 5;
+            jobInfoAlarm = new JobInfo.Builder(mJobAlarmId, componentNameAlarm)
+                    .setRequiresCharging(false)
+                    .setPeriodic(mPeriodicAlarm)
+                    .setPersisted(isPersisted)
+                    .build();
+        }
+        mJobSchedulerAlarm.schedule(jobInfoAlarm);
+
+        // Код ошибки запуска планировщика
+        if (mJobSchedulerAlarm.schedule(jobInfo) <= 0) {
+            Log.d(LOG_TAG, "onCreate: Some error, jobInfoAlarm = " + jobInfoAlarm);
+        } else Log.d(LOG_TAG, "jobInfoAlarm: Все запланировалось успешно");
+        // ===================================================================================
         finish(); // Возвращаемся в MainActivity
     }
 
