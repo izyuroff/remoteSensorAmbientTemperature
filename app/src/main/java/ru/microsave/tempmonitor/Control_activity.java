@@ -81,7 +81,7 @@ public class Control_activity extends AppCompatActivity {
         ComponentName componentName = new ComponentName(this, JobSchedulerService.class);
         final JobInfo jobInfo;
 
-        // Инициализация планировщика два блока для разных устройств
+        // Инициализация планировщика для API >= 24
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
             // Дает в результате первый раз 10 минут потом по 15 минут ровно
@@ -105,6 +105,7 @@ public class Control_activity extends AppCompatActivity {
                     .build();
         }
 
+        // Инициализация планировщика для API < 24
         // Для устройств менее, чем Build.VERSION_CODES.N
         else {
             mPeriodic = 1000 * 60 * 5;

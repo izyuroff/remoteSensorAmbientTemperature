@@ -21,6 +21,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     private float tempBattery;
     private final String LOG_TAG = "myLogs";
     private boolean ifSensor;
+    private boolean ifFlexTime;
 
     private String myApp;
     private String myNumber;
@@ -99,7 +100,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
             mLastAlarm = mCurrentTime;
             mLastInfo = mCurrentTime;
             // Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
-            // Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
+            Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
             saveSharedPreferences();
         }
 
@@ -152,17 +153,39 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
         // =======================================================================================
 
-
-        // Не запутанное проверкой времени!
-        ++TASK_NUMBER;
-        saveSharedPreferences();
         batteryTemperature();
-        if (ifSensor) {
-            Log.d(LOG_TAG, "new: JobInfoSensor");
-            new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
+
+        // Если FlexTime то время не проверяем!
+        if (ifFlexTime) {
+            ++TASK_NUMBER;
+            if (ifSensor) {
+                Log.d(LOG_TAG, "new: JobInfoSensor");
+                new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
+            } else {
+                Log.d(LOG_TAG, "new: JobInfoBattery");
+                new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
+            }
+
         } else {
-            Log.d(LOG_TAG, "new: JobInfoBattery");
-            new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
+            // Проверка времени
+            if (mCurrentTime - mLastInfo > myNormalInterval * 1000 * 60 * 60) {
+                ++TASK_NUMBER;
+
+                Log.d(LOG_TAG, "myNormalInterval 3: " + mCurrentTime + " - " + mLastInfo + " = " +  (mCurrentTime - mLastInfo)/1000/60 + " ? " + myNormalInterval/1000/60);
+
+                if (ifSensor) {
+                    Log.d(LOG_TAG, "new: JobInfoSensor");
+                    new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
+                } else {
+                    Log.d(LOG_TAG, "new: JobInfoBattery");
+                    new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
+                }
+
+                mLastInfo = mCurrentTime;
+
+            }
+
+            saveSharedPreferences();
         }
 
         // =======================================================================================
@@ -202,6 +225,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         myAlarmInterval = (saveJobPref.getInt("ALARM_INTERVAL", 1));
         myNormalInterval = (saveJobPref.getInt("NORMAL_INTERVAL", 6));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));
+        ifFlexTime = (saveJobPref.getBoolean("USE_FLEX_TIME", true));
         mLastAlarm = (saveJobPref.getLong("LAST_ALARM", 0));
         mLastInfo = (saveJobPref.getLong("LAST_INFO", 0));
         TASK_NUMBER = (saveJobPref.getInt("TASK_NUMBER", 0));

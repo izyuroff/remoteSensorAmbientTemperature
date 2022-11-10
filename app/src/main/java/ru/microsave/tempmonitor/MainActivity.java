@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public boolean serviseON; // состояние службы боевого дежурства, запущена или нет
     public boolean sensorExist; // наличие сенсора температуры
     public boolean messageRead; // сообщение прочитано при первом запуске, больше не выводить
+    public boolean useFlexTime; // Эта переменная проверяется в JobSchedulerService
     private Sensor mSensorTemperature;
     private SensorManager mSensorManager;
     private SharedPreferences savePref;
@@ -417,6 +418,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ed.putLong("LONG_TIME", mLongTime);
 
         ed.putBoolean("IFSENSOR", sensorExist);
+        ed.putBoolean("USE_FLEX_TIME", useFlexTime);
         ed.putBoolean("MESSAGEREAD", messageRead);
         ed.putBoolean("SERVICEON", serviseON);
 
@@ -747,7 +749,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             // Если не читали, значит первый раз в приложении
             messageBattery();
         }
-        saveSharedPreferences();
+
+        // Инициализация планировщика для разных API , если >= 24 то true
+        // Эта переменная проверяется в JobSchedulerService
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            useFlexTime = true;
+        }
+        else
+            useFlexTime = false;
+
+            saveSharedPreferences();
     }
 
     public void batteryTemp() {
