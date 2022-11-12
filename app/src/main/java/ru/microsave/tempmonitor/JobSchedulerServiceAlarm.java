@@ -33,15 +33,11 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
     private static Sensor mJobSensorTemperature;
     private static SensorManager mJobSensorManager;
 
-    //private int numlog = 0;
-
     public JobSchedulerServiceAlarm() {
-        //readSharedPreferences();
     }
 
     @Override
     public void onCreate() {
-        // numlog++;
         Log.d(LOG_TAG, "JobSchedulerServiceAlarm onCreate");
         readSharedPreferences();
         this.mJobSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
@@ -53,7 +49,6 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         tempSensor = sensorEvent.values[0];
-        //  Log.d(LOG_TAG, "sensorEvent: OK");
     }
 
     @Override
@@ -66,13 +61,11 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         readSharedPreferences();
         batteryTemperature();
         mCurrentTime = System.currentTimeMillis();
-        //    Log.d(LOG_TAG, "mCurrentTime 1: " + mCurrentTime);
-
+        // Log.d(LOG_TAG, "mCurrentTime 1: " + mCurrentTime);
         // Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm)/1000/60 + " ? " + myAlarmInterval/1000/60);
-        //Log.d(LOG_TAG, "--------------------------");
         Log.d(LOG_TAG, "mLastAlarm 1: " + mLastAlarm);
 
-        // При старте всегда равно нулю
+        // При старте всегда равно нулю (обнуляется по кнопке Stop)
         if (mLastAlarm == 0) {
             mLastAlarm = mCurrentTime;
             Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
@@ -81,10 +74,15 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
 
             // =======================================================================================
             if (ifFlexTime){
-                // Сразу сработать
+                // Если FlexTime то время не проверяем!
+
+                // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
+                if (tempSensor == 0) tempSensor = tempBattery;
+
 
                     // Для сенсора и проверка температуры
                     if (ifSensor && tempSensor < myWarningTemperature) {
+
                         ++TASK_NUMBER;
                         saveSharedPreferences();
                         new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
@@ -101,6 +99,9 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                             Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) / 1000 / 60 + " ? " + myAlarmInterval / 1000 / 60);
                             mLastAlarm = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
 
+                            // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
+                            if (tempSensor == 0) tempSensor = tempBattery;
+
                             // Для сенсора и проверка температуры
                             if (ifSensor && tempSensor < myWarningTemperature) {
                                 ++TASK_NUMBER;
@@ -114,7 +115,6 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                                 new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                             }
                         }
-
                     }
             }
 

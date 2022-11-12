@@ -84,6 +84,10 @@ public class JobSchedulerService extends JobService implements SensorEventListen
             ++TASK_NUMBER;
             if (ifSensor) {
                 Log.d(LOG_TAG, "new: JobInfoSensor");
+
+                // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
+                if (tempSensor == 0) tempSensor = tempBattery;
+
                 new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
             } else {
                 Log.d(LOG_TAG, "new: JobInfoBattery");
@@ -99,6 +103,10 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobInfoSensor");
+
+                    // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
+                    if (tempSensor == 0) tempSensor = tempBattery;
+
                     new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
                 } else {
                     Log.d(LOG_TAG, "new: JobInfoBattery");
@@ -106,7 +114,6 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                 }
 
                 mLastInfo = mCurrentTime;
-
             }
 
             // =======================================================================================
@@ -122,6 +129,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.d(LOG_TAG, "--- onStopJob --- return true --- СЕРВИС НОРМАЛ ОСТАНОВЛЕН!!!!!!!!!");
+        Log.d(LOG_TAG, "onStopJob() called with: params = [" + params + "]");
         return false;
     }
 
