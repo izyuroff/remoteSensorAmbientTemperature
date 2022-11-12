@@ -115,11 +115,9 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
                 mLastInfo = mCurrentTime;
             }
-
-            // =======================================================================================
-            saveSharedPreferences();
         }
 
+        saveSharedPreferences();
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
         jobFinished(param, true);
