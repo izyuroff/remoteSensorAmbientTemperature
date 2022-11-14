@@ -781,8 +781,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void readCounter() {
-        savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
-        mTASK_NUMBER = (savePref.getInt("TASK_NUMBER", 0));
+    //    savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
+    //    mTASK_NUMBER = (savePref.getInt("TASK_NUMBER", 0));
+
+        readSharedPreferences();
         tvCounter.setText("# " + mTASK_NUMBER);
         countTime();
     }
@@ -805,9 +807,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mTimeNow = System.currentTimeMillis();
             //    Log.d(LOG_TAG, "Текущая сессия mTimeNow: " + mTimeNow);
 
-
-            savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
-            mStartTime = (savePref.getLong("START_TIME", 0));
+        // Решил, что избыточно запрашивать
+        //    savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
+        //    mStartTime = (savePref.getLong("START_TIME", 0));
             //    Log.d(LOG_TAG, "Текущая сессия mStartTime: " + mStartTime);
 
             mCountedTime = mTimeNow - mStartTime;
@@ -875,15 +877,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void testSMS() {
-
-        mTASK_NUMBER++;
+        readSharedPreferences();
+        ++mTASK_NUMBER;
         String text;
 
         if (sensorExist) {
             text = mDEGREES + Character.toString((char) 176) + "C" + ", #" + mTASK_NUMBER + ". " + (getString(R.string.app_name));
         }
         else {
-            batteryTemp();
+            //batteryTemp();
             text = mBatteryTemp + Character.toString((char) 176) + "C" + ", #" + mTASK_NUMBER + ". " + (getString(R.string.app_name));
         }
 

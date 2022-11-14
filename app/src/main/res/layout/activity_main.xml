@@ -16,6 +16,7 @@
         android:text="Время работы:"
         android:textAlignment="viewEnd"
         android:textSize="16sp"
+        app:autoSizeTextType="none"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
@@ -29,6 +30,7 @@
         android:text="-----"
         android:textAlignment="viewEnd"
         android:textSize="14sp"
+        app:autoSizeTextType="none"
         app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
@@ -137,6 +139,7 @@
         android:layout_marginTop="4sp"
         android:text="ТЕРМОМЕТР"
         android:textSize="18sp"
+        app:autoSizeTextType="none"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -148,6 +151,7 @@
         android:layout_marginEnd="16sp"
         android:text="БАТАРЕЯ"
         android:textSize="18sp"
+        app:autoSizeTextType="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -159,6 +163,7 @@
         android:layout_marginTop="4sp"
         android:text="-----"
         android:textSize="36sp"
+        app:autoSizeTextType="none"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView0" />
 
@@ -171,6 +176,7 @@
         android:clickable="false"
         android:text="-----"
         android:textSize="36sp"
+        app:autoSizeTextType="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView0" />
 
@@ -183,6 +189,7 @@
         android:text="-----"
         android:textAlignment="viewEnd"
         android:textSize="26sp"
+        app:autoSizeTextType="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button3"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
@@ -196,6 +203,7 @@
         android:text="-----"
         android:textAlignment="viewEnd"
         android:textSize="26sp"
+        app:autoSizeTextType="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button4"
         app:layout_constraintTop_toBottomOf="@+id/button3" />
@@ -209,6 +217,7 @@
         android:text="-----"
         android:textAlignment="viewEnd"
         android:textSize="26sp"
+        app:autoSizeTextType="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button5"
         app:layout_constraintTop_toBottomOf="@+id/button4" />
@@ -226,6 +235,7 @@
         android:textColor="#512DA8"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:autoSizeTextType="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button2" />
@@ -238,6 +248,7 @@
         android:gravity="center_horizontal"
         android:text="Введите номер телефона!"
         android:textSize="22sp"
+        app:autoSizeTextType="none"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -329,6 +340,7 @@
         android:text="Счетчик СМС:"
         android:textAlignment="viewEnd"
         android:textSize="16sp"
+        app:autoSizeTextType="none"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/divider4" />
 
@@ -342,6 +354,7 @@
         android:text="-----"
         android:textAlignment="viewEnd"
         android:textSize="16sp"
+        app:autoSizeTextType="none"
         app:layout_constraintStart_toEndOf="@+id/textView10"
         app:layout_constraintTop_toBottomOf="@+id/divider4" />
 
