@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private long mLongTime; // Подсчитанное время работы прошлого запуска
     private long mLastAlarm;
     private long mLastInfo;
-
+    private int mBatteryTemp;
 
 
     // private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
@@ -766,10 +766,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         readCounter();
         //countTime();
         Intent intent = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        int temp = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
+        mBatteryTemp = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
 
         // Строка для вывод значения температуры батареи
-        String message = String.valueOf(temp) + Character.toString((char) 176) + "C";
+        String message = String.valueOf(mBatteryTemp) + Character.toString((char) 176) + "C";
         batteryLabel.setText(message);
     }
 
@@ -877,8 +877,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void testSMS() {
 
         mTASK_NUMBER++;
+        String text;
 
-        String text = mDEGREES + Character.toString((char) 176) + "C" + ", #" + mTASK_NUMBER + ". " + (getString(R.string.app_name));
+        if (sensorExist) {
+            text = mDEGREES + Character.toString((char) 176) + "C" + ", #" + mTASK_NUMBER + ". " + (getString(R.string.app_name));
+        }
+        else {
+            batteryTemp();
+            text = mBatteryTemp + Character.toString((char) 176) + "C" + ", #" + mTASK_NUMBER + ". " + (getString(R.string.app_name));
+        }
 
         new sendSMS(MY_NUMBER, text);
         // new SendHandlerSMS(MY_NUMBER, "Тест, отправлено " + mTASK_NUMBER);
