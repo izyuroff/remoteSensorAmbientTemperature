@@ -73,52 +73,50 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         }
 
             // =======================================================================================
-            if (ifFlexTime){
+            if (ifFlexTime) {
                 // Если FlexTime то время не проверяем!
-
                 // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                 if (tempSensor == 0) tempSensor = tempBattery;
 
+                // Для сенсора и проверка температуры
+                if (ifSensor && tempSensor < myWarningTemperature) {
 
-                    // Для сенсора и проверка температуры
-                    if (ifSensor && tempSensor < myWarningTemperature) {
+                    ++TASK_NUMBER;
+                    saveSharedPreferences();
+                    new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
+                }
+                // Для батареи и проверка температуры
+                if (!ifSensor && tempBattery < myWarningTemperature) {
+                    ++TASK_NUMBER;
+                    saveSharedPreferences();
+                    new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
+                }
+            }
 
-                        ++TASK_NUMBER;
-                        saveSharedPreferences();
-                        new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
-                    }
-                    // Для батареи и проверка температуры
-                    if (!ifSensor && tempBattery < myWarningTemperature) {
-                        ++TASK_NUMBER;
-                        saveSharedPreferences();
-                        new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
-                    }
                 else {
                         // Чекаем аларм тайм
                         if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000 * 60 * 60) {
-                            Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) / 1000 / 60 + " ? " + myAlarmInterval / 1000 / 60);
-                            mLastAlarm = mCurrentTime; // Новый таймштамп и поправка секунд 10 для корректировки непредвиденных задержек следующего запуска
 
-                            // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-                            if (tempSensor == 0) tempSensor = tempBattery;
+                            Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) / 1000 / 60 + " ? " + myAlarmInterval / 1000 / 60);
 
                             // Для сенсора и проверка температуры
                             if (ifSensor && tempSensor < myWarningTemperature) {
                                 ++TASK_NUMBER;
-                                saveSharedPreferences();
+                                // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
+                                if (tempSensor == 0) tempSensor = tempBattery;
                                 new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                             }
                             // Для батареи и проверка температуры
                             if (!ifSensor && tempBattery < myWarningTemperature) {
                                 ++TASK_NUMBER;
-                                saveSharedPreferences();
                                 new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                             }
                         }
+                        mLastAlarm = mCurrentTime; // Новый таймштамп
                     }
-            }
 
-            saveSharedPreferences();
+
+        saveSharedPreferences();
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
         jobFinished(param, true);

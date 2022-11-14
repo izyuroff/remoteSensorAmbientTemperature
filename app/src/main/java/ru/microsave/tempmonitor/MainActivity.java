@@ -394,7 +394,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void saveSharedPreferences() {
-        // String period = String.valueOf((int)mainPeriodic/1000/60);
         String pAlarm = String.valueOf((int) ALARM_INTERVAL);
         String pNormal = String.valueOf((int) NORMAL_INTERVAL);
 

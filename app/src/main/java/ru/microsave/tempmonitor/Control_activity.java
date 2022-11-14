@@ -118,7 +118,7 @@ public class Control_activity extends AppCompatActivity {
         // Инициализация планировщика для API < 24
         // Для устройств менее, чем Build.VERSION_CODES.N
         else {
-            mPeriodic = 1000 * 60 * 6;
+            mPeriodic = 1000 * 60 * 5;
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                     .setRequiresCharging(false)
                     // .setMinimumLatency(5000) - Пробовать

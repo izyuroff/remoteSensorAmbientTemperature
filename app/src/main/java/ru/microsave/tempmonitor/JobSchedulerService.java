@@ -113,7 +113,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
                 }
 
-                mLastInfo = mCurrentTime;
+                mLastInfo = mCurrentTime; // Новый таймштамп
             }
         }
 
