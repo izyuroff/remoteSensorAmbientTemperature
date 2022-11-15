@@ -150,7 +150,7 @@ public class Control_activity extends AppCompatActivity {
         // Инициализация планировщика для API < 24
         // Для устройств менее, чем Build.VERSION_CODES.N
         else {
-            mPeriodicAlarm = 1000 * 60 * 5;
+            mPeriodicAlarm = 1000 * 60 * 6;
             jobInfoAlarm = new JobInfo.Builder(mJobAlarmId, componentNameAlarm)
                     .setRequiresCharging(false)
                     .setPeriodic(mPeriodicAlarm)
