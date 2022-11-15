@@ -65,7 +65,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         // Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm)/1000/60 + " ? " + myAlarmInterval/1000/60);
         Log.d(LOG_TAG, "mLastAlarm 1: " + mLastAlarm);
         Log.d(LOG_TAG, "myAlarmInterval 1: " + myAlarmInterval);
-        Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) / 1000 / 60 / 60 + " ? " + myAlarmInterval * 1000 * 60 * 60);
+        Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval * 1000 * 60 * 60);
 
         // При старте всегда равно нулю (обнуляется по кнопке Stop)
         if (mLastAlarm == 0) {
@@ -96,10 +96,10 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
             }
 
                 else {
-                        // Чекаем аларм тайм (в минутах!)
-                        if ((mCurrentTime - mLastAlarm) / 1000 / 60 > myAlarmInterval * 1000 * 60) {
+                        // Чекаем аларм тайм (в миллисекундах!)
+                        if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000 * 60 * 60) {
 
-                            Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) / 1000 / 60 /60 + " ? " + myAlarmInterval * 1000 * 60 * 60);
+                            Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval * 1000 * 60 * 60);
 
                             // Для сенсора и проверка температуры
                             if (ifSensor && tempSensor < myWarningTemperature) {
@@ -113,8 +113,9 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                                 ++TASK_NUMBER;
                                 new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                             }
+                            mLastAlarm = mCurrentTime; // Новый таймштамп, только если отработал
                         }
-                        mLastAlarm = mCurrentTime; // Новый таймштамп
+
                     }
 
 

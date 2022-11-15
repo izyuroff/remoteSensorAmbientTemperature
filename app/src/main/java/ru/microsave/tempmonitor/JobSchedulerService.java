@@ -66,7 +66,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // Log.d(LOG_TAG, "myNormalInterval 1: " + mCurrentTime + " - " + mLastInfo + " = " +  (mCurrentTime - mLastInfo)/1000/60 + " ? " + myNormalInterval/1000/60);
         Log.d(LOG_TAG, "mLastInfo 1: " + mLastInfo);
         Log.d(LOG_TAG, "myNormalInterval 1: " + myNormalInterval);
-        Log.d(LOG_TAG, "myNormalInterval 1: " + mCurrentTime + " - " + mLastInfo + " = " + (mCurrentTime - mLastInfo) / 1000 / 60 / 60 + " ? " + myNormalInterval * 1000 * 60 * 60);
+        Log.d(LOG_TAG, "myNormalInterval 1: " + mCurrentTime + " - " + mLastInfo + " = " + (mCurrentTime - mLastInfo) + " ? " + myNormalInterval * 1000 * 60 * 60 );
 
         // не использую нигде
         // String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
@@ -97,11 +97,11 @@ public class JobSchedulerService extends JobService implements SensorEventListen
             }
 
         } else {
-            // Проверка времени для старых устройств (в минутах!)
-            if ((mCurrentTime - mLastInfo)  / 1000 / 60 > myNormalInterval * 1000 * 60) {
+            // Проверка времени для старых устройств (в миллисекундах!)
+            if ((mCurrentTime - mLastInfo)  > myNormalInterval * 1000 * 60 * 60) {
                 ++TASK_NUMBER;
 
-                Log.d(LOG_TAG, "myNormalInterval 3: " + mCurrentTime + " - " + mLastInfo + " = " + (mCurrentTime - mLastInfo) / 1000 / 60 / 60 + " ? " + myNormalInterval * 1000 * 60 * 60);
+                Log.d(LOG_TAG, "myNormalInterval 3: " + mCurrentTime + " - " + mLastInfo + " = " + (mCurrentTime - mLastInfo) + " ? " + myNormalInterval * 1000 * 60 * 60);
 
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobInfoSensor");
