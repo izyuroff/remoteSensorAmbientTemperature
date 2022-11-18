@@ -9,38 +9,30 @@ package ru.microsave.tempmonitor;
 import android.content.Context;
 import android.util.Log;
 
-import java.util.concurrent.TimeUnit;
-
 import androidx.annotation.NonNull;
-import androidx.work.OneTimeWorkRequest;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 public class MyWorker extends Worker {
-
-    static final String TAG = "workmng";
-
+    private final String LOG_TAG = "myLogs";
     public MyWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
 
+
     @NonNull
     @Override
     public Worker.Result doWork() {
-        Log.d(TAG, "doWork: start");
+        Log.d(LOG_TAG, "doWork: start");
 
-        try {
-            TimeUnit.SECONDS.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        new CheckService();
 
-        Log.d(TAG, "doWork: end");
+        Log.d(LOG_TAG, "doWork: end");
 
-        return Worker.Result.failure();
-
+        return Worker.Result.success();
     }
 
-    OneTimeWorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
+
+  //  OneTimeWorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
 
 }

@@ -109,6 +109,9 @@ import android.widget.Toast;
 import java.util.concurrent.TimeUnit;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -151,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     // private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,6 +230,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 //Осуществляем блокировку
         wl.acquire();*/
     }
+
+    // Объект для контроля за внезапными остановками основной службы.
+   // PeriodicWorkRequest myWorkRequest = new PeriodicWorkRequest.Builder(MyWorker.class, 60, TimeUnit.MINUTES, 5, TimeUnit.MINUTES)
+
+    // Для теста настроил на 20 минут
+    PeriodicWorkRequest myWorkRequest = new PeriodicWorkRequest.Builder(MyWorker.class, 20, TimeUnit.MINUTES, 5, TimeUnit.MINUTES)
+            //   PeriodicWorkRequest myWorkRequest = new PeriodicWorkRequest.Builder(MyWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS , TimeUnit.MINUTES, MIN_PERIODIC_FLEX_MILLIS, TimeUnit.MINUTES)
+            .addTag("checkService")
+            //.setInitialDelay(15, TimeUnit.MINUTES) //Начальная задержка
+            .build();
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -332,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // Метод для кнопочки ОСТАНОВИТЬ СЛУЖБУ
     public void stopSheduler(View view) {
-
+        stopWorking();
         //    stopService(new Intent(this, JobSchedulerService.class));
         serviseON = false;
         invertButton(serviseON);
@@ -360,6 +376,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // Метод для кнопочки БОЕВОЕ ДЕЖУРСТВО, то есть СТАРТ
     public void startSheduler() {
+        startWorking();
         msg("Служба запущена успешно!");
         serviseON = true;
         invertButton(serviseON);
@@ -895,6 +912,32 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Log.d(LOG_TAG, text);
     }
 
+    // вызывается регулярно для самопроверки
+    private void startWorking() {
+    // Идея такая - иногда JobSheduler убивается системой, а WorkManager будет проверять это и
+    // возобновлять работу, если только служба не была остановлена пользователем
+
+        Log.d(LOG_TAG, "startWorking: start button");
+
+        // Прописана политика - при имеющемся задании не запускать новое а сохранять старое
+        WorkManager.getInstance().enqueueUniquePeriodicWork(
+                "checkService",
+                ExistingPeriodicWorkPolicy.KEEP,
+                myWorkRequest);
+    }
+
+    public void stopWorking() {
+        Log.d(LOG_TAG, "stopWorking: stop button");
+        WorkManager.getInstance().cancelWorkById(myWorkRequest.getId());
+
+        //    WorkManager.getInstance().cancelWorkById(myWorkRequest.getId());
+        //    WorkManager.getInstance().cancelAllWorkByTag("sms1");
+        //    WorkManager.getInstance().cancelAllWork();
+    }
+
+
+
+    // вызывается из меню для проверки
     public boolean isJobServiceOn() {
         // https://overcoder.net/q/1601745/%D0%BA%D0%B0%D0%BA-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%B8%D1%82%D1%8C-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82-jobservice-%D0%B8%D0%BB%D0%B8-%D0%BD%D0%B5%D1%82-%D0%B2-android
         // https://clck.ru/32YZ7j
@@ -903,7 +946,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         boolean hasBeenScheduled = false;
 
         for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
-            if (jobInfo.getId() == 777) {
+            if (jobInfo.getId() == 777 | jobInfo.getId() == 778 ) {
                 hasBeenScheduled = true;
                 break;
             }
