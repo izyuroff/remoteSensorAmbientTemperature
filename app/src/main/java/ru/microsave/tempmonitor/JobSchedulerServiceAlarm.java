@@ -1,5 +1,7 @@
 package ru.microsave.tempmonitor;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
@@ -12,6 +14,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.BatteryManager;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 public class JobSchedulerServiceAlarm  extends JobService implements SensorEventListener {
     private float tempSensor;
@@ -106,6 +110,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                                 ++TASK_NUMBER;
                                 // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                                 if (tempSensor == 0) tempSensor = tempBattery;
+
                                 new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                             }
                             // Для батареи и проверка температуры
@@ -118,7 +123,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
 
                     }
 
-
+        sendNotifyAlarm();
         saveSharedPreferences();
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
@@ -177,5 +182,20 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         tempBattery = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10; // Почему разделил на 10??? Да почему то выдача идет в 10 раз больше
         return tempBattery;
+    }
+
+    public void sendNotifyAlarm() {
+        String channelId = "33";
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Monitor t" + getString(R.string.symbol_degrees))
+                        .setContentText("#" + TASK_NUMBER);
+
+        Notification notificationAlarm = builder.build();
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notificationAlarm);
+
     }
 }

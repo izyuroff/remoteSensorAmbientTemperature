@@ -36,11 +36,13 @@
             android:exported="true" />
         <service
             android:name=".JobSchedulerService"
+            android:process="JobSchedulerService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".JobSchedulerServiceAlarm"
+            android:process="JobSchedulerServiceAlarm"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />

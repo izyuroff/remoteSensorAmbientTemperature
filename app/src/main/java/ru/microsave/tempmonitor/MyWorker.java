@@ -25,7 +25,7 @@ public class MyWorker extends Worker {
     public Worker.Result doWork() {
         Log.d(LOG_TAG, "doWork: start");
 
-        new CheckService();
+    //    new CheckService();
 
         Log.d(LOG_TAG, "doWork: end");
 

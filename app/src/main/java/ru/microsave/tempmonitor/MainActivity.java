@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // Метод для кнопочки ОСТАНОВИТЬ СЛУЖБУ
     public void stopSheduler(View view) {
-        stopWorking();
+    //    stopWorking();
         //    stopService(new Intent(this, JobSchedulerService.class));
         serviseON = false;
         invertButton(serviseON);
@@ -376,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // Метод для кнопочки БОЕВОЕ ДЕЖУРСТВО, то есть СТАРТ
     public void startSheduler() {
-        startWorking();
+    //    startWorking();
         msg("Служба запущена успешно!");
         serviseON = true;
         invertButton(serviseON);

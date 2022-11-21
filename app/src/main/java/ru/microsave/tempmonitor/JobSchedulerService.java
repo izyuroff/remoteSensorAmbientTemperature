@@ -3,6 +3,8 @@ package ru.microsave.tempmonitor;
 
  */
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
@@ -15,6 +17,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.BatteryManager;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 public class JobSchedulerService extends JobService implements SensorEventListener {
     private float tempSensor;
@@ -118,7 +122,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                 mLastInfo = mCurrentTime; // Новый таймштамп
             }
         }
-
+        sendNotifyInfo();
         saveSharedPreferences();
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
@@ -175,5 +179,19 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         tempBattery = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10; // Почему разделил на 10??? Да почему то выдача идет в 10 раз больше
         return tempBattery;
+    }
+    public void sendNotifyInfo() {
+        String channelId = "44";
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Monitor t" + getString(R.string.symbol_degrees))
+                .setContentText("#" + TASK_NUMBER);
+
+        Notification notification = builder.build();
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notification);
+
     }
 }
