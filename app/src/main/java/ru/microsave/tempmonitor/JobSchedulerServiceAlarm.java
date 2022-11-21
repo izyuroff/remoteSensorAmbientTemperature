@@ -3,9 +3,6 @@ package ru.microsave.tempmonitor;
  * Шедулер для периодического контроля аварийной темпертатуры
  *
  */
-
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
@@ -18,8 +15,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.BatteryManager;
 import android.util.Log;
-
-import androidx.core.app.NotificationCompat;
 
 public class JobSchedulerServiceAlarm  extends JobService implements SensorEventListener {
     private float tempSensor;
@@ -71,7 +66,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         mCurrentTime = System.currentTimeMillis();
         // Log.d(LOG_TAG, "mCurrentTime 1: " + mCurrentTime);
         // Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm)/1000/60 + " ? " + myAlarmInterval/1000/60);
-        Log.d(LOG_TAG, "mLastAlarm 1: " + mLastAlarm);
+        // Log.d(LOG_TAG, "mLastAlarm 1: " + mLastAlarm);
         //Log.d(LOG_TAG, "myAlarmInterval 1: " + myAlarmInterval);
         Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval * 1000 * 60 * 60);
 
@@ -85,53 +80,49 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
             // =======================================================================================
             if (ifFlexTime) {
                 // Если FlexTime то время не проверяем!
+                // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
+                if (tempSensor == 0) tempSensor = tempBattery;
+                Log.d(LOG_TAG, "ifFlexTime: " + ifFlexTime + ", mCurrentTime 3: " + mCurrentTime);
 
                 // Для сенсора и проверка температуры
                 if (ifSensor && tempSensor < myWarningTemperature) {
                     Log.d(LOG_TAG, "new: JobAlarmSensor");
                     ++TASK_NUMBER;
-                    sendNotifyAlarm();
-
-                    // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-                    if (tempSensor == 0) tempSensor = tempBattery;
-
-                   new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
+                    //saveSharedPreferences();
+                    new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                 }
                 // Для батареи и проверка температуры
                 if (!ifSensor && tempBattery < myWarningTemperature) {
                     Log.d(LOG_TAG, "new: JobAlarmBattery");
 
                     ++TASK_NUMBER;
-                    sendNotifyAlarm();
+                    //saveSharedPreferences();
                     new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                 }
             }
 
                 else {
-                        // Чекаем аларм тайм (в миллисекундах!)
+                        // Проверка времени для старых устройств (в миллисекундах!)
                         if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000 * 60 * 60) {
-
+                            // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
+                            if (tempSensor == 0) tempSensor = tempBattery;
                             Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval * 1000 * 60 * 60);
 
                             // Для сенсора и проверка температуры
                             if (ifSensor && tempSensor < myWarningTemperature) {
                                 ++TASK_NUMBER;
-                                sendNotifyAlarm();
-
-                                // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-                                if (tempSensor == 0) tempSensor = tempBattery;
                                 new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                             }
                             // Для батареи и проверка температуры
                             if (!ifSensor && tempBattery < myWarningTemperature) {
                                 ++TASK_NUMBER;
-                                sendNotifyAlarm();
                                 new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                             }
                             mLastAlarm = mCurrentTime; // Новый таймштамп, только если отработал
                         }
 
                     }
+
 
         saveSharedPreferences();
         // =======================================================================================
@@ -191,21 +182,5 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         tempBattery = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10; // Почему разделил на 10??? Да почему то выдача идет в 10 раз больше
         return tempBattery;
-    }
-
-    public void sendNotifyAlarm() {
-        saveSharedPreferences();
-        String channelId = "33";
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("Alarm t" + getString(R.string.symbol_degrees))
-                        .setContentText("#" + TASK_NUMBER);
-
-        Notification notificationAlarm = builder.build();
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(2, notificationAlarm);
-        Log.d(LOG_TAG, "sendNotifyAlarm: OK");
     }
 }
