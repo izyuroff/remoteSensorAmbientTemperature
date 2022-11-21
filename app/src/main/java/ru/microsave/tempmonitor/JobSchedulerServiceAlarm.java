@@ -1,4 +1,8 @@
 package ru.microsave.tempmonitor;
+/**
+ * Шедулер для периодического контроля аварийной темпертатуры
+ *
+ */
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -68,7 +72,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         // Log.d(LOG_TAG, "mCurrentTime 1: " + mCurrentTime);
         // Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm)/1000/60 + " ? " + myAlarmInterval/1000/60);
         Log.d(LOG_TAG, "mLastAlarm 1: " + mLastAlarm);
-        Log.d(LOG_TAG, "myAlarmInterval 1: " + myAlarmInterval);
+        //Log.d(LOG_TAG, "myAlarmInterval 1: " + myAlarmInterval);
         Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval * 1000 * 60 * 60);
 
         // При старте всегда равно нулю (обнуляется по кнопке Stop)
@@ -81,20 +85,24 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
             // =======================================================================================
             if (ifFlexTime) {
                 // Если FlexTime то время не проверяем!
-                // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-                if (tempSensor == 0) tempSensor = tempBattery;
 
                 // Для сенсора и проверка температуры
                 if (ifSensor && tempSensor < myWarningTemperature) {
-
+                    Log.d(LOG_TAG, "new: JobAlarmSensor");
                     ++TASK_NUMBER;
-                    saveSharedPreferences();
-                    new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
+                    sendNotifyAlarm();
+
+                    // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
+                    if (tempSensor == 0) tempSensor = tempBattery;
+
+                   new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                 }
                 // Для батареи и проверка температуры
                 if (!ifSensor && tempBattery < myWarningTemperature) {
+                    Log.d(LOG_TAG, "new: JobAlarmBattery");
+
                     ++TASK_NUMBER;
-                    saveSharedPreferences();
+                    sendNotifyAlarm();
                     new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                 }
             }
@@ -108,14 +116,16 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                             // Для сенсора и проверка температуры
                             if (ifSensor && tempSensor < myWarningTemperature) {
                                 ++TASK_NUMBER;
+                                sendNotifyAlarm();
+
                                 // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                                 if (tempSensor == 0) tempSensor = tempBattery;
-
                                 new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                             }
                             // Для батареи и проверка температуры
                             if (!ifSensor && tempBattery < myWarningTemperature) {
                                 ++TASK_NUMBER;
+                                sendNotifyAlarm();
                                 new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                             }
                             mLastAlarm = mCurrentTime; // Новый таймштамп, только если отработал
@@ -123,7 +133,6 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
 
                     }
 
-        sendNotifyAlarm();
         saveSharedPreferences();
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
@@ -185,17 +194,18 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
     }
 
     public void sendNotifyAlarm() {
+        saveSharedPreferences();
         String channelId = "33";
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("Monitor t" + getString(R.string.symbol_degrees))
+                        .setContentTitle("Alarm t" + getString(R.string.symbol_degrees))
                         .setContentText("#" + TASK_NUMBER);
 
         Notification notificationAlarm = builder.build();
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(1, notificationAlarm);
-
+        notificationManager.notify(2, notificationAlarm);
+        Log.d(LOG_TAG, "sendNotifyAlarm: OK");
     }
 }

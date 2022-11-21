@@ -6,7 +6,8 @@ package ru.microsave.tempmonitor;
 В нем настраивается и вызывается служба шедулера
 
 Планируется два разных задания - отдельно для нормал и аларм
- */
+а также для разных типов устройств, до API 24 и после него
+  */
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -150,7 +151,7 @@ public class Control_activity extends AppCompatActivity {
         // Инициализация планировщика для API < 24
         // Для устройств менее, чем Build.VERSION_CODES.N
         else {
-            mPeriodicAlarm = 1000 * 60 * 6;
+            mPeriodicAlarm = 1000 * 60 * 5;
             jobInfoAlarm = new JobInfo.Builder(mJobAlarmId, componentNameAlarm)
                     .setRequiresCharging(false)
                     .setPeriodic(mPeriodicAlarm)

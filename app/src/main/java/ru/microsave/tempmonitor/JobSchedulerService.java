@@ -1,6 +1,7 @@
 package ru.microsave.tempmonitor;
-/*
-
+/**
+ * Шедулер для периодического контроля нормальной темпертатуры
+ *
  */
 
 import android.app.Notification;
@@ -69,7 +70,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         //    Log.d(LOG_TAG, "mCurrentTime 1: " + mCurrentTime);
         // Log.d(LOG_TAG, "myNormalInterval 1: " + mCurrentTime + " - " + mLastInfo + " = " +  (mCurrentTime - mLastInfo)/1000/60 + " ? " + myNormalInterval/1000/60);
         Log.d(LOG_TAG, "mLastInfo 1: " + mLastInfo);
-        Log.d(LOG_TAG, "myNormalInterval 1: " + myNormalInterval);
+        //Log.d(LOG_TAG, "myNormalInterval 1: " + myNormalInterval);
         Log.d(LOG_TAG, "myNormalInterval 1: " + mCurrentTime + " - " + mLastInfo + " = " + (mCurrentTime - mLastInfo) + " ? " + myNormalInterval * 1000 * 60 * 60 );
 
         // не использую нигде
@@ -87,28 +88,32 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // Это блок для регулярных периодических сообщений
         // Если FlexTime то время не проверяем!
         if (ifFlexTime) {
-            ++TASK_NUMBER;
+
             if (ifSensor) {
                 Log.d(LOG_TAG, "new: JobInfoSensor");
-
+                ++TASK_NUMBER;
+                sendNotifyInfo();
                 // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                 if (tempSensor == 0) tempSensor = tempBattery;
 
                 new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
             } else {
                 Log.d(LOG_TAG, "new: JobInfoBattery");
+                ++TASK_NUMBER;
+                sendNotifyInfo();
                 new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
             }
 
         } else {
             // Проверка времени для старых устройств (в миллисекундах!)
             if ((mCurrentTime - mLastInfo)  > myNormalInterval * 1000 * 60 * 60) {
-                ++TASK_NUMBER;
 
                 Log.d(LOG_TAG, "myNormalInterval 3: " + mCurrentTime + " - " + mLastInfo + " = " + (mCurrentTime - mLastInfo) + " ? " + myNormalInterval * 1000 * 60 * 60);
 
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobInfoSensor");
+                    ++TASK_NUMBER;
+                    sendNotifyInfo();
 
                     // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                     if (tempSensor == 0) tempSensor = tempBattery;
@@ -116,13 +121,15 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                     new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
                 } else {
                     Log.d(LOG_TAG, "new: JobInfoBattery");
+                    ++TASK_NUMBER;
+                    sendNotifyInfo();
+
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
                 }
-
                 mLastInfo = mCurrentTime; // Новый таймштамп
             }
         }
-        sendNotifyInfo();
+
         saveSharedPreferences();
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
@@ -181,10 +188,11 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         return tempBattery;
     }
     public void sendNotifyInfo() {
+        saveSharedPreferences();
         String channelId = "44";
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Monitor t" + getString(R.string.symbol_degrees))
+                .setContentTitle("Info t" + getString(R.string.symbol_degrees))
                 .setContentText("#" + TASK_NUMBER);
 
         Notification notification = builder.build();
@@ -192,6 +200,6 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(1, notification);
-
+        Log.d(LOG_TAG, "sendNotifyInfo: OK");
     }
 }
