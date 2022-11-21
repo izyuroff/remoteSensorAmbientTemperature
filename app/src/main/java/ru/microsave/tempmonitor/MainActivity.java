@@ -107,9 +107,6 @@ import android.widget.Toast;
 import java.util.concurrent.TimeUnit;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -233,11 +230,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
    // PeriodicWorkRequest myWorkRequest = new PeriodicWorkRequest.Builder(MyWorker.class, 60, TimeUnit.MINUTES, 5, TimeUnit.MINUTES)
 
     // Для теста настроил на 20 минут
+/*
     PeriodicWorkRequest myWorkRequest = new PeriodicWorkRequest.Builder(MyWorker.class, 20, TimeUnit.MINUTES, 5, TimeUnit.MINUTES)
             //   PeriodicWorkRequest myWorkRequest = new PeriodicWorkRequest.Builder(MyWorker.class, PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS , TimeUnit.MINUTES, MIN_PERIODIC_FLEX_MILLIS, TimeUnit.MINUTES)
             .addTag("checkService")
             //.setInitialDelay(15, TimeUnit.MINUTES) //Начальная задержка
             .build();
+*/
 
 
 
@@ -438,7 +437,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ed.putBoolean("SERVICEON", serviseON);
 
         ed.apply();
-        ed.commit();
     }
 
     private void readSharedPreferences() {
@@ -452,11 +450,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         MY_NUMBER = (savePref.getString("NUMBER", "+7123456789"));
         WARNING_TEMP = (savePref.getInt("WARNING", 5));
-        mTASK_NUMBER = (savePref.getInt("TASK_NUMBER", 0));
+        mTASK_NUMBER = (savePref.getInt("TASK_NUMBER", 150));
         mLastAlarm = (savePref.getLong("LAST_ALARM", 0L));
         mLastInfo = (savePref.getLong("LAST_INFO", 0L));
         sensorExist = (savePref.getBoolean("IFSENSOR", false));
         messageRead = (savePref.getBoolean("MESSAGEREAD", false));
+        useFlexTime = (savePref.getBoolean("USE_FLEX_TIME", false));
         serviseON = (savePref.getBoolean("SERVICEON", false));
         invertButton(serviseON);
         if (serviseON)
@@ -464,6 +463,27 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         else
             statusLabel.setText("Служба остановлена.");
     }
+
+
+    private void resetSharedPreferences() {
+        SharedPreferences.Editor ed = savePref.edit();
+        ed.putInt("TASK_NUMBER", mTASK_NUMBER);
+        ed.putLong("LAST_ALARM", mLastAlarm);
+        ed.putLong("LAST_INFO", mLastInfo);
+        ed.putString("NUMBER", "+7123456789");
+        ed.putInt("WARNING", 5);
+        ed.putInt("NORMAL_INTERVAL", 6);
+        ed.putInt("ALARM_INTERVAL", 1);
+        ed.putLong("START_TIME", 0);
+        ed.putLong("STOP_TIME", 0);
+        ed.putLong("LONG_TIME", 0);
+        ed.putBoolean("IFSENSOR", false);
+        ed.putBoolean("USE_FLEX_TIME", false);
+        ed.putBoolean("MESSAGEREAD", false);
+        ed.putBoolean("SERVICEON", false);
+        ed.apply();
+    }
+
     // ==========================================
 
     // fast way to call Toast
@@ -807,6 +827,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void reset_counter() {
         mTASK_NUMBER = 0; // Сбросить счетчик сообщений можно через меню
         // reset_timer();
+        resetSharedPreferences();
         saveSharedPreferences();
     }
 
@@ -918,15 +939,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Log.d(LOG_TAG, "startWorking: start button");
 
         // Прописана политика - при имеющемся задании не запускать новое а сохранять старое
+/*
         WorkManager.getInstance().enqueueUniquePeriodicWork(
                 "checkService",
                 ExistingPeriodicWorkPolicy.KEEP,
                 myWorkRequest);
+*/
     }
 
     public void stopWorking() {
         Log.d(LOG_TAG, "stopWorking: stop button");
-        WorkManager.getInstance().cancelWorkById(myWorkRequest.getId());
+     //  WorkManager.getInstance().cancelWorkById(myWorkRequest.getId());
 
         //    WorkManager.getInstance().cancelWorkById(myWorkRequest.getId());
         //    WorkManager.getInstance().cancelAllWorkByTag("sms1");

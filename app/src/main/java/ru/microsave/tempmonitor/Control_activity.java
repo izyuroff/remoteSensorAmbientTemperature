@@ -100,13 +100,17 @@ public class Control_activity extends AppCompatActivity {
             //mPeriodic = 1000 * 60 * 25; // Решено посмотреть на разных устройствах качество срабатывания
             //mFlexPeriodic = 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
 
+
+            mPeriodic = 1000 * 60 * 15; // Решено посмотреть на разных устройствах качество срабатывания
+            mFlexPeriodic = 1000 * 60 * 14; // Решено посмотреть на разных устройствах качество срабатывания
+
             // Это дало срабатывания 35, 36, 37 минут
             // mPeriodic = 1000 * 60 * 35; // Решено посмотреть на разных устройствах качество срабатывания
             // mFlexPeriodic = 1000 * 60 * 30; // Решено посмотреть на разных устройствах качество срабатывания
 
             // Это дало срабатывания 5, 65, 55, 61, 64, 60, 54, 59 минут
-            mPeriodic = multiNormal * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
-            mFlexPeriodic = multiNormal * 1000 * 60 * 55; // Решено посмотреть на разных устройствах качество срабатывания
+           // mPeriodic = multiNormal * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
+           // mFlexPeriodic = multiNormal * 1000 * 60 * 55; // Решено посмотреть на разных устройствах качество срабатывания
 
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                     .setRequiresCharging(false)// Не требовать быть на зарядке
@@ -138,8 +142,14 @@ public class Control_activity extends AppCompatActivity {
         // Инициализация планировщика для API >= 24
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
-            mPeriodicAlarm = multiAlarm * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
-            mFlexPeriodicAlarm = multiAlarm * 1000 * 60 * 55; // Решено посмотреть на разных устройствах качество срабатывания
+
+
+            mPeriodicAlarm = 1000 * 60 * 15; // Решено посмотреть на разных устройствах качество срабатывания
+            mFlexPeriodicAlarm = 1000 * 60 * 14; // Решено посмотреть на разных устройствах качество срабатывания
+
+
+            //mPeriodicAlarm = multiAlarm * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
+            //mFlexPeriodicAlarm = multiAlarm * 1000 * 60 * 55; // Решено посмотреть на разных устройствах качество срабатывания
 
             jobInfoAlarm = new JobInfo.Builder(mJobAlarmId, componentNameAlarm)
                     .setRequiresCharging(false)// Не требовать быть на зарядке
@@ -151,7 +161,7 @@ public class Control_activity extends AppCompatActivity {
         // Инициализация планировщика для API < 24
         // Для устройств менее, чем Build.VERSION_CODES.N
         else {
-            mPeriodicAlarm = 1000 * 60 * 5;
+            mPeriodicAlarm = 1000 * 60 * 1;
             jobInfoAlarm = new JobInfo.Builder(mJobAlarmId, componentNameAlarm)
                     .setRequiresCharging(false)
                     .setPeriodic(mPeriodicAlarm)

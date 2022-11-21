@@ -88,7 +88,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                 if (ifSensor && tempSensor < myWarningTemperature) {
                     Log.d(LOG_TAG, "new: JobAlarmSensor");
                     ++TASK_NUMBER;
-                    //saveSharedPreferences();
+                    saveSharedPreferences();
                     new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                 }
                 // Для батареи и проверка температуры
@@ -96,7 +96,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                     Log.d(LOG_TAG, "new: JobAlarmBattery");
 
                     ++TASK_NUMBER;
-                    //saveSharedPreferences();
+                    saveSharedPreferences();
                     new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                 }
             }
@@ -111,11 +111,13 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                             // Для сенсора и проверка температуры
                             if (ifSensor && tempSensor < myWarningTemperature) {
                                 ++TASK_NUMBER;
+                                saveSharedPreferences();
                                 new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                             }
                             // Для батареи и проверка температуры
                             if (!ifSensor && tempBattery < myWarningTemperature) {
                                 ++TASK_NUMBER;
+                                saveSharedPreferences();
                                 new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                             }
                             mLastAlarm = mCurrentTime; // Новый таймштамп, только если отработал
@@ -175,7 +177,6 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         ed.putLong("LAST_ALARM", mLastAlarm);
         ed.putInt("TASK_NUMBER", TASK_NUMBER);
         ed.apply();
-        ed.commit();
     }
 
     public float batteryTemperature() {

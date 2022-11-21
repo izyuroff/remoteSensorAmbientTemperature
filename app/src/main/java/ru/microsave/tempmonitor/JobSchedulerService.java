@@ -83,35 +83,39 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // Это блок для регулярных периодических сообщений
         // Если FlexTime то время не проверяем!
         if (ifFlexTime) {
-            ++TASK_NUMBER;
             if (ifSensor) {
                 Log.d(LOG_TAG, "new: JobInfoSensor");
 
                 // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                 if (tempSensor == 0) tempSensor = tempBattery;
 
+                ++TASK_NUMBER;
+                saveSharedPreferences();
                 new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
             } else {
                 Log.d(LOG_TAG, "new: JobInfoBattery");
+                ++TASK_NUMBER;
+                saveSharedPreferences();
                 new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
             }
 
         } else {
             // Проверка времени для старых устройств (в миллисекундах!)
             if ((mCurrentTime - mLastInfo)  > myNormalInterval * 1000 * 60 * 60) {
-                ++TASK_NUMBER;
-
                 Log.d(LOG_TAG, "myNormalInterval 3: " + mCurrentTime + " - " + mLastInfo + " = " + (mCurrentTime - mLastInfo) + " ? " + myNormalInterval * 1000 * 60 * 60);
 
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobInfoSensor");
-
+                    ++TASK_NUMBER;
+                    saveSharedPreferences();
                     // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                     if (tempSensor == 0) tempSensor = tempBattery;
 
                     new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
                 } else {
                     Log.d(LOG_TAG, "new: JobInfoBattery");
+                    ++TASK_NUMBER;
+                    saveSharedPreferences();
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
                 }
 
@@ -168,7 +172,6 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         ed.putLong("LAST_INFO", mLastInfo);
         ed.putInt("TASK_NUMBER", TASK_NUMBER);
         ed.apply();
-        ed.commit();
     }
 
     public float batteryTemperature() {
