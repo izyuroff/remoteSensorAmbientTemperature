@@ -443,14 +443,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         // mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 15));
         ALARM_INTERVAL = (savePref.getInt("ALARM_INTERVAL", 1));
-        NORMAL_INTERVAL = (savePref.getInt("NORMAL_INTERVAL", 6));
+        NORMAL_INTERVAL = (savePref.getInt("NORMAL_INTERVAL", 12));
         mStartTime = (savePref.getLong("START_TIME", 0));
         mStopTime = (savePref.getLong("STOP_TIME", 0));
         mLongTime = (savePref.getLong("LONG_TIME", 0));
 
         MY_NUMBER = (savePref.getString("NUMBER", "+7123456789"));
-        WARNING_TEMP = (savePref.getInt("WARNING", 5));
-        mTASK_NUMBER = (savePref.getInt("TASK_NUMBER", 150));
+        WARNING_TEMP = (savePref.getInt("WARNING", 10));
+        mTASK_NUMBER = (savePref.getInt("TASK_NUMBER", 0));
         mLastAlarm = (savePref.getLong("LAST_ALARM", 0L));
         mLastInfo = (savePref.getLong("LAST_INFO", 0L));
         sensorExist = (savePref.getBoolean("IFSENSOR", false));

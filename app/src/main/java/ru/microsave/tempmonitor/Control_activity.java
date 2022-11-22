@@ -110,7 +110,7 @@ public class Control_activity extends AppCompatActivity {
 
             // Это дало срабатывания 5, 65, 55, 61, 64, 60, 54, 59 минут
             mPeriodic = multiNormal * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
-            mFlexPeriodic = multiNormal * 1000 * 60 * 59; // Решено посмотреть на разных устройствах качество срабатывания
+            mFlexPeriodic = multiNormal * 1000 * 60 * 55; // Решено посмотреть на разных устройствах качество срабатывания
 
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                     .setRequiresCharging(false)// Не требовать быть на зарядке
