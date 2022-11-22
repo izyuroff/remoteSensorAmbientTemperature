@@ -41,7 +41,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
 
     @Override
     public void onCreate() {
-        Log.d(LOG_TAG, "JobSchedulerServiceAlarm onCreate");
+        // Log.d(LOG_TAG, "JobSchedulerServiceAlarm onCreate");
         readSharedPreferences();
         this.mJobSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
@@ -67,13 +67,13 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         // Log.d(LOG_TAG, "mCurrentTime 1: " + mCurrentTime);
         // Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm)/1000/60 + " ? " + myAlarmInterval/1000/60);
         // Log.d(LOG_TAG, "mLastAlarm 1: " + mLastAlarm);
-        //Log.d(LOG_TAG, "myAlarmInterval 1: " + myAlarmInterval);
-        Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval * 1000 * 60 * 60);
+        // Log.d(LOG_TAG, "myAlarmInterval 1: " + myAlarmInterval);
+        // Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval * 1000 * 60 * 60);
 
         // При старте всегда равно нулю (обнуляется по кнопке Stop)
         if (mLastAlarm == 0) {
             mLastAlarm = mCurrentTime;
-            Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
+            // Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
             saveSharedPreferences();
         }
 
@@ -82,18 +82,18 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                 // Если FlexTime то время не проверяем!
                 // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                 if (tempSensor == 0) tempSensor = tempBattery;
-                Log.d(LOG_TAG, "ifFlexTime: " + ifFlexTime + ", mCurrentTime 3: " + mCurrentTime);
+                // Log.d(LOG_TAG, "ifFlexTime: " + ifFlexTime + ", mCurrentTime 3: " + mCurrentTime);
 
                 // Для сенсора и проверка температуры
                 if (ifSensor && tempSensor < myWarningTemperature) {
-                    Log.d(LOG_TAG, "new: JobAlarmSensor");
+                // Log.d(LOG_TAG, "new: JobAlarmSensor");
                     ++TASK_NUMBER;
                     saveSharedPreferences();
                     new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                 }
                 // Для батареи и проверка температуры
                 if (!ifSensor && tempBattery < myWarningTemperature) {
-                    Log.d(LOG_TAG, "new: JobAlarmBattery");
+                // Log.d(LOG_TAG, "new: JobAlarmBattery");
 
                     ++TASK_NUMBER;
                     saveSharedPreferences();
@@ -108,7 +108,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
 
                             // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                             if (tempSensor == 0) tempSensor = tempBattery;
-                            Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval * 1000 * 60 * 60);
+                            // Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval * 1000 * 60 * 60);
 
                             // Для сенсора и проверка температуры
                             if (ifSensor && tempSensor < myWarningTemperature) {
@@ -136,7 +136,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        Log.d(LOG_TAG, "--- onStopJob --- return true --- СЕРВИС ОСТАНОВЛЕН!!!!!!!!!");
+        Log.d(LOG_TAG, "--- onStopJob --- return true --- ALARM СЕРВИС ОСТАНОВЛЕН!!!!!!!!!");
         return false;
 
     }

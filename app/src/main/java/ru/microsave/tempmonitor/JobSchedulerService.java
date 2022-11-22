@@ -40,7 +40,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
     @Override
     public void onCreate() {
-        Log.d(LOG_TAG, "JobSchedulerService onCreate");
+        // Log.d(LOG_TAG, "JobSchedulerService onCreate");
         readSharedPreferences();
         this.mJobSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
@@ -66,7 +66,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // Log.d(LOG_TAG, "myNormalInterval 1: " + mCurrentTime + " - " + mLastInfo + " = " +  (mCurrentTime - mLastInfo)/1000/60 + " ? " + myNormalInterval/1000/60);
         //Log.d(LOG_TAG, "mLastInfo 1: " + mLastInfo);
         //Log.d(LOG_TAG, "myNormalInterval 1: " + myNormalInterval);
-        Log.d(LOG_TAG, "myNormalInterval 1: " + mCurrentTime + " - " + mLastInfo + " = " + (mCurrentTime - mLastInfo) + " ? " + myNormalInterval * 1000 * 60 * 60 );
+        // Log.d(LOG_TAG, "myNormalInterval 1: " + mCurrentTime + " - " + mLastInfo + " = " + (mCurrentTime - mLastInfo) + " ? " + myNormalInterval * 1000 * 60 * 60 );
 
         // не использую нигде
         // String timestamp = DateFormat.getDateTimeInstance().format(new Date(mCurrentTime));
@@ -75,7 +75,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // Не надо поправку, некорректно отсчитывается
         if (mLastInfo == 0) {
             mLastInfo = mCurrentTime;
-            Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
+            // Log.d(LOG_TAG, "mLastInfo 2: " + mLastInfo);
             saveSharedPreferences();
         }
 
@@ -84,7 +84,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // Если FlexTime то время не проверяем!
         if (ifFlexTime) {
             if (ifSensor) {
-                Log.d(LOG_TAG, "new: JobInfoSensor");
+                // Log.d(LOG_TAG, "new: JobInfoSensor");
 
                 // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                 if (tempSensor == 0) tempSensor = tempBattery;
@@ -93,7 +93,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                 saveSharedPreferences();
                 new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
             } else {
-                Log.d(LOG_TAG, "new: JobInfoBattery");
+                // Log.d(LOG_TAG, "new: JobInfoBattery");
                 ++TASK_NUMBER;
                 saveSharedPreferences();
                 new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
@@ -105,7 +105,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                 mLastInfo = mCurrentTime; // Новый таймштамп
 
                 if (ifSensor) {
-                    Log.d(LOG_TAG, "new: JobInfoSensor");
+                    // Log.d(LOG_TAG, "new: JobInfoSensor");
                     ++TASK_NUMBER;
                     saveSharedPreferences();
                     // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
@@ -113,7 +113,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
                     new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
                 } else {
-                    Log.d(LOG_TAG, "new: JobInfoBattery");
+                    // Log.d(LOG_TAG, "new: JobInfoBattery");
                     ++TASK_NUMBER;
                     saveSharedPreferences();
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
@@ -132,8 +132,8 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        Log.d(LOG_TAG, "--- onStopJob --- return true --- СЕРВИС НОРМАЛ ОСТАНОВЛЕН!!!!!!!!!");
-        Log.d(LOG_TAG, "onStopJob() called with: params = [" + params + "]");
+         Log.d(LOG_TAG, "--- onStopJob --- return true --- СЕРВИС НОРМАЛ ОСТАНОВЛЕН!!!!!!!!!");
+        // Log.d(LOG_TAG, "onStopJob() called with: params = [" + params + "]");
         return false;
     }
 

@@ -9,7 +9,6 @@ import android.app.job.JobService;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.util.Date;
 
@@ -41,7 +40,7 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
     @Override
     protected JobParameters doInBackground(JobParameters... jobParameters) {
-            Log.d(LOG_TAG, "mTempBattery = " + mTempBattery);
+           // Log.d(LOG_TAG, "mTempBattery = " + mTempBattery);
 
                 // получаем и отправляем температуру батареи
                 DEGREES_LOCAL = (int) mTempBattery;
