@@ -104,6 +104,8 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                 else {
                         // Проверка времени для старых устройств (в миллисекундах!)
                         if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000 * 60 * 60) {
+                            mLastAlarm = mCurrentTime; // Новый таймштамп, сразу же после сработки
+
                             // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                             if (tempSensor == 0) tempSensor = tempBattery;
                             Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval * 1000 * 60 * 60);
@@ -120,9 +122,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                                 saveSharedPreferences();
                                 new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                             }
-                            mLastAlarm = mCurrentTime; // Новый таймштамп, только если отработал
                         }
-
                     }
 
 

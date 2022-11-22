@@ -102,7 +102,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         } else {
             // Проверка времени для старых устройств (в миллисекундах!)
             if ((mCurrentTime - mLastInfo)  > myNormalInterval * 1000 * 60 * 60) {
-                Log.d(LOG_TAG, "myNormalInterval 3: " + mCurrentTime + " - " + mLastInfo + " = " + (mCurrentTime - mLastInfo) + " ? " + myNormalInterval * 1000 * 60 * 60);
+                mLastInfo = mCurrentTime; // Новый таймштамп
 
                 if (ifSensor) {
                     Log.d(LOG_TAG, "new: JobInfoSensor");
@@ -119,7 +119,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
                 }
 
-                mLastInfo = mCurrentTime; // Новый таймштамп
+
             }
         }
 

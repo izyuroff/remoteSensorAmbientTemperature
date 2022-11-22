@@ -467,9 +467,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private void resetSharedPreferences() {
         SharedPreferences.Editor ed = savePref.edit();
-        ed.putInt("TASK_NUMBER", mTASK_NUMBER);
-        ed.putLong("LAST_ALARM", mLastAlarm);
-        ed.putLong("LAST_INFO", mLastInfo);
+        ed.putInt("TASK_NUMBER", 0);
+        ed.putLong("LAST_ALARM", 0);
+        ed.putLong("LAST_INFO", 0);
         ed.putString("NUMBER", "+7123456789");
         ed.putInt("WARNING", 5);
         ed.putInt("NORMAL_INTERVAL", 6);
@@ -482,6 +482,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ed.putBoolean("MESSAGEREAD", false);
         ed.putBoolean("SERVICEON", false);
         ed.apply();
+        //updateScreen();
     }
 
     // ==========================================
@@ -827,7 +828,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void reset_counter() {
         mTASK_NUMBER = 0; // Сбросить счетчик сообщений можно через меню
         // reset_timer();
-        resetSharedPreferences();
+    //    resetSharedPreferences();
         saveSharedPreferences();
     }
 
