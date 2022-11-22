@@ -4,6 +4,13 @@ android {
     compileSdkVersion 33
     buildToolsVersion "30.0.2"
 
+
+    // https://stackoverflow.com/questions/66477093/entry-name-classes-dex-collided
+    packagingOptions {
+        exclude 'classes.dex'
+        exclude '**.**'
+    }
+
     defaultConfig {
         configurations.all {
             resolutionStrategy { force 'androidx.core:core:1.6.0' }
