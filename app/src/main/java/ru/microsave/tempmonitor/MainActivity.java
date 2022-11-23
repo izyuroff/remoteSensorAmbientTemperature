@@ -385,26 +385,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // mSensorManager.unregisterListener(this);
         Intent intent = new Intent(this, Control_activity.class);
         msg("Служба запускается для API = " + Build.VERSION.SDK_INT);
-        // Запретить оптимизировать батарею
+        // Проверить условие Запретить оптимизировать батарею
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
             String packageName = getPackageName();
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                 msg("Оптимизация батареи, условие ОК");
             }
-
             intent.setData(Uri.parse("package:" + packageName));
-            intent.putExtra("serviceIntentON", serviseON);
-            intent.putExtra("ALARM_HOURS", ALARM_INTERVAL);
-            intent.putExtra("NORMAL_HOURS", NORMAL_INTERVAL);
-            startActivity(intent);
-
-        } else {
-            intent.putExtra("serviceIntentON", serviseON);
-            startActivity(intent);
         }
+
+        intent.putExtra("serviceIntentON", serviseON);
+        intent.putExtra("ALARM_HOURS", ALARM_INTERVAL);
+        intent.putExtra("NORMAL_HOURS", NORMAL_INTERVAL);
+        startActivity(intent);
+
     }
 
     private void saveSharedPreferences() {
