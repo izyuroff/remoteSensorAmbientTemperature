@@ -137,7 +137,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.d(LOG_TAG, "--- onStopJob --- return true --- ALARM СЕРВИС ОСТАНОВЛЕН!!!!!!!!!");
-        return false;
+        return true;
 
     }
 

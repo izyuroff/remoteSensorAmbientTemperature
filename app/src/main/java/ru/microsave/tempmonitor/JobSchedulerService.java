@@ -134,7 +134,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     public boolean onStopJob(JobParameters params) {
          Log.d(LOG_TAG, "--- onStopJob --- return true --- СЕРВИС НОРМАЛ ОСТАНОВЛЕН!!!!!!!!!");
         // Log.d(LOG_TAG, "onStopJob() called with: params = [" + params + "]");
-        return false;
+        return true;
     }
 
     @Override
