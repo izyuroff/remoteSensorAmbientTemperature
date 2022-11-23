@@ -1,6 +1,6 @@
 package ru.microsave.tempmonitor;
 /*
-
+Шедулер для периодического сообщения об уровне темпертатуры
  */
 
 import android.app.job.JobParameters;
@@ -126,7 +126,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         saveSharedPreferences();
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
-        jobFinished(param, true);
+        // jobFinished(param, true);
         return false;
     }
 

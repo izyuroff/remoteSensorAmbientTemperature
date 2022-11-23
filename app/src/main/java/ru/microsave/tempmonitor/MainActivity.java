@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 return true;
 
             case R.id.action_test_Job:
-                isJobServiceOn();
+                checkJobService();
                 return true;
 
             case R.id.action_settings:
@@ -466,6 +466,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     private void resetSharedPreferences() {
+        // Планировал возможность сброса к дефолтным настройкам, пока решил
+        // опцией в манифесте android:allowBackup="false"
         SharedPreferences.Editor ed = savePref.edit();
         ed.putInt("TASK_NUMBER", 0);
         ed.putLong("LAST_ALARM", 0);
@@ -796,7 +798,27 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             saveSharedPreferences();
     }
+    // вызывается из меню для проверки работы службы
+    public boolean checkJobService() {
+        // https://overcoder.net/q/1601745/%D0%BA%D0%B0%D0%BA-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%B8%D1%82%D1%8C-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82-jobservice-%D0%B8%D0%BB%D0%B8-%D0%BD%D0%B5%D1%82-%D0%B2-android
+        // https://clck.ru/32YZ7j
+        JobScheduler scheduler = (JobScheduler) this.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
+        boolean hasBeenScheduled = false;
+
+        for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
+            if (jobInfo.getId() == 100500777 | jobInfo.getId() == 100500778 ) {
+                hasBeenScheduled = true;
+                break;
+            }
+        }
+        if (hasBeenScheduled)
+            msg("Служба выполняется!");
+        else
+            msg("Служба не работает!");
+
+        return hasBeenScheduled;
+    }
     public void batteryTemp() {
         // Также каждые три секунды проверяем изменение счетчика СМС в сохраненном файле
         readCounter();
@@ -838,6 +860,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void countTime() {
+        // Подсчет и вывод на экран времени работы приложения
         if (serviseON) {
 
             tvTitleTimer.setText("Текущая сессия:");
@@ -914,6 +937,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     private void testSMS() {
+        // Просто проверка отправки СМС прямо из меню
         readSharedPreferences();
         ++mTASK_NUMBER;
         String text;
@@ -955,29 +979,5 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //    WorkManager.getInstance().cancelWorkById(myWorkRequest.getId());
         //    WorkManager.getInstance().cancelAllWorkByTag("sms1");
         //    WorkManager.getInstance().cancelAllWork();
-    }
-
-
-
-    // вызывается из меню для проверки
-    public boolean isJobServiceOn() {
-        // https://overcoder.net/q/1601745/%D0%BA%D0%B0%D0%BA-%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%B8%D1%82%D1%8C-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82-jobservice-%D0%B8%D0%BB%D0%B8-%D0%BD%D0%B5%D1%82-%D0%B2-android
-        // https://clck.ru/32YZ7j
-        JobScheduler scheduler = (JobScheduler) this.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
-        boolean hasBeenScheduled = false;
-
-        for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
-            if (jobInfo.getId() == 777 | jobInfo.getId() == 778 ) {
-                hasBeenScheduled = true;
-                break;
-            }
-        }
-        if (hasBeenScheduled)
-            msg("Служба выполняется!");
-        else
-            msg("Служба не работает!");
-
-        return hasBeenScheduled;
     }
 }

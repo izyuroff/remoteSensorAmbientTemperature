@@ -37,8 +37,8 @@ public class Control_activity extends AppCompatActivity {
     private int multiNormal; // Количество часов - множитель, умножаем потом на 1000*60*60
 
 
-    private static final int mJobId = 777;
-    private static final int mJobAlarmId = 778;
+    private static final int mJobId = 100500777;
+    private static final int mJobAlarmId = 100500778;
     private boolean serviceONlocal;// состояние службы дежурства, запущена или нет
     private boolean isPersisted = true; // Сохранять планировщик после рестарта устройства
 
