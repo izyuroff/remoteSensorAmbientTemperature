@@ -81,7 +81,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
             if (ifFlexTime) {
                 // Если FlexTime то время не проверяем!
                 // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-                if (tempSensor == 0) tempSensor = tempBattery;
+            //    if (tempSensor == 0) tempSensor = tempBattery;
                 // Log.d(LOG_TAG, "ifFlexTime: " + ifFlexTime + ", mCurrentTime 3: " + mCurrentTime);
 
                 // Для сенсора и проверка температуры
@@ -107,7 +107,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                             mLastAlarm = mCurrentTime; // Новый таймштамп, сразу же после сработки
 
                             // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-                            if (tempSensor == 0) tempSensor = tempBattery;
+                        //    if (tempSensor == 0) tempSensor = tempBattery;
                             // Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval * 1000 * 60 * 60);
 
                             // Для сенсора и проверка температуры

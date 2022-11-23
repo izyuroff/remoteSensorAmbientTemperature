@@ -71,7 +71,7 @@ public class Control_activity extends AppCompatActivity {
         List<JobInfo> allPendingJobs = mJobScheduler.getAllPendingJobs();
         for (JobInfo info : allPendingJobs) {
             int id = info.getId();
-            //    Log.d(LOG_TAG, "Cancel all scheduled jobs with id = " + id);
+                Log.d(LOG_TAG, "Cancel all scheduled jobs with id = " + id);
             mJobScheduler.cancel(id);
         }
 

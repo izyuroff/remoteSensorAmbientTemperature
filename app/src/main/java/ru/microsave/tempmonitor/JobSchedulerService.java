@@ -87,7 +87,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                 // Log.d(LOG_TAG, "new: JobInfoSensor");
 
                 // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-                if (tempSensor == 0) tempSensor = tempBattery;
+            //    if (tempSensor == 0) tempSensor = tempBattery;
 
                 ++TASK_NUMBER;
                 saveSharedPreferences();
@@ -109,7 +109,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                     ++TASK_NUMBER;
                     saveSharedPreferences();
                     // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-                    if (tempSensor == 0) tempSensor = tempBattery;
+                //    if (tempSensor == 0) tempSensor = tempBattery;
 
                     new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
                 } else {
@@ -127,6 +127,8 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
         // jobFinished(param, true);
+
+        // false - не требуется ручной вызов jobFinished, true - будет вызван вручную
         return false;
     }
 
@@ -134,6 +136,8 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     public boolean onStopJob(JobParameters params) {
          Log.d(LOG_TAG, "--- onStopJob --- return true --- СЕРВИС НОРМАЛ ОСТАНОВЛЕН!!!!!!!!!");
         // Log.d(LOG_TAG, "onStopJob() called with: params = [" + params + "]");
+
+        // true - говорит о том что служба может повторяться (будет перезапущена)
         return true;
     }
 
