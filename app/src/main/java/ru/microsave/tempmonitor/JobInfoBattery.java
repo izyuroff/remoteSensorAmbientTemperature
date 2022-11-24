@@ -9,6 +9,7 @@ import android.app.job.JobService;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.Date;
 
@@ -52,7 +53,8 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
-            jobService.jobFinished(jobParameters, false);
+            Log.d(LOG_TAG, "jobFinished(jobParameters, true)");
+            jobService.jobFinished(jobParameters, true);
     }
 
     private void myMessage(int degrees){
