@@ -126,7 +126,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         saveSharedPreferences();
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
-        // jobFinished(param, true);
+         jobFinished(param, true);
 
         // false - не требуется ручной вызов jobFinished, true - будет вызван вручную
         return false;
@@ -138,7 +138,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // Log.d(LOG_TAG, "onStopJob() called with: params = [" + params + "]");
 
         // true - говорит о том что служба может повторяться (будет перезапущена)
-        return true;
+        return false;
     }
 
     @Override

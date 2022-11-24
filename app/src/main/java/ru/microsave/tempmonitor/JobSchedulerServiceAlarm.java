@@ -129,7 +129,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         saveSharedPreferences();
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
-        // jobFinished(param, true);
+         jobFinished(param, true);
         return false;
     }
 
@@ -137,8 +137,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.d(LOG_TAG, "--- onStopJob --- return true --- ALARM СЕРВИС ОСТАНОВЛЕН!!!!!!!!!");
-        return true;
-
+        return false;
     }
 
     @Override

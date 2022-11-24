@@ -14,8 +14,11 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 
 import java.util.List;
@@ -40,7 +43,7 @@ public class Control_activity extends AppCompatActivity {
     private static final int mJobId = 100500777;
     private static final int mJobAlarmId = 100500778;
     private boolean serviceONlocal;// состояние службы дежурства, запущена или нет
-    private boolean isPersisted = true; // Сохранять планировщик после рестарта устройства
+    private final boolean isPersisted = true; // Сохранять планировщик после рестарта устройства
 
 
     @Override
@@ -81,8 +84,24 @@ public class Control_activity extends AppCompatActivity {
     }
 
     public void jobPlan() {
+
+        // https://stackoverflow.com/questions/32627342/how-to-whitelist-app-in-doze-mode-android-6-0
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Intent intent = new Intent();
+            String packageName = getPackageName();
+            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                intent.setData(Uri.parse("package:" + packageName));
+                startActivity(intent);
+            }
+        }
+
+
         // Прибить неприбитое?
         // mJobScheduler.cancelAll();
+
+
 
         Log.d(LOG_TAG, "jobPlan() Build.VERSION.SDK_INT = " + Build.VERSION.SDK_INT);
 
@@ -110,7 +129,7 @@ public class Control_activity extends AppCompatActivity {
 
             // Это дало срабатывания 5, 65, 55, 61, 64, 60, 54, 59 минут
             mPeriodic = multiNormal * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
-            mFlexPeriodic = multiNormal * 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
+            mFlexPeriodic = multiNormal * 1000 * 60 * 55; // Решено посмотреть на разных устройствах качество срабатывания
 
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                     .setRequiresCharging(false)// Не требовать быть на зарядке
@@ -149,7 +168,7 @@ public class Control_activity extends AppCompatActivity {
 
 
             mPeriodicAlarm = multiAlarm * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
-            mFlexPeriodicAlarm = multiAlarm * 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
+            mFlexPeriodicAlarm = multiAlarm * 1000 * 60 * 55; // Решено посмотреть на разных устройствах качество срабатывания
 
             jobInfoAlarm = new JobInfo.Builder(mJobAlarmId, componentNameAlarm)
                     .setRequiresCharging(false)// Не требовать быть на зарядке
