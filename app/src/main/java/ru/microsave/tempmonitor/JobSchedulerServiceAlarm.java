@@ -125,7 +125,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
         // jobFinished(param, false);
-        return false;
+        return true;
     }
 
 

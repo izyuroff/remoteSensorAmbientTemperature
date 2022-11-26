@@ -128,7 +128,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // jobFinished(param, false);
 
         // false - не требуется ручной вызов jobFinished, true - будет вызван вручную
-        return false;
+        return true;
     }
 
     @Override

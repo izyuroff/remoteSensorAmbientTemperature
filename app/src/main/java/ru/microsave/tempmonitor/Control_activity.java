@@ -116,8 +116,8 @@ public class Control_activity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
             // Дает в результате первый раз 10 минут потом по 15 минут ровно
-            //mPeriodic = 1000 * 60 * 25; // Решено посмотреть на разных устройствах качество срабатывания
-            //mFlexPeriodic = 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
+            mPeriodic = 1000 * 60 * 25; // Решено посмотреть на разных устройствах качество срабатывания
+            mFlexPeriodic = 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
 
             // Дает в результате первый раз 1 минуту 6 секунд, потом по 15 минут примерно почти ровно, например 14,55 и 16,02
             // mPeriodic = 1000 * 60 * 15; // Решено посмотреть на разных устройствах качество срабатывания
@@ -129,8 +129,8 @@ public class Control_activity extends AppCompatActivity {
 
             // если 55 - Это дало срабатывания 5, 65, 55, 61, 64, 60, 54, 59 минут
             // если 5 - Это дало срабатывания .. минут
-            mPeriodic = multiNormal * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
-            mFlexPeriodic = multiNormal * 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
+            //mPeriodic = multiNormal * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
+            //mFlexPeriodic = multiNormal * 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
 
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                     .setRequiresCharging(false)// Не требовать быть на зарядке
@@ -168,7 +168,7 @@ public class Control_activity extends AppCompatActivity {
             //mFlexPeriodicAlarm = 1000 * 60 * 14; // Решено посмотреть на разных устройствах качество срабатывания
 
 
-            mPeriodicAlarm = multiAlarm * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
+            mPeriodicAlarm = multiAlarm * 1000 * 60 * 25; // Решено посмотреть на разных устройствах качество срабатывания
             mFlexPeriodicAlarm = multiAlarm * 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
 
             jobInfoAlarm = new JobInfo.Builder(mJobAlarmId, componentNameAlarm)
