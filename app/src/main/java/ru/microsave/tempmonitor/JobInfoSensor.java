@@ -7,7 +7,6 @@ package ru.microsave.tempmonitor;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.util.Date;
 
@@ -21,7 +20,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
     private static int myJobTaskNorm;
 
     private final String LOG_TAG = "myLogs";
-    private final JobService jobService;
+    private final JobService jobServiceInfoSens;
     private String textMessage;
     private String mAppname;
 
@@ -34,7 +33,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
         myJobTaskNorm = count;
         mAppname = appname;
 
-        this.jobService = jobService;
+        this.jobServiceInfoSens = jobService;
     }
 
     @Override
@@ -46,8 +45,8 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
     }
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
-        Log.d(LOG_TAG, "jobFinished(jobParameters, true)");
-        jobService.jobFinished(jobParameters, true); //###
+    //    Log.d(LOG_TAG, "jobFinished(jobParameters, true)");
+    //    jobServiceInfoSens.jobFinished(jobParameters, true); //###
     }
 
     private void myMessage(int degrees){

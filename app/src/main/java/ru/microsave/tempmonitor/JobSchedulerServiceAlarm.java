@@ -81,26 +81,31 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
             if (ifFlexTime) {
                 // Если FlexTime то время не проверяем!
                 // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-            //    if (tempSensor == 0) tempSensor = tempBattery;
+                // if (tempSensor == 0) tempSensor = tempBattery;
                 // Log.d(LOG_TAG, "ifFlexTime: " + ifFlexTime + ", mCurrentTime 3: " + mCurrentTime);
 
-                // Для сенсора и проверка температуры
-                if (ifSensor && tempSensor < myWarningTemperature) {
-                // Log.d(LOG_TAG, "new: JobAlarmSensor");
-                    ++TASK_NUMBER;
-                    saveSharedPreferences();
-                    new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
-                }
-                // Для батареи и проверка температуры
-                if (!ifSensor && tempBattery < myWarningTemperature) {
-                // Log.d(LOG_TAG, "new: JobAlarmBattery");
+                // Проверка времени для новых устройств (в миллисекундах!)
+                if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000 * 60 * 60) {
+                    mLastAlarm = mCurrentTime; // Новый таймштамп, сразу же после сработки
 
-                    ++TASK_NUMBER;
-                    saveSharedPreferences();
-                    new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
+
+                    // Для сенсора и проверка температуры
+                    if (ifSensor && tempSensor < myWarningTemperature) {
+                        // Log.d(LOG_TAG, "new: JobAlarmSensor");
+                        ++TASK_NUMBER;
+                        saveSharedPreferences();
+                        new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
+                    }
+                    // Для батареи и проверка температуры
+                    if (!ifSensor && tempBattery < myWarningTemperature) {
+                        // Log.d(LOG_TAG, "new: JobAlarmBattery");
+
+                        ++TASK_NUMBER;
+                        saveSharedPreferences();
+                        new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
+                    }
                 }
             }
-
                 else {
                         // Проверка времени для старых устройств (в миллисекундах!)
                         if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000 * 60 * 60) {
@@ -129,7 +134,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         saveSharedPreferences();
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
-         jobFinished(param, true);
+        // jobFinished(param, false);
         return false;
     }
 
@@ -137,7 +142,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.d(LOG_TAG, "--- onStopJob --- return true --- ALARM СЕРВИС ОСТАНОВЛЕН!!!!!!!!!");
-        return false;
+        return true;
     }
 
     @Override

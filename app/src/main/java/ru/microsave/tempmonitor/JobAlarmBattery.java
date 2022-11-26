@@ -7,7 +7,6 @@ package ru.microsave.tempmonitor;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.util.Date;
 
@@ -21,7 +20,7 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
     private static int myJobTaskAlarm;
 
     private final String LOG_TAG = "myLogs";
-    private final JobService jobService;
+    private final JobService jobServiceAlarmBatt;
     private String textMessage;
     private String mAppname;
 
@@ -33,7 +32,7 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
         WARNING_TEMP_LOCAL = war;
         mAppname = appname;
 
-        this.jobService = jobService;
+        this.jobServiceAlarmBatt = jobService;
     }
 
     @Override
@@ -49,8 +48,8 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
-        Log.d(LOG_TAG, "jobFinished(jobParameters, true)");
-        jobService.jobFinished(jobParameters, true);
+    //    Log.d(LOG_TAG, "jobFinished(jobParameters, true)");
+    //    jobServiceAlarmBatt.jobFinished(jobParameters, true);
     }
 
     private void myMessage(int degrees){

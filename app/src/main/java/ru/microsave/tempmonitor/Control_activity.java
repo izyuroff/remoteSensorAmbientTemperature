@@ -127,9 +127,10 @@ public class Control_activity extends AppCompatActivity {
             // mPeriodic = 1000 * 60 * 35; // Решено посмотреть на разных устройствах качество срабатывания
             // mFlexPeriodic = 1000 * 60 * 30; // Решено посмотреть на разных устройствах качество срабатывания
 
-            // Это дало срабатывания 5, 65, 55, 61, 64, 60, 54, 59 минут
+            // если 55 - Это дало срабатывания 5, 65, 55, 61, 64, 60, 54, 59 минут
+            // если 5 - Это дало срабатывания .. минут
             mPeriodic = multiNormal * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
-            mFlexPeriodic = multiNormal * 1000 * 60 * 55; // Решено посмотреть на разных устройствах качество срабатывания
+            mFlexPeriodic = multiNormal * 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
 
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                     .setRequiresCharging(false)// Не требовать быть на зарядке
@@ -168,7 +169,7 @@ public class Control_activity extends AppCompatActivity {
 
 
             mPeriodicAlarm = multiAlarm * 1000 * 60 * 60; // Решено посмотреть на разных устройствах качество срабатывания
-            mFlexPeriodicAlarm = multiAlarm * 1000 * 60 * 55; // Решено посмотреть на разных устройствах качество срабатывания
+            mFlexPeriodicAlarm = multiAlarm * 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
 
             jobInfoAlarm = new JobInfo.Builder(mJobAlarmId, componentNameAlarm)
                     .setRequiresCharging(false)// Не требовать быть на зарядке
