@@ -79,27 +79,21 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
 
             // =======================================================================================
             if (ifFlexTime) {
-                // Если FlexTime то время не проверяем!
-                // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-                // if (tempSensor == 0) tempSensor = tempBattery;
-                // Log.d(LOG_TAG, "ifFlexTime: " + ifFlexTime + ", mCurrentTime 3: " + mCurrentTime);
+                // Если FlexTime то время не проверяем! (НЕТ, ТЕПЕРЬ ПРОВЕРЯЕМ)
 
                 // Проверка времени для новых устройств (в миллисекундах!)
                 if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000 * 60 * 60) {
-                    mLastAlarm = mCurrentTime; // Новый таймштамп, сразу же после сработки
+                    mLastAlarm = mCurrentTime - (1000 * 45); // Новый таймштамп, сразу же после сработки
 
 
                     // Для сенсора и проверка температуры
                     if (ifSensor && tempSensor < myWarningTemperature) {
-                        // Log.d(LOG_TAG, "new: JobAlarmSensor");
                         ++TASK_NUMBER;
                         saveSharedPreferences();
                         new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                     }
                     // Для батареи и проверка температуры
                     if (!ifSensor && tempBattery < myWarningTemperature) {
-                        // Log.d(LOG_TAG, "new: JobAlarmBattery");
-
                         ++TASK_NUMBER;
                         saveSharedPreferences();
                         new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
@@ -109,11 +103,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                 else {
                         // Проверка времени для старых устройств (в миллисекундах!)
                         if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000 * 60 * 60) {
-                            mLastAlarm = mCurrentTime; // Новый таймштамп, сразу же после сработки
-
-                            // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-                        //    if (tempSensor == 0) tempSensor = tempBattery;
-                            // Log.d(LOG_TAG, "myAlarmInterval 3: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval * 1000 * 60 * 60);
+                            mLastAlarm = mCurrentTime - (1000 * 45); // Новый таймштамп, сразу же после сработки
 
                             // Для сенсора и проверка температуры
                             if (ifSensor && tempSensor < myWarningTemperature) {

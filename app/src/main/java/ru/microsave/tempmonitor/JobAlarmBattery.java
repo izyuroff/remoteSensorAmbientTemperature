@@ -10,7 +10,7 @@ import android.os.AsyncTask;
 
 import java.util.Date;
 
-class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
+class JobAlarmBattery extends AsyncTask<JobParameters, Void, JobParameters> {
     private float mTempBattery;
 
     private String MY_NUMBER_LOCAL;
@@ -37,30 +37,30 @@ class JobAlarmBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
     @Override
     protected JobParameters doInBackground(JobParameters... jobParameters) {
-          //  Log.d(LOG_TAG, "mTempBattery = " + mTempBattery);
+        //  Log.d(LOG_TAG, "mTempBattery = " + mTempBattery);
 
-                DEGREES_LOCAL = (int) mTempBattery;
-              //  Log.d(LOG_TAG, "NO A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
-                myMessage(DEGREES_LOCAL);
+        DEGREES_LOCAL = (int) mTempBattery;
+        //  Log.d(LOG_TAG, "NO A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
+        myMessage(DEGREES_LOCAL);
 
         return jobParameters[0];
     }
 
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
-    //    Log.d(LOG_TAG, "jobFinished(jobParameters, true)");
-    //    jobServiceAlarmBatt.jobFinished(jobParameters, true);
+        //    Log.d(LOG_TAG, "jobFinished(jobParameters, true)");
+        //    jobServiceAlarmBatt.jobFinished(jobParameters, true);
     }
 
-    private void myMessage(int degrees){
+    private void myMessage(int degrees) {
 
         // Второй вариант оформления метки времени
         android.text.format.DateFormat df = new android.text.format.DateFormat();
         CharSequence timeStampChar = df.format("kk:mm dd/MM/yy", new Date());
 
         //textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ", СМС#" + myJobTaskAlarm +  ". " + mAppname;
-        textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ". " + mAppname+ ", #" + myJobTaskAlarm;
-        if (degrees < WARNING_TEMP_LOCAL){
+        textMessage = "ТРЕВОГА: " + degrees + Character.toString((char) 176) + "C" + ", " + timeStampChar + ". " + mAppname + ", #" + myJobTaskAlarm;
+        if (degrees < WARNING_TEMP_LOCAL) {
             // Отправляем созданный номер задачи и текст в класс для отправки СМС
             //new sendSMS(MY_NUMBER_LOCAL, textMessage);
             new sendSMS(MY_NUMBER_LOCAL, textMessage);

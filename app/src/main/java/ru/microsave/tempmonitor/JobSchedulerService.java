@@ -86,7 +86,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
             // Проверка времени для новых устройств (в миллисекундах!)
             if ((mCurrentTime - mLastInfo)  > myNormalInterval * 1000 * 60 * 60) {
-                mLastInfo = mCurrentTime; // Новый таймштамп
+                mLastInfo = mCurrentTime - (1000 * 45); // Новый таймштамп
 
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobInfoSensor");
@@ -106,15 +106,12 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         } else {
             // Проверка времени для старых устройств (в миллисекундах!)
             if ((mCurrentTime - mLastInfo)  > myNormalInterval * 1000 * 60 * 60) {
-                mLastInfo = mCurrentTime; // Новый таймштамп
+                mLastInfo = mCurrentTime - (1000 * 45); // Новый таймштамп
 
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobInfoSensor");
                     ++TASK_NUMBER;
                     saveSharedPreferences();
-                    // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-                //    if (tempSensor == 0) tempSensor = tempBattery;
-
                     new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
                 } else {
                     // Log.d(LOG_TAG, "new: JobInfoBattery");
@@ -122,8 +119,6 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                     saveSharedPreferences();
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
                 }
-
-
             }
         }
 
