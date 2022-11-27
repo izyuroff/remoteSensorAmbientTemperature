@@ -64,10 +64,7 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
         String timeStampString = (String) timeStampChar;
 
         textMessage = "БАТАРЕЯ: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampString + ". " + mAppname + ", #" + myJobTaskNorm;
-
-        //textMessage = "НОРМА: " + degrees + Character.toString ((char) 176) + "C" + ", " + timeStampString + ", #" + myJobTaskNorm;
         // Отправляем созданный номер задачи и текст в класс для отправки СМС
-        //new sendSMS(MY_NUMBER_LOCAL, textMessage);
         new sendSMS(MY_NUMBER_LOCAL, textMessage);
     }
 }
