@@ -46,7 +46,7 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
     //    Log.d(LOG_TAG, "jobFinished(jobParameters, true)");
-        jobServiceInfoSens.jobFinished(jobParameters, false); //###
+    //    jobServiceInfoSens.jobFinished(jobParameters, false); //###
     }
 
     private void myMessage(int degrees){
