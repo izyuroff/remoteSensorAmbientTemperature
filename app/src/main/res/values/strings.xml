@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Монитор t° v.1.9</string>
+    <string name="app_name">Монитор t° v.1.2</string>
     <string name="symbol_degrees">°C</string>
     <string name="buttonOK">Ok</string>
     <string name="buttonCancel">отмена</string>
 
     <string name="infoBatteryTitle">Термометр не обнаружен!</string>
-    <string name="infoBatteryMessage">Измерения производятся на аккумуляторе. Это дает погрешность при включенном экране.\n\nОставьте телефон в покое примерно на один час.\nДатчик начнет выдавать значения, близкие к реальной температуре воздуха.</string>
+    <string name="infoBatteryMessage">Измерения производятся на аккумуляторе.Это дает погрешность при включенном экране.\n\nОставьте телефон в покое примерно на один час.\nДатчик начнет выдавать значения, близкие к реальной температуре воздуха.</string>
 
     <string name="infoSensorTitle">Термометр обнаружен!</string>
     <string name="infoSensorMessage">Имеется встроенный датчик температуры окружающего воздуха\n\nВсе измерения производятся именно на нем\n\nПоказания батареи выводятся только для информации!</string>

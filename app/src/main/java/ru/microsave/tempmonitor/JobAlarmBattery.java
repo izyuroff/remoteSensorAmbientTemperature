@@ -49,7 +49,7 @@ class JobAlarmBattery extends AsyncTask<JobParameters, Void, JobParameters> {
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
         //    Log.d(LOG_TAG, "jobFinished(jobParameters, true)");
-            jobServiceAlarmBatt.jobFinished(jobParameters, true);
+            jobServiceAlarmBatt.jobFinished(jobParameters, false);
     }
 
     private void myMessage(int degrees) {

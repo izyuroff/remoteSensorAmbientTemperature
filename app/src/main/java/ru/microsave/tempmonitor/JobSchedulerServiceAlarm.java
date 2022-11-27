@@ -33,8 +33,8 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
     private long mLastAlarm;
 
     private int TASK_NUMBER;
-    private static Sensor mJobSensorTemperature;
-    private static SensorManager mJobSensorManager;
+    private static Sensor mJobAlarmSensorTemperature;
+    private static SensorManager mJobAlarmSensorManager;
 
     public JobSchedulerServiceAlarm() {
     }
@@ -43,9 +43,9 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
     public void onCreate() {
         // Log.d(LOG_TAG, "JobSchedulerServiceAlarm onCreate");
         readSharedPreferences();
-        this.mJobSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
-        mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-        mJobSensorManager.registerListener(this, mJobSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
+        this.mJobAlarmSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+        mJobAlarmSensorTemperature = mJobAlarmSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+        mJobAlarmSensorManager.registerListener(this, mJobAlarmSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
         myApp = getString(R.string.app_name);
     }
 
@@ -81,11 +81,6 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
             if (ifFlexTime) {
                 // Если FlexTime то время не проверяем! (НЕТ, ТЕПЕРЬ ПРОВЕРЯЕМ)
 
-                // Проверка времени для новых устройств (в миллисекундах!)
-                if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000 * 60 * 60) {
-                    mLastAlarm = mCurrentTime - (1000 * 45); // Новый таймштамп, сразу же после сработки
-
-
                     // Для сенсора и проверка температуры
                     if (ifSensor && tempSensor < myWarningTemperature) {
                         ++TASK_NUMBER;
@@ -98,12 +93,14 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                         saveSharedPreferences();
                         new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                     }
-                }
             }
                 else {
                         // Проверка времени для старых устройств (в миллисекундах!)
                         if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000 * 60 * 60) {
                             mLastAlarm = mCurrentTime - (1000 * 45); // Новый таймштамп, сразу же после сработки
+                            // Log.d(LOG_TAG, "new: JobInfoSensor");
+                            // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
+                            //    if (tempSensor == 0) tempSensor = tempBattery;
 
                             // Для сенсора и проверка температуры
                             if (ifSensor && tempSensor < myWarningTemperature) {
@@ -124,7 +121,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         saveSharedPreferences();
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
-        // jobFinished(param, false);
+        // jobFinished(param, true);
         return true;
     }
 
@@ -139,8 +136,8 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
     public void onDestroy() {
         //    stopService(new Intent(this, JobSchedulerServiceAlarm.class));
         try {
-            if (mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
-                mJobSensorManager.unregisterListener(this);
+            if (mJobAlarmSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
+                mJobAlarmSensorManager.unregisterListener(this);
                 //    Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
             }
 

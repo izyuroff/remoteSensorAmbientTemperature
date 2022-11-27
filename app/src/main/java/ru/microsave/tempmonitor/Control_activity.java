@@ -116,7 +116,7 @@ public class Control_activity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
             // Дает в результате первый раз 10 минут потом по 15 минут ровно
-            mPeriodic = 1000 * 60 * 25; // Решено посмотреть на разных устройствах качество срабатывания
+            mPeriodic = 1000 * 60 * 15; // Решено посмотреть на разных устройствах качество срабатывания
             mFlexPeriodic = 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
 
             // Дает в результате первый раз 1 минуту 6 секунд, потом по 15 минут примерно почти ровно, например 14,55 и 16,02
@@ -168,7 +168,7 @@ public class Control_activity extends AppCompatActivity {
             //mFlexPeriodicAlarm = 1000 * 60 * 14; // Решено посмотреть на разных устройствах качество срабатывания
 
 
-            mPeriodicAlarm = multiAlarm * 1000 * 60 * 25; // Решено посмотреть на разных устройствах качество срабатывания
+            mPeriodicAlarm = multiAlarm * 1000 * 60 * 15; // Решено посмотреть на разных устройствах качество срабатывания
             mFlexPeriodicAlarm = multiAlarm * 1000 * 60 * 5; // Решено посмотреть на разных устройствах качество срабатывания
 
             jobInfoAlarm = new JobInfo.Builder(mJobAlarmId, componentNameAlarm)

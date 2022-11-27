@@ -83,11 +83,6 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // Это блок для регулярных периодических сообщений
         // Если FlexTime то время не проверяем!
         if (ifFlexTime) {
-
-            // Проверка времени для новых устройств (в миллисекундах!)
-            if ((mCurrentTime - mLastInfo)  > myNormalInterval * 1000 * 60 * 60) {
-                mLastInfo = mCurrentTime - (1000 * 45); // Новый таймштамп
-
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobInfoSensor");
                     // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
@@ -101,8 +96,6 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                     saveSharedPreferences();
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
                 }
-            }
-
         } else {
             // Проверка времени для старых устройств (в миллисекундах!)
             if ((mCurrentTime - mLastInfo)  > myNormalInterval * 1000 * 60 * 60) {
@@ -110,6 +103,10 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobInfoSensor");
+                    // Log.d(LOG_TAG, "new: JobInfoSensor");
+                    // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
+                    //    if (tempSensor == 0) tempSensor = tempBattery;
+
                     ++TASK_NUMBER;
                     saveSharedPreferences();
                     new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
@@ -125,7 +122,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         saveSharedPreferences();
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
-        // jobFinished(param, false);
+       // jobFinished(param, true);
 
         // false - не требуется ручной вызов jobFinished, true - будет вызван вручную
         return true;
