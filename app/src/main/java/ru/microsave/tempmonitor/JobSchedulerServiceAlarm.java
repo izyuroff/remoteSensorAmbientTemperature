@@ -80,8 +80,8 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
             // =======================================================================================
             if (ifFlexTime) {
                 // Если FlexTime то время не проверяем! (НЕТ, ТЕПЕРЬ ПРОВЕРЯЕМ)
-            //    if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000 * 60 * 60) {
-            //        mLastAlarm = mCurrentTime - (1000 * 45); // Новый таймштамп
+                if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 60L) {
+                    mLastAlarm = mCurrentTime - (1000L * 45L); // Новый таймштамп
 
                     // Для сенсора и проверка температуры
                     if (ifSensor && tempSensor < myWarningTemperature) {
@@ -95,12 +95,12 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                         saveSharedPreferences();
                         new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                     }
-                //}
+                }
             }
                 else {
                         // Проверка времени для старых устройств (в миллисекундах!)
-                        if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000 * 60 * 60) {
-                            mLastAlarm = mCurrentTime - (1000 * 45); // Новый таймштамп, сразу же после сработки
+                        if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 60L) {
+                            mLastAlarm = mCurrentTime - (1000L * 45L); // Новый таймштамп, сразу же после сработки
                             // Log.d(LOG_TAG, "new: JobInfoSensor");
                             // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                             //    if (tempSensor == 0) tempSensor = tempBattery;
