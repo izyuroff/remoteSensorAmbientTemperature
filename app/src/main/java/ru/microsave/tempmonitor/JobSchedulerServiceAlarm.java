@@ -78,6 +78,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         }
 
             // =======================================================================================
+        // TODO: 28.11.2022 СЛЕДУЕТ НА ПЕРВОЕ МЕСТО ПОСТАВИТЬ ТРЕВОГУ, А ПОТОМ УЖЕ ПРОВЕРКУ ЧАСИКОВ 
             if (ifFlexTime) {
                 // Если FlexTime то время не проверяем! (НЕТ, ТЕПЕРЬ ПРОВЕРЯЕМ)
                 if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 60L) {
@@ -153,7 +154,9 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         SharedPreferences saveJobPref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         myNumber = (saveJobPref.getString("NUMBER", "+7123456789"));
         myWarningTemperature = (saveJobPref.getInt("WARNING", 5));
-        myAlarmInterval = (saveJobPref.getInt("ALARM_INTERVAL", 1));
+
+        // TODO: 29.11.2022 А может быть надо сделать в настройках long???????????
+        myAlarmInterval = (saveJobPref.getLong("ALARM_INTERVAL", 1));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));
         ifFlexTime = (saveJobPref.getBoolean("USE_FLEX_TIME", true));
         mLastAlarm = (saveJobPref.getLong("LAST_ALARM", 0));

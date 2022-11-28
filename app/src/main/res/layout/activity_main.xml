@@ -73,7 +73,7 @@
         android:id="@+id/button4"
         android:layout_width="0sp"
         android:layout_height="wrap_content"
-        android:enabled="true"
+        android:enabled="false"
         android:gravity="center_vertical|end"
         android:insetTop="8sp"
         android:insetBottom="8sp"

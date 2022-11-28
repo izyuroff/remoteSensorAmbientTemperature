@@ -125,8 +125,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // Для отправки СМС implements View.OnClickListener
     public String MY_NUMBER;
     public int WARNING_TEMP;
-    private int ALARM_INTERVAL; //     теперь всё в часах
-    private int NORMAL_INTERVAL; //    НАСТРОЙКА КОЛИЧЕСТВА ЧАСОВ
+    private long ALARM_INTERVAL; //     теперь всё в часах
+    private long NORMAL_INTERVAL; //    НАСТРОЙКА КОЛИЧЕСТВА ЧАСОВ
 
     public int mDEGREES;
     public boolean serviseON; // состояние службы боевого дежурства, запущена или нет
@@ -429,8 +429,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ed.putInt("WARNING", WARNING_TEMP);
 
         // ed.putLong("PERIOD_INTERVAL", mainPeriodic);
-        ed.putInt("NORMAL_INTERVAL", NORMAL_INTERVAL);
-        ed.putInt("ALARM_INTERVAL", ALARM_INTERVAL);
+        ed.putLong("NORMAL_INTERVAL", NORMAL_INTERVAL);
+        ed.putLong("ALARM_INTERVAL", ALARM_INTERVAL);
         ed.putLong("START_TIME", mStartTime);
         ed.putLong("STOP_TIME", mStopTime);
         ed.putLong("LONG_TIME", mLongTime);
@@ -446,8 +446,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void readSharedPreferences() {
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         // mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 15));
-        ALARM_INTERVAL = (savePref.getInt("ALARM_INTERVAL", 1));
-        NORMAL_INTERVAL = (savePref.getInt("NORMAL_INTERVAL", 12));
+        ALARM_INTERVAL = (savePref.getLong("ALARM_INTERVAL", 1));
+        NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 6));
         mStartTime = (savePref.getLong("START_TIME", 0));
         mStopTime = (savePref.getLong("STOP_TIME", 0));
         mLongTime = (savePref.getLong("LONG_TIME", 0));
@@ -508,7 +508,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mButton0.setEnabled(false);
             mButton1.setEnabled(true);
             mButton2.setEnabled(false);
-            mButton3.setEnabled(false);
+        //    mButton3.setEnabled(false);
             mButton4.setEnabled(false);
             mButton5.setEnabled(false);
 
@@ -520,7 +520,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mButton0.setEnabled(true);
             mButton1.setEnabled(false);
             mButton2.setEnabled(true);
-            mButton3.setEnabled(true);
+        //    mButton3.setEnabled(true);
             mButton4.setEnabled(true);
             mButton5.setEnabled(true);
         }
@@ -595,7 +595,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     msg("Нельзя устанавливать менее 1 часа!");
                     inputAlarma(null);
                 } else {
-                    ALARM_INTERVAL = Integer.valueOf(hours);
+                    ALARM_INTERVAL = Long.valueOf(hours);
                     Log.d(LOG_TAG, "--- ALARM_INTERVAL ---" + ALARM_INTERVAL);
                     saveSharedPreferences();
                 }
@@ -646,7 +646,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     msg("Нельзя устанавливать менее 1 часа!");
                     inputNormal(null);
                 } else {
-                    NORMAL_INTERVAL = Integer.valueOf(hours);
+                    NORMAL_INTERVAL = Long.valueOf(hours);
                     Log.d(LOG_TAG, "--- NORMAL_INTERVAL ---" + NORMAL_INTERVAL);
                     saveSharedPreferences();
                 }
