@@ -80,6 +80,8 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
             // =======================================================================================
             if (ifFlexTime) {
                 // Если FlexTime то время не проверяем! (НЕТ, ТЕПЕРЬ ПРОВЕРЯЕМ)
+            //    if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000 * 60 * 60) {
+            //        mLastAlarm = mCurrentTime - (1000 * 45); // Новый таймштамп
 
                     // Для сенсора и проверка температуры
                     if (ifSensor && tempSensor < myWarningTemperature) {
@@ -93,6 +95,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                         saveSharedPreferences();
                         new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                     }
+                //}
             }
                 else {
                         // Проверка времени для старых устройств (в миллисекундах!)
@@ -121,7 +124,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         // =======================================================================================
         // job not really finished here but we assume success & prevent backoff procedures, wakelocking, etc.
         // jobFinished(param, true);
-        return true;
+        return false;
     }
 
 

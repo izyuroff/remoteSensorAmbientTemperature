@@ -83,6 +83,9 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // Это блок для регулярных периодических сообщений
         // Если FlexTime то время не проверяем!
         if (ifFlexTime) {
+           // if ((mCurrentTime - mLastInfo) > myNormalInterval * 1000 * 60 * 60) {
+           //     mLastInfo = mCurrentTime - (1000 * 45); // Новый таймштамп
+
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobInfoSensor");
                     // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
@@ -96,6 +99,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                     saveSharedPreferences();
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
                 }
+            //}
         } else {
             // Проверка времени для старых устройств (в миллисекундах!)
             if ((mCurrentTime - mLastInfo)  > myNormalInterval * 1000 * 60 * 60) {
@@ -125,7 +129,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
        // jobFinished(param, true);
 
         // false - не требуется ручной вызов jobFinished, true - будет вызван вручную
-        return true;
+        return false;
     }
 
     @Override
