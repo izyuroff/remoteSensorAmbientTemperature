@@ -22,6 +22,7 @@ import android.provider.Settings;
 import android.util.Log;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -139,6 +140,8 @@ public class Control_activity extends AppCompatActivity {
                     .setPeriodic(mPeriodic, mFlexPeriodic)// Во втором параметре, значение flex..
                     //.setPeriodic(JobInfo.getMinPeriodMillis(), JobInfo.getMinFlexMillis())// Во втором параметре, значение flex..
                     .setPersisted(isPersisted)// Для восстановления после перезагрузки
+                    .setBackoffCriteria(TimeUnit.SECONDS.toMillis(30),
+                            JobInfo.BACKOFF_POLICY_LINEAR)
                     .build();
         }
 
@@ -179,6 +182,8 @@ public class Control_activity extends AppCompatActivity {
                     .setRequiresCharging(false)// Не требовать быть на зарядке
                     .setPeriodic(mPeriodicAlarm, mFlexPeriodicAlarm)// Во втором параметре, значение flex..
                     .setPersisted(isPersisted)// Для восстановления после перезагрузки
+                    .setBackoffCriteria(TimeUnit.SECONDS.toMillis(30),
+                            JobInfo.BACKOFF_POLICY_LINEAR)
                     .build();
         }
 
