@@ -54,6 +54,7 @@ v.1.1
 
 
 ---= Добавить в будущем =---
+Нужна система самоконтроля - еще одно Working задание, которое проверяет состояние JobSheduler
 Также сигнализация о работоспособности устройства - уровень батареи например
 и может быть можно менять текст сообщения
 
@@ -172,7 +173,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mButton1 = findViewById(R.id.button1);
         mButton2 = findViewById(R.id.button2);
         mButton3 = findViewById(R.id.button3);
+
         mButton4 = findViewById(R.id.button4);
+        mButton4.setVisibility(View.GONE);
+
         mButton5 = findViewById(R.id.button5);
 
         sensorLabel = findViewById(R.id.textView);
@@ -181,7 +185,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         numberLabel = findViewById(R.id.textView4);
         batteryLabel = findViewById(R.id.textView5);
         tvMinimum = findViewById(R.id.textView6);
+
         tvAlarm = findViewById(R.id.textView8);
+        tvAlarm.setVisibility(View.GONE);
+
         tvStandart = findViewById(R.id.textView9);
         tvCounter = findViewById(R.id.textView11);
         tvTitleTimer = findViewById(R.id.textView3);
@@ -307,8 +314,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 */
             batteryTemp();
             // batteryLabel.setText("" + min + ":" + String.format("%02d", second));
-            // повторяем через каждые 3000 миллисекунд
-            mHandler.postDelayed(this, 3000);
+            // повторяем через каждые 1000 миллисекунд
+            mHandler.postDelayed(this, 1000);
         }
     };
 
@@ -512,6 +519,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             //mButton4.setEnabled(false);
             mButton5.setEnabled(false);
 
+            mButton2.setVisibility(View.INVISIBLE);
+            mButton1.setVisibility(View.VISIBLE);
+
+
         }
         // Если НЕ было запусков или была остановка
         else {
@@ -523,6 +534,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mButton3.setEnabled(true);
             //mButton4.setEnabled(true);
             mButton5.setEnabled(true);
+
+            mButton2.setVisibility(View.VISIBLE);
+            mButton1.setVisibility(View.INVISIBLE);
+
         }
     }
 
