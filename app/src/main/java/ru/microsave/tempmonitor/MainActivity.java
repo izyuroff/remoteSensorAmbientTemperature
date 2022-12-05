@@ -509,7 +509,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mButton1.setEnabled(true);
             mButton2.setEnabled(false);
             mButton3.setEnabled(false);
-            mButton4.setEnabled(false);
+            //mButton4.setEnabled(false);
             mButton5.setEnabled(false);
 
         }
@@ -521,7 +521,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mButton1.setEnabled(false);
             mButton2.setEnabled(true);
             mButton3.setEnabled(true);
-            mButton4.setEnabled(true);
+            //mButton4.setEnabled(true);
             mButton5.setEnabled(true);
         }
     }

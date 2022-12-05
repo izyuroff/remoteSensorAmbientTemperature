@@ -85,7 +85,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         if (ifFlexTime) {
             if ((mCurrentTime - mLastInfo) > (myNormalInterval * 1000L * 60L * 60L)) {
                 Log.d(LOG_TAG, "1. Info (mCurrentTime - mLastInfo) = " + ((mCurrentTime - mLastInfo)/1000L/60L));
-                mLastInfo = mCurrentTime + (1000L * 60L); // Новый таймштамп
+                mLastInfo = mCurrentTime - (1000L * 60L * 5L); // Новый таймштамп
 
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobInfoSensor");
@@ -106,7 +106,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
             if ((mCurrentTime - mLastInfo)  > myNormalInterval * 1000L * 60L * 60L) {
                 Log.d(LOG_TAG, "2. Info (mCurrentTime - mLastInfo) = " + ((mCurrentTime - mLastInfo)/1000L/60L));
 
-                mLastInfo = mCurrentTime + (1000L * 60L); // Новый таймштамп
+                mLastInfo = mCurrentTime - (1000L * 60L * 5L); // Новый таймштамп
 
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobInfoSensor");
