@@ -59,11 +59,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4sp"
         android:enabled="true"
-        android:gravity="center_vertical|end"
+        android:gravity="center_vertical|center_horizontal"
         android:insetTop="8sp"
         android:insetBottom="8sp"
         android:onClick="inputWarning"
-        android:text="ТЕМПЕРАТУРА ТРЕВОГИ, °C:"
+        android:text="ТРЕВОГА, ЕСЛИ t°C НИЖЕ:"
         android:textSize="12sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -109,7 +109,7 @@
         android:text="СТОП"
         android:textStyle="bold"
         app:icon="?android:attr/listChoiceIndicatorMultiple"
-        app:iconGravity="textStart"
+        app:iconGravity="textEnd"
         app:iconPadding="0sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -124,7 +124,7 @@
         android:foregroundGravity="left|center"
         android:text="СТАРТ"
         app:icon="@android:drawable/ic_media_play"
-        app:iconGravity="textStart"
+        app:iconGravity="textEnd"
         app:iconPadding="0sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -266,7 +266,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0sp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.05" />
+        app:layout_constraintGuide_percent="0.1" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
@@ -280,7 +280,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0sp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.95" />
+        app:layout_constraintGuide_percent="0.9" />
 
     <View
         android:id="@+id/divider2"
