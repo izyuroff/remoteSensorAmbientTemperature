@@ -89,11 +89,11 @@
         android:layout_width="0sp"
         android:layout_height="wrap_content"
         android:enabled="true"
-        android:gravity="center_vertical|end"
+        android:gravity="center_vertical|center_horizontal"
         android:insetTop="8sp"
         android:insetBottom="8sp"
         android:onClick="inputNormal"
-        android:text="ПОВТОРНЫЙ СМС, часов:"
+        android:text="ПРОСТОЕ СМС, ПОВТОР, ЧАС:"
         android:textSize="12sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -266,7 +266,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0sp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.05" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
@@ -280,7 +280,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0sp"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.9" />
+        app:layout_constraintGuide_percent="0.93" />
 
     <View
         android:id="@+id/divider2"
