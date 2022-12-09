@@ -2,14 +2,17 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 33
-    buildToolsVersion "30.0.2"
+    packagingOptions {
+        jniLibs {
+            excludes += ['**.**']
+        }
+        resources {
+            excludes += ['classes.dex', '**.**']
+        }
+    }
 
 
     // https://stackoverflow.com/questions/66477093/entry-name-classes-dex-collided
-    packagingOptions {
-        exclude 'classes.dex'
-        exclude '**.**'
-    }
 
     defaultConfig {
         configurations.all {
@@ -44,6 +47,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    namespace 'ru.microsave.tempmonitor'
 }
 
 dependencies {

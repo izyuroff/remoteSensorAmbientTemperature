@@ -5,7 +5,7 @@ package ru.microsave.tempmonitor;
 
 
 Поправки в макет:
-Убрать настройку времени аварийного, сделать время всегда равное 1 часу
+Убрать настройку времени аварийного, сделать время всегда равное 1 часу FIX
 Убрать настройку времени информационного? или флажками решить выбор - 3,6,8,12,24 часа
 
 Корректировать температуру батареи калибровкой? Нет
@@ -113,9 +113,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.concurrent.TimeUnit;
-
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
