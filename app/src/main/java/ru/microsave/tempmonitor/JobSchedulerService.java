@@ -182,6 +182,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     }
 
     public float batteryTemperature() {
+        Log.d(LOG_TAG, "JobSchedulerService.batteryTemperature working");
         Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         tempBattery = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10; // Почему разделил на 10??? Да почему то выдача идет в 10 раз больше
         return tempBattery;

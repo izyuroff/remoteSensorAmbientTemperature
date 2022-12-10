@@ -113,10 +113,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.concurrent.TimeUnit;
-
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
 
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private long NORMAL_INTERVAL; //    НАСТРОЙКА КОЛИЧЕСТВА ЧАСОВ
 
     public int mDEGREES;
-    public boolean serviseON; // состояние службы боевого дежурства, запущена или нет
+    public boolean serviseON; // состояние службы боевого дежурства, запущена пользователем или нет,
     public boolean sensorExist; // наличие сенсора температуры
     public boolean messageRead; // сообщение прочитано при первом запуске, больше не выводить
     public boolean useFlexTime; // Эта переменная проверяется в JobSchedulerService
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private Button mButton0, mButton1, mButton2, mButton3, mButton4, mButton5;
 
-    private TextView sensorLabel, temperatureLabel, batteryLabel, statusLabel, numberLabel, tvMinimum, tvAlarm, tvStandart, tvCounter, tvTimer, tvTitleTimer;
+    private TextView sensorLabel, temperatureLabel, batteryLabel, statusLabel, numberLabel, tvMinimum, tvAlarm, tvStandart, tvCounter, tvTimer, tvTitleTimer, tvStatus;
 
     private final String LOG_TAG = "myLogs";
     private int mTASK_NUMBER; //Счетчик отправленных сообщений
@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         tvCounter = findViewById(R.id.textView11);
         tvTitleTimer = findViewById(R.id.textView3);
         tvTimer = findViewById(R.id.textView7);
+        tvStatus = findViewById(R.id.textViewStatus);
 
         // Прежде всего получим сенсор менеджер
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -315,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             batteryTemp();
             // batteryLabel.setText("" + min + ":" + String.format("%02d", second));
             // повторяем через каждые 1000 миллисекунд
-            mHandler.postDelayed(this, 1000);
+            mHandler.postDelayed(this, 2000);
         }
     };
 
@@ -394,19 +395,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         invertButton(serviseON);
         mStartTime = System.currentTimeMillis();
         saveSharedPreferences();
-        statusLabel.setText("Служба выполняется");
+        statusLabel.setText("Служба запущена");
 
         // Может быть надо раскомментировать?
         // mSensorManager.unregisterListener(this);
         Intent intent = new Intent(this, Control_activity.class);
-        msg("Служба запускается для API = " + Build.VERSION.SDK_INT);
+        //    msg("Служба запускается для API = " + Build.VERSION.SDK_INT);
         // Проверить условие Запретить оптимизировать батарею
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             String packageName = getPackageName();
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                msg("Оптимизация батареи, условие ОК");
+                msg("Оптимизация отключена успешно");
             }
             intent.setData(Uri.parse("package:" + packageName));
         }
@@ -470,9 +471,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         serviseON = (savePref.getBoolean("SERVICEON", false));
         invertButton(serviseON);
         if (serviseON)
-            statusLabel.setText("Служба выполняется!");
+            statusLabel.setText("Служба запущена!");
         else
-            statusLabel.setText("Служба остановлена.");
+            statusLabel.setText("Служба остановлена!");
     }
 
 
@@ -838,7 +839,41 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         return hasBeenScheduled;
     }
+
+    public void checkService(){
+        // автоматическая проверка службы, фактически работает или нет
+        // Автоматическая проверка статуса, асинхронно
+        JobScheduler s = (JobScheduler) this.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+
+        boolean serviseCheck = false;
+
+        for (JobInfo jobInfo1 : s.getAllPendingJobs()) {
+            if (jobInfo1.getId() == 100500777 | jobInfo1.getId() == 100500778 ) {
+                serviseCheck = true;
+                break;
+            }
+        }
+
+        if (serviseCheck) {
+            tvStatus.setText("Служба работает");
+            if (!serviseON)
+                tvStatus.setText("Служба не остановилась!");
+        }
+        else {
+            tvStatus.setText("Служба не работает!");
+            if (serviseON) {
+                tvStatus.setText("Сбой службы! Нужен перезапуск!");
+                startSheduler();
+            }
+        }
+
+    }
+
+
     public void batteryTemp() {
+        checkService(); // Сперва проверка службы
+
         // Также каждые три секунды проверяем изменение счетчика СМС в сохраненном файле
         readCounter();
         //countTime();
