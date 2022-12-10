@@ -113,7 +113,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.concurrent.TimeUnit;
@@ -863,7 +862,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         else {
             tvStatus.setText("Служба не работает!");
             if (serviseON) {
-                tvStatus.setText("Сбой службы! Нужен перезапуск!");
+                tvStatus.setText("Сбой службы! Авто рестарт!");
                 startSheduler();
             }
         }
@@ -974,7 +973,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             hours = hours % 24;
             minutes = minutes % 60;
-
             tvTimer.setText(days + " ДН, " + hours + " ЧАС, " + minutes + " МИН");
             //long mLongTime = (24 * 60 * 60 * 1000) * 365;
 
@@ -1010,7 +1008,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Log.d(LOG_TAG, text);
     }
 
-    // вызывается регулярно для самопроверки
+    // При старте службы с кнопки создается отдельный класс, выполняется регулярно для проверки
+    // работоспособности jobSheduler
     private void startWorking() {
     // Идея такая - иногда JobSheduler убивается системой, а WorkManager будет проверять это и
     // возобновлять работу, если только служба не была остановлена пользователем
@@ -1018,17 +1017,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Log.d(LOG_TAG, "startWorking: start button");
 
         // Прописана политика - при имеющемся задании не запускать новое а сохранять старое
-/*
-        WorkManager.getInstance().enqueueUniquePeriodicWork(
-                "checkService",
-                ExistingPeriodicWorkPolicy.KEEP,
-                myWorkRequest);
-*/
+
+//        WorkManager.getInstance().enqueueUniquePeriodicWork(
+//                "checkService",
+//                ExistingPeriodicWorkPolicy.KEEP,
+//                myWorkRequest);
+
     }
 
     public void stopWorking() {
         Log.d(LOG_TAG, "stopWorking: stop button");
-     //  WorkManager.getInstance().cancelWorkById(myWorkRequest.getId());
+      //  WorkManager.getInstance().cancelWorkById(myWorkRequest.getId());
 
         //    WorkManager.getInstance().cancelWorkById(myWorkRequest.getId());
         //    WorkManager.getInstance().cancelAllWorkByTag("sms1");

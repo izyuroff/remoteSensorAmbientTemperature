@@ -3,6 +3,7 @@ package ru.microsave.tempmonitor;
  * Шедулер для периодического контроля аварийной темпертатуры
  *
  */
+import android.app.Notification;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.util.Log;
 
 public class JobSchedulerServiceAlarm  extends JobService implements SensorEventListener {
@@ -47,6 +49,17 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         mJobAlarmSensorTemperature = mJobAlarmSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         mJobAlarmSensorManager.registerListener(this, mJobAlarmSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
         myApp = getString(R.string.app_name);
+
+        Log.d(LOG_TAG, "JobSchedulerServiceAlarm: onCreate");
+
+        Notification.Builder builder = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.ic_android_black_24dp);
+        Notification notification;
+        if (Build.VERSION.SDK_INT < 16)
+            notification = builder.getNotification();
+        else
+            notification = builder.build();
+        startForeground(100500778, notification);
     }
 
     @Override
@@ -57,6 +70,12 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(LOG_TAG,"JobSchedulerServiceAlarm, Received start id " + startId + ": " + intent);
+        return START_STICKY;
     }
 
     @Override

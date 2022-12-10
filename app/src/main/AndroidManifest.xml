@@ -37,11 +37,13 @@
             android:name=".JobSchedulerService"
             android:enabled="true"
             android:exported="true"
+            android:process=":remote"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".JobSchedulerServiceAlarm"
             android:enabled="true"
             android:exported="true"
+            android:process=":remote"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
     <uses-permission android:name="android.permission.BATTERY_STATS" />

@@ -3,6 +3,7 @@ package ru.microsave.tempmonitor;
 Шедулер для периодического сообщения об уровне темпертатуры
  */
 
+import android.app.Notification;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.util.Log;
 
 public class JobSchedulerService extends JobService implements SensorEventListener {
@@ -46,6 +48,17 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         mJobSensorManager.registerListener(this, mJobSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
         myApp = getString(R.string.app_name);
+
+        Log.d(LOG_TAG, "JobSchedulerService: onCreate");
+
+        Notification.Builder builder = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.ic_android_black_24dp);
+        Notification notification;
+        if (Build.VERSION.SDK_INT < 16)
+            notification = builder.getNotification();
+        else
+            notification = builder.build();
+        startForeground(100500777, notification);
     }
 
     @Override
@@ -55,6 +68,12 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(LOG_TAG,"JobSchedulerService, Received start id " + startId + ": " + intent);
+        return START_STICKY;
     }
 
     @Override
