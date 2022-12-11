@@ -872,7 +872,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void batteryTemp() {
         // Также каждые три секунды проверяем изменение счетчика СМС в сохраненном файле
-        readCounter(); // Далее методы расставил в другие методы по цепочке
+        readCounter(); // Далее методы расставил в другие методы по цепочке, иначе они не всегда срабатывают
         //countTime(); // Сперва подсчет времени
         // checkService(); // После всего проверка службы
 
