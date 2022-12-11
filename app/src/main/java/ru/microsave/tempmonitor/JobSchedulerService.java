@@ -92,7 +92,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
 
             // Configure the notification channel.
-            notificationChannel.setDescription("Channel description");
+            notificationChannel.setDescription("Описание канала уведомлений");
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.RED);
             notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
@@ -103,17 +103,27 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
 
-        notificationBuilder.setAutoCancel(true)
+        notificationBuilder.setAutoCancel(false)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.red_button)
                 .setTicker("Hearty365")
                 //     .setPriority(Notification.PRIORITY_MAX)
                 .setContentTitle("Default notification")
-                .setContentText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
+                .setContentText("Служба СМС контроль за температурой выполняется.")
                 .setContentInfo("Info");
 
         notificationManager.notify(/*notification id*/1, notificationBuilder.build());
+
+        Notification notification;
+        if (Build.VERSION.SDK_INT < 16)
+            notification = notificationBuilder.getNotification();
+        else
+            notification = notificationBuilder.build();
+
+        startForeground(777888, notification);
+        stopForeground(true);
+
     }
 
     @Override
