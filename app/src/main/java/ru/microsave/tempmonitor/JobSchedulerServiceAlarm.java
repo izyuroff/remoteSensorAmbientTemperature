@@ -99,7 +99,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         // TODO: 28.11.2022 СЛЕДУЕТ НА ПЕРВОЕ МЕСТО ПОСТАВИТЬ ТРЕВОГУ, А ПОТОМ УЖЕ ПРОВЕРКУ ЧАСИКОВ 
             if (ifFlexTime) {
                 // Если FlexTime то время не проверяем! (НЕТ, ТЕПЕРЬ ПРОВЕРЯЕМ)
-                if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 60L) {
+                if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 15L) {
                     Log.d(LOG_TAG, "1. Alarm (mCurrentTime - mLastAlarm) = " + ((mCurrentTime - mLastAlarm)/1000L/60L));
 
                     mLastAlarm = mCurrentTime - (1000L * 60L * 5L); // Новый таймштамп
