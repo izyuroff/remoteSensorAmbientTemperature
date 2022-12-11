@@ -3,7 +3,7 @@ package ru.microsave.tempmonitor;
  * Шедулер для периодического контроля аварийной темпертатуры
  *
  */
-import android.app.Notification;
+
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
@@ -15,7 +15,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.BatteryManager;
-import android.os.Build;
 import android.util.Log;
 
 public class JobSchedulerServiceAlarm  extends JobService implements SensorEventListener {
@@ -52,14 +51,14 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
 
         Log.d(LOG_TAG, "JobSchedulerServiceAlarm: onCreate");
 
-        Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.ic_android_black_24dp);
-        Notification notification;
-        if (Build.VERSION.SDK_INT < 16)
-            notification = builder.getNotification();
-        else
-            notification = builder.build();
-        startForeground(100500778, notification);
+//        Notification.Builder builder = new Notification.Builder(this)
+//                .setSmallIcon(R.drawable.ic_android_black_24dp);
+//        Notification notification;
+//        if (Build.VERSION.SDK_INT < 16)
+//            notification = builder.getNotification();
+//        else
+//            notification = builder.build();
+//        startForeground(100500778, notification);
     }
 
     @Override
@@ -121,7 +120,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
             }
                 else {
                         // Проверка времени для старых устройств (в миллисекундах!)
-                        if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 60L) {
+                        if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 15L) {
                             Log.d(LOG_TAG, "2. Alarm (mCurrentTime - mLastAlarm) = " + ((mCurrentTime - mLastAlarm)/1000L/60L));
                             mLastAlarm = mCurrentTime - (1000L * 60L * 5L); // Новый таймштамп, сразу же после сработки
                             // Log.d(LOG_TAG, "new: JobInfoSensor");

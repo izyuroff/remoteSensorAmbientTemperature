@@ -812,9 +812,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             useFlexTime = true;
         }
-        else
+        else {
             useFlexTime = false;
-
+        }
             saveSharedPreferences();
     }
     // вызывается из меню для проверки работы службы
@@ -862,8 +862,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         else {
             tvStatus.setText("Служба не работает!");
             if (serviseON) {
-                tvStatus.setText("Сбой службы! Авто рестарт!");
-                startSheduler();
+                tvStatus.setText("Сбой службы! Остановлено!");
+                stopSheduler(null);
             }
         }
 
@@ -871,11 +871,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     public void batteryTemp() {
-        checkService(); // Сперва проверка службы
-
         // Также каждые три секунды проверяем изменение счетчика СМС в сохраненном файле
-        readCounter();
-        //countTime();
+        readCounter(); // Далее методы расставил в другие методы по цепочке
+        //countTime(); // Сперва подсчет времени
+        // checkService(); // После всего проверка службы
+
         Intent intent = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         mBatteryTemp = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
 
@@ -986,6 +986,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             //    Log.d(LOG_TAG, "ЧАСОВ " + String.valueOf(mLongTime / (60 * 60 * 1000) % 24));
             //    Log.d(LOG_TAG, "МИНУТ " + String.valueOf(mLongTime / (60 * 1000) % 60));
         }
+
+        checkService(); // После всего проверка службы
+
     }
 
     private void testSMS() {
