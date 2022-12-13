@@ -110,7 +110,7 @@
         android:insetTop="8sp"
         android:insetBottom="8sp"
         android:onClick="inputNormal"
-        android:text="ПРОСТОЕ СМС, ПОВТОР, ЧАС:"
+        android:text="ИНФО СМС, ПОВТОРЫ, ЧАС:"
         android:textSize="12sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"

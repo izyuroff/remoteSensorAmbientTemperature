@@ -463,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         savePref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         // mainPeriodic = (savePref.getLong("PERIOD_INTERVAL", 1000 * 60 * 15));
         ALARM_INTERVAL = (savePref.getLong("ALARM_INTERVAL", 1));
-        NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 6));
+        NORMAL_INTERVAL = (savePref.getLong("NORMAL_INTERVAL", 12));
         mStartTime = (savePref.getLong("START_TIME", 0));
         mStopTime = (savePref.getLong("STOP_TIME", 0));
         mLongTime = (savePref.getLong("LONG_TIME", 0));

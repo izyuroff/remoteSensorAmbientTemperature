@@ -168,7 +168,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     private void readSharedPreferences() {
         SharedPreferences saveJobPref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
         myNumber = (saveJobPref.getString("NUMBER", "+7123456789"));
-        myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 6));
+        myNormalInterval = (saveJobPref.getLong("NORMAL_INTERVAL", 12));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));
         ifFlexTime = (saveJobPref.getBoolean("USE_FLEX_TIME", true));
         mLastInfo = (saveJobPref.getLong("LAST_INFO", 0));

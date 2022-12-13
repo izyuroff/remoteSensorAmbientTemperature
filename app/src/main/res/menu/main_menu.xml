@@ -7,11 +7,13 @@
 
     <item
         android:id="@+id/action_test"
+        android:enabled="false"
         android:orderInCategory="1"
         android:title="Тест отправки СМС" />
 
     <item
         android:id="@+id/action_test_Job"
+        android:enabled="false"
         android:orderInCategory="1"
         android:title="Проверка службы" />
 
@@ -22,20 +24,24 @@
 
     <item
         android:id="@+id/action_inc_count"
+        android:enabled="false"
         android:orderInCategory="1"
         android:title="Увеличить счетчик СМС" />
 
     <item
         android:id="@+id/action_settings"
+        android:enabled="false"
         android:orderInCategory="2"
         android:title="Открыть настройки" />
 
     <item
         android:id="@+id/open_privacy"
+        android:enabled="false"
         android:orderInCategory="3"
         android:title="Конфиденциальность" />
     <item
         android:id="@+id/open_about"
+        android:enabled="false"
         android:orderInCategory="4"
         android:title="О приложении" />
 </menu>

@@ -176,7 +176,6 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         myNumber = (saveJobPref.getString("NUMBER", "+7123456789"));
         myWarningTemperature = (saveJobPref.getInt("WARNING", 5));
 
-        // TODO: 29.11.2022 А может быть надо сделать в настройках long???????????
         myAlarmInterval = (saveJobPref.getLong("ALARM_INTERVAL", 1));
         ifSensor = (saveJobPref.getBoolean("IFSENSOR", true));
         ifFlexTime = (saveJobPref.getBoolean("USE_FLEX_TIME", true));
