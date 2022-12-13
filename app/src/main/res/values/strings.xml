@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Монитор t° v.1.03</string>
+    <string name="app_name">Монитор t° v.1.04</string>
     <string name="symbol_degrees">°C</string>
     <string name="buttonOK">Ok</string>
     <string name="buttonCancel">отмена</string>

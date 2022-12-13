@@ -270,23 +270,31 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             case R.id.action_info:
                 messageBattery();
                 return true;
+/*
 
             case R.id.action_test:
                 testSMS();
                 return true;
+*/
+
 
             case R.id.action_count:
                 reset_counter();
                 return true;
 
+/*
             case R.id.action_inc_count:
                 inc_counter();
                 return true;
+*/
 
+/*
             case R.id.action_test_Job:
                 checkJobService();
                 return true;
+*/
 
+/*
             case R.id.action_settings:
                 return true;
 
@@ -295,6 +303,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             case R.id.open_about:
                 return true;
+*/
         }
         //headerView.setText(item.getTitle());
         return super.onOptionsItemSelected(item);
