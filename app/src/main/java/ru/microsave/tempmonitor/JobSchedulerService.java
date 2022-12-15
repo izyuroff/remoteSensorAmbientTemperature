@@ -16,6 +16,8 @@ import android.hardware.SensorManager;
 import android.os.BatteryManager;
 import android.util.Log;
 
+import androidx.work.Configuration;
+
 public class JobSchedulerService extends JobService implements SensorEventListener {
     private float tempSensor;
     private float tempBattery;
@@ -36,6 +38,8 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
 
     public JobSchedulerService() {
+        Configuration.Builder builder = new Configuration.Builder();
+        builder.setJobSchedulerJobIdRange(0, 1000);
     }
 
     @Override
@@ -91,7 +95,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         if (ifFlexTime) {
             if ((mCurrentTime - mLastInfo) > (myNormalInterval * 1000L * 60L * 15L)) {
                 Log.d(LOG_TAG, "1. Info (mCurrentTime - mLastInfo) = " + ((mCurrentTime - mLastInfo)/1000L/60L));
-                mLastInfo = mCurrentTime - (1000L * 60L * 5L); // Новый таймштамп
+                mLastInfo = mCurrentTime - (1000L * 60L * 2L); // Новый таймштамп
 
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobInfoSensor");
@@ -112,7 +116,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
             if ((mCurrentTime - mLastInfo)  > myNormalInterval * 1000L * 60L * 15L) {
                 Log.d(LOG_TAG, "2. Info (mCurrentTime - mLastInfo) = " + ((mCurrentTime - mLastInfo)/1000L/60L));
 
-                mLastInfo = mCurrentTime - (1000L * 60L * 5L); // Новый таймштамп
+                mLastInfo = mCurrentTime - (1000L * 60L * 1L); // Новый таймштамп
 
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobInfoSensor");

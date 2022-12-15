@@ -17,6 +17,8 @@ import android.hardware.SensorManager;
 import android.os.BatteryManager;
 import android.util.Log;
 
+import androidx.work.Configuration;
+
 public class JobSchedulerServiceAlarm  extends JobService implements SensorEventListener {
     private float tempSensor;
     private float tempBattery;
@@ -38,6 +40,8 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
     private static SensorManager mJobAlarmSensorManager;
 
     public JobSchedulerServiceAlarm() {
+        Configuration.Builder builder = new Configuration.Builder();
+        builder.setJobSchedulerJobIdRange(0, 1000);
     }
 
     @Override
@@ -102,7 +106,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                 if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 15L) {
                     Log.d(LOG_TAG, "1. Alarm (mCurrentTime - mLastAlarm) = " + ((mCurrentTime - mLastAlarm)/1000L/60L));
 
-                    mLastAlarm = mCurrentTime - (1000L * 60L * 5L); // Новый таймштамп
+                    mLastAlarm = mCurrentTime - (1000L * 60L * 2L); // Новый таймштамп
 
                     // Для сенсора и проверка температуры
                     if (ifSensor && tempSensor < myWarningTemperature) {

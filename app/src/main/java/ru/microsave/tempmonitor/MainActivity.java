@@ -835,7 +835,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         boolean hasBeenScheduled = false;
 
         for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
-            if (jobInfo.getId() == 100500777 | jobInfo.getId() == 100500778 ) {
+            if (jobInfo.getId() == 9777 | jobInfo.getId() == 9778 ) {
                 hasBeenScheduled = true;
                 break;
             }
@@ -857,7 +857,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         boolean serviseCheck = false;
 
         for (JobInfo jobInfo1 : s.getAllPendingJobs()) {
-            if (jobInfo1.getId() == 100500777 | jobInfo1.getId() == 100500778 ) {
+            if (jobInfo1.getId() == 9777 | jobInfo1.getId() == 9778 ) {
                 serviseCheck = true;
                 break;
             }
