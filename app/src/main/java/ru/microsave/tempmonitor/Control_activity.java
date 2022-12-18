@@ -41,8 +41,8 @@ public class Control_activity extends AppCompatActivity {
     private int multiNormal; // Количество часов - множитель, умножаем потом на 1000*60*60
 
 
-    private static final int mJobId = 9777;
-    private static final int mJobAlarmId = 9778;
+    private static final int mJobId = 1077;
+    private static final int mJobAlarmId = 2078;
     private boolean serviceONlocal;// состояние службы дежурства, запущена или нет
     private final boolean isPersisted = true; // Сохранять планировщик после рестарта устройства
 
@@ -132,8 +132,8 @@ public class Control_activity extends AppCompatActivity {
             // если 5 - Это дало срабатывания .. минут
         //    mPeriodic = multiNormal * 1000 * 60 * 15; // Решено посмотреть на разных устройствах качество срабатывания
         //    mFlexPeriodic = multiNormal * 1000 * 60 * 14; // Решено посмотреть на разных устройствах качество срабатывания
-            mPeriodic = 960000L; // 1000L * 60 * 16
-            mFlexPeriodic = 900000L; // 1000L * 60 * 15
+            mPeriodic = 900000L; // 1000L * 60 * 15
+            mFlexPeriodic = 840000L; // 1000L * 60 * 14
 
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                     .setRequiresCharging(false)// Не требовать быть на зарядке
