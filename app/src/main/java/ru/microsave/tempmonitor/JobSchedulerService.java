@@ -39,7 +39,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
     public JobSchedulerService() {
         Configuration.Builder builder = new Configuration.Builder();
-        builder.setJobSchedulerJobIdRange(1001, 2000);
+        builder.setJobSchedulerJobIdRange(1000, 2000);
     }
 
     @Override

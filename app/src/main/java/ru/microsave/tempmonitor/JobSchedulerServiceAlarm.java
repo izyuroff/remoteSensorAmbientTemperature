@@ -41,7 +41,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
 
     public JobSchedulerServiceAlarm() {
         Configuration.Builder builder = new Configuration.Builder();
-        builder.setJobSchedulerJobIdRange(2001, 3000);
+        builder.setJobSchedulerJobIdRange(2000, 3000);
     }
 
     @Override
