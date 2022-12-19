@@ -41,7 +41,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
 
     public JobSchedulerServiceAlarm() {
         Configuration.Builder builder = new Configuration.Builder();
-        builder.setJobSchedulerJobIdRange(2000, 3000);
+        builder.setJobSchedulerJobIdRange(2001, 3001);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
             }
                 else {
                         // Проверка времени для старых устройств (в миллисекундах!)
-                        if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 15L) {
+                        if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 59L) {
                             Log.d(LOG_TAG, "2. Alarm (mCurrentTime - mLastAlarm) = " + ((mCurrentTime - mLastAlarm)/1000L/60L));
                             mLastAlarm = mCurrentTime - (1000L * 10L * 1L); // Новый таймштамп, сразу же после сработки
                             // Log.d(LOG_TAG, "new: JobInfoSensor");
