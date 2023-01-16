@@ -527,6 +527,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mButton3.setEnabled(false);
             //mButton4.setEnabled(false);
             mButton5.setEnabled(false);
+            tvStandart.setEnabled(false);
+            tvMinimum.setEnabled(false);
+            numberLabel.setEnabled(false);
 
             mButton2.setVisibility(View.INVISIBLE);
             mButton1.setVisibility(View.VISIBLE);
@@ -543,6 +546,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             mButton3.setEnabled(true);
             //mButton4.setEnabled(true);
             mButton5.setEnabled(true);
+            tvStandart.setEnabled(true);
+            tvMinimum.setEnabled(true);
+            numberLabel.setEnabled(true);
 
             mButton2.setVisibility(View.VISIBLE);
             mButton1.setVisibility(View.INVISIBLE);
