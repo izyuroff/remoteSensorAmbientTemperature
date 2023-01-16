@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Монитор t° v.1.07</string>
+    <string name="app_name">Монитор t° v.1.08</string>
     <string name="symbol_degrees">°C</string>
     <string name="buttonOK">Ok</string>
     <string name="buttonCancel">отмена</string>
@@ -43,6 +43,16 @@
     <string name="butt_inputNormal">ИНФО СМС, ПОВТОРЫ, ЧАС:</string>
     <string name="butt_stopSheduler">СТОП</string>
     <string name="butt_startSheduler">СТАРТ</string>
+    <string name="setServiceStop">Служба остановлена</string>
+    <string name="setServiceStart">Служба запущена</string>
+    <string name="setSaveNumber">Сохранен номер:</string>
+    <string name="setThermometer">ТЕРМОМЕТР</string>
+    <string name="setServiceWorking">Служба работает</string>
+    <string name="setServiceNotWorking">Служба не работает!</string>
+    <string name="setServiceNotStopped">Служба не остановилась!</string>
+    <string name="setServiceFailure">Сбой службы! Остановлено!</string>
+    <string name="setTimerSession">Текущая сессия: </string>
+    <string name="setTimerLastSession">Прошлая сессия: </string>
 
 
 </resources>

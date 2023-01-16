@@ -377,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mStopTime = System.currentTimeMillis();
         mLongTime = mStopTime - mStartTime;
 
-        statusLabel.setText("Служба остановлена.");
+        statusLabel.setText(R.string.setServiceStop);
         // Log.d(LOG_TAG, "6 MainActivity sensorExist = " + sensorExist);
 
         // Это зачем тут было не помню
@@ -403,7 +403,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         invertButton(serviseON);
         mStartTime = System.currentTimeMillis();
         saveSharedPreferences();
-        statusLabel.setText("Служба запущена");
+        statusLabel.setText(R.string.setServiceStart);
 
         // Может быть надо раскомментировать?
         // mSensorManager.unregisterListener(this);
@@ -479,9 +479,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         serviseON = (savePref.getBoolean("SERVICEON", false));
         invertButton(serviseON);
         if (serviseON)
-            statusLabel.setText("Служба запущена!");
+            statusLabel.setText(R.string.setServiceStart);
         else
-            statusLabel.setText("Служба остановлена!");
+            statusLabel.setText(R.string.setServiceStop);
     }
 
 
@@ -713,9 +713,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // TODO: 12.04.2022 Хорошо бы добавить проверку введенного номера на правильность
                 MY_NUMBER = value;
-                numberLabel.setText("Сохранен номер:" + " " + value);
+                numberLabel.setText(getString(R.string.setSaveNumber) + " " + value);
                 saveSharedPreferences();
-                msg("Сохранен номер:" + " " + value);
+                msg(R.string.setSaveNumber + " " + value);
             }
         });
         alert.setNegativeButton(R.string.buttonCancel, new DialogInterface.OnClickListener() {
@@ -799,7 +799,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Проверим наличчие сенсора
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
-            sensorLabel.setText("ТЕРМОМЕТР");
+            sensorLabel.setText(R.string.setThermometer);
             sensorExist = true;
             mSensorTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
             //    mSensorTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
@@ -808,7 +808,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             // Если нет датчика, скажем об этом
 
             sensorExist = false;
-            temperatureLabel.setText("-----");
+            temperatureLabel.setText(R.string.tvLine);
         }
 
         if (!messageRead) {
@@ -864,14 +864,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         if (serviseCheck) {
-            tvStatus.setText("Служба работает");
+            tvStatus.setText(R.string.setServiceWorking);
             if (!serviseON)
-                tvStatus.setText("Служба не остановилась!");
+                tvStatus.setText(R.string.setServiceNotStopped);
         }
         else {
-            tvStatus.setText("Служба не работает!");
+            tvStatus.setText(R.string.setServiceNotWorking);
             if (serviseON) {
-                tvStatus.setText("Сбой службы! Остановлено!");
+                tvStatus.setText(R.string.setServiceFailure);
                 stopSheduler(null);
             }
         }
@@ -925,7 +925,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Подсчет и вывод на экран времени работы приложения
         if (serviseON) {
 
-            tvTitleTimer.setText("Текущая сессия:");
+            tvTitleTimer.setText(R.string.setTimerSession);
             mTimeNow = System.currentTimeMillis();
             //    Log.d(LOG_TAG, "Текущая сессия mTimeNow: " + mTimeNow);
 
@@ -975,7 +975,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 tvTimer.setText((mCountedTime/1000/60 ) + " дней часов минут");
                 Log.d(LOG_TAG, "mCountedTime = " + mCountedTime/1000/60);*/
         } else {
-            tvTitleTimer.setText("Прошлая сессия: ");
+            tvTitleTimer.setText(R.string.setTimerLastSession);
             long days = TimeUnit.MILLISECONDS.toDays(mLongTime);
             long hours = TimeUnit.MILLISECONDS.toHours(mLongTime);
             long minutes = TimeUnit.MILLISECONDS.toMinutes(mLongTime);
