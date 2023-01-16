@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Монитор t° v.1.12</string>
+    <string name="app_name">Монитор t° v.1.14</string>
     <string name="symbol_degrees">°C</string>
     <string name="buttonOK">Ok</string>
     <string name="buttonCancel">отмена</string>
@@ -56,6 +56,13 @@
     <string name="setServiceFailure">Сбой службы! Остановлено!</string>
     <string name="setTimerSession">Текущая сессия: </string>
     <string name="setTimerLastSession">Прошлая сессия: </string>
+    <string name="msgServiceON">Служба запущена успешно!</string>
+    <string name="msgBatteryIgnore">Оптимизация отключена успешно</string>
+    <string name="msgCancel">Выход без изменений!</string>
+    <string name="msgMinHours">Нельзя устанавливать менее 1 часа!</string>
+    <string name="msgNotZero">Нельзя устанавливать 0!</string>
+    <string name="msgServiceWorking">Служба выполняется!</string>
+    <string name="msgServiceNotWorking">Служба не работает!</string>
 
 
 </resources>

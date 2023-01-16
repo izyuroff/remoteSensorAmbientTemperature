@@ -108,6 +108,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -398,7 +399,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // Метод для кнопочки БОЕВОЕ ДЕЖУРСТВО, то есть СТАРТ
     public void startSheduler() {
     //    startWorking();
-        msg("Служба запущена успешно!");
+        msg(getString(R.string.msgServiceON));
         serviseON = true;
         invertButton(serviseON);
         mStartTime = System.currentTimeMillis();
@@ -415,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                msg("Оптимизация отключена успешно");
+                msg(getString(R.string.msgBatteryIgnore));
             }
             intent.setData(Uri.parse("package:" + packageName));
         }
@@ -652,9 +653,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
 
+
         // input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
         input.requestFocus();
         input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+
         alert.setView(input);
 
         alert.setPositiveButton(R.string.buttonOK, new DialogInterface.OnClickListener() {
@@ -663,25 +670,33 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // Проверяем поля на пустоту
                 if (TextUtils.isEmpty(input.getText().toString())) {
-                    msg("Выход без изменений!");
+                    msg(getString(R.string.msgCancel));
                     return;
                 }
 
                 int hours = (Integer.parseInt(value));
                 // Проверка значения
                 if (hours < 1) {
-                    msg("Нельзя устанавливать менее 1 часа!");
+                    msg(getString(R.string.msgMinHours));
                     inputNormal(null);
                 } else {
                     NORMAL_INTERVAL = Long.valueOf(hours);
                     Log.d(LOG_TAG, "--- NORMAL_INTERVAL ---" + NORMAL_INTERVAL);
                     saveSharedPreferences();
                 }
+
+
+              //  InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                dialog.cancel();
             }
         });
         alert.setNegativeButton(R.string.buttonCancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Canceled.
+               // InputMethodManager im = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                dialog.cancel();
             }
         });
         alert.show();
@@ -701,6 +716,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         input.requestFocus();
         //getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         input.setInputType(InputType.TYPE_CLASS_PHONE);  //установит клавиатуру для ввода номера телефона
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
         alert.setView(input);
 
         alert.setPositiveButton(R.string.buttonOK, new DialogInterface.OnClickListener() {
@@ -709,21 +727,27 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // Проверяем поля на пустоту
                 if (TextUtils.isEmpty(input.getText().toString())) {
-                    msg("Выход без изменений!");
+                    msg(getString(R.string.msgCancel));
                     return;
                 }
 
 
                 // TODO: 12.04.2022 Хорошо бы добавить проверку введенного номера на правильность
                 MY_NUMBER = value;
-                numberLabel.setText(getString(R.string.setSaveNumber) + " " + value);
+                numberLabel.setText(value);
                 saveSharedPreferences();
-                msg(R.string.setSaveNumber + " " + value);
+                msg(getString(R.string.setSaveNumber) + " " + value);
+
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                dialog.cancel();
+
             }
         });
         alert.setNegativeButton(R.string.buttonCancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Canceled.
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                dialog.cancel();
             }
         });
         alert.show();
@@ -741,6 +765,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
         input.requestFocus();
         input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         alert.setView(input);
 
         alert.setPositiveButton(R.string.buttonOK, new DialogInterface.OnClickListener() {
@@ -749,24 +775,28 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // Проверяем поля на пустоту
                 if (TextUtils.isEmpty(input.getText().toString())) {
-                    msg("Выход без изменений!");
+                    msg(getString(R.string.msgCancel));
                     return;
                 }
 
                 // Проверка значения, запрещено устанавливать ноль и ниже
                 int minimalTemp = (Integer.parseInt(value));
                 if (minimalTemp < 1) {
-                    msg("Нельзя устанавливать 0!");
+                    msg(getString(R.string.msgNotZero));
                     inputWarning(null);
                 } else {
                     WARNING_TEMP = Integer.parseInt(value);
                     saveSharedPreferences();
                 }
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                dialog.cancel();
             }
         });
         alert.setNegativeButton(R.string.buttonCancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Canceled.
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                dialog.cancel();
             }
         });
         alert.show();
@@ -844,9 +874,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         }
         if (hasBeenScheduled)
-            msg("Служба выполняется!");
+            msg(getString(R.string.msgServiceWorking));
         else
-            msg("Служба не работает!");
+            msg(getString(R.string.msgServiceNotWorking));
 
         return hasBeenScheduled;
     }
