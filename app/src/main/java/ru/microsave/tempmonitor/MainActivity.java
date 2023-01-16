@@ -960,7 +960,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             //  long minutes = (((mCountedTime % 604800) % 86400) % 3600) / 60;
             //  long seconds = (((mCountedTime % 604800) % 86400) % 3600) % 60;
 
-            tvTimer.setText(days + getString(R.string.tvTimerDays) + hours + getString(R.string.tvTimerHours) + minutes + getString(R.string.tvTimerMins));
+            tvTimer.setText(days + " " + getString(R.string.tvTimerDays) + " " + hours + " " + getString(R.string.tvTimerHours) + " " + minutes + " " + getString(R.string.tvTimerMins));
+
             //tvTimer.setText(mCountedTime + "");
             //    Log.d(LOG_TAG, days +" дней, " + hours + " часов, " + minutes + " минут");
 
@@ -982,8 +983,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             hours = hours % 24;
             minutes = minutes % 60;
-
-            tvTimer.setText(days + getString(R.string.tvTimerDays) + hours + getString(R.string.tvTimerHours) + minutes + getString(R.string.tvTimerMins));
+            tvTimer.setText(days + " " + getString(R.string.tvTimerDays) + " " + hours + " " + getString(R.string.tvTimerHours) + " " + minutes + " " + getString(R.string.tvTimerMins));
 
             //    Log.d(LOG_TAG, "ЛЕТ " + String.valueOf(mLongTime / (31 * 24 * 60 * 60 * 1000) % 12));
             //    Log.d(LOG_TAG, "МЕСЯЦЕВ " + String.valueOf(mLongTime / (1000 * 60 * 60 * 24 * 30) % 12));
