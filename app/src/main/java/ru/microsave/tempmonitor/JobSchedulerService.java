@@ -93,9 +93,9 @@ public class JobSchedulerService extends JobService implements SensorEventListen
         // Это блок для регулярных периодических сообщений
         // Если FlexTime то время не проверяем! (ПРОВЕРЯЕМ)
         if (ifFlexTime) {
-            if ((mCurrentTime - mLastInfo) > (myNormalInterval * 1000L * 60L * 59L)) {
+            if ((mCurrentTime - mLastInfo) > (myNormalInterval * 1000L * 60L * 60L)) {
                 Log.d(LOG_TAG, "1. Info (mCurrentTime - mLastInfo) = " + ((mCurrentTime - mLastInfo)/1000L/60L));
-                mLastInfo = mCurrentTime - (1000L * 10L * 1L); // Новый таймштамп
+                mLastInfo = mCurrentTime - (1000L * 3L); // Новый таймштамп
 
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobInfoSensor");
@@ -113,10 +113,10 @@ public class JobSchedulerService extends JobService implements SensorEventListen
             }
         } else {
             // Проверка времени для старых устройств (в миллисекундах!)
-            if ((mCurrentTime - mLastInfo)  > myNormalInterval * 1000L * 60L * 59L) {
+            if ((mCurrentTime - mLastInfo)  > myNormalInterval * 1000L * 60L * 60L) {
                 Log.d(LOG_TAG, "2. Info (mCurrentTime - mLastInfo) = " + ((mCurrentTime - mLastInfo)/1000L/60L));
 
-                mLastInfo = mCurrentTime - (1000L * 10L * 1L); // Новый таймштамп
+                mLastInfo = mCurrentTime - (1000L * 3L); // Новый таймштамп
 
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobInfoSensor");

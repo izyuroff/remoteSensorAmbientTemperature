@@ -103,10 +103,10 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         // TODO: 28.11.2022 СЛЕДУЕТ НА ПЕРВОЕ МЕСТО ПОСТАВИТЬ ТРЕВОГУ, А ПОТОМ УЖЕ ПРОВЕРКУ ЧАСИКОВ 
             if (ifFlexTime) {
                 // Если FlexTime то время не проверяем! (НЕТ, ТЕПЕРЬ ПРОВЕРЯЕМ)
-                if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 59L) {
+                if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 60L) {
                     Log.d(LOG_TAG, "1. Alarm (mCurrentTime - mLastAlarm) = " + ((mCurrentTime - mLastAlarm)/1000L/60L));
 
-                    mLastAlarm = mCurrentTime - (1000L * 10L * 1L); // Новый таймштамп
+                    mLastAlarm = mCurrentTime - (1000L * 3L); // Новый таймштамп
 
                     // Для сенсора и проверка температуры
                     if (ifSensor && tempSensor < myWarningTemperature) {
@@ -124,9 +124,9 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
             }
                 else {
                         // Проверка времени для старых устройств (в миллисекундах!)
-                        if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 59L) {
+                        if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 60L) {
                             Log.d(LOG_TAG, "2. Alarm (mCurrentTime - mLastAlarm) = " + ((mCurrentTime - mLastAlarm)/1000L/60L));
-                            mLastAlarm = mCurrentTime - (1000L * 10L * 1L); // Новый таймштамп, сразу же после сработки
+                            mLastAlarm = mCurrentTime - (1000L * 3L); // Новый таймштамп, сразу же после сработки
                             // Log.d(LOG_TAG, "new: JobInfoSensor");
                             // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                             //    if (tempSensor == 0) tempSensor = tempBattery;
