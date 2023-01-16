@@ -5,17 +5,17 @@
     <string name="buttonCancel">отмена</string>
 
     <string name="infoBatteryTitle">Термометр не обнаружен!</string>
-    <string name="infoBatteryMessage">Измерения производятся на аккумуляторе.Это дает погрешность при включенном экране.\n\nОставьте телефон в покое примерно на один час.\nДатчик начнет выдавать значения, близкие к реальной температуре воздуха.</string>
+    <string name="infoBatteryMessage">Измерения производятся на аккумуляторе.Это дает погрешность при включенном экране.\n\nОставьте телефон в покое примерно на один час.\nДатчик начнет выдавать значения, близкие к реальной температуре воздуха.\n\nПогрешность измерений может составлять  пять - семь градусов. Учитывайте при настройке!</string>
 
     <string name="infoSensorTitle">Термометр обнаружен!</string>
     <string name="infoSensorMessage">Имеется встроенный датчик температуры окружающего воздуха\n\nВсе измерения производятся именно на нем\n\nПоказания батареи выводятся только для информации!</string>
 
-    <string name="inputWarningTitle">Минимальная температура</string>
-    <string name="inputWarningMessage">Вызывает тревожные СМС\n\nВажно:\nНельзя установить 0°С и ниже!\nТревога повторяется каждый час!\n\nНастроено: </string>
+    <string name="inputWarningTitle">Минимальная t°C</string>
+    <string name="inputWarningMessage">Вызывает тревожные СМС\n\nВажно:\nНельзя ввести 0°С и ниже!\n\nТревожные СМС повторяются каждый час!\n\nНастроено: </string>
 
 
     <string name="inputNormalTitle">Повторы СМС, в часах</string>
-    <string name="inputNormalMessage1">Просто периодическая информация,\nот температуры никак не зависит!\n\n Настроено: </string>
+    <string name="inputNormalMessage1">Периодическая информация,\nот температуры не зависит!\n\n Настроено: </string>
     <string name="inputNormalMessage2">час\n\nВажно: Интервал меньше, чем 1 час установить нельзя!</string>
 
     <string name="inputNumberTitle">Номер для СМС</string>
@@ -41,9 +41,9 @@
     <string name="tvInputNumberPhone">Введите номер телефона!</string>
     <string name="tvCounterSMS">Счетчик СМС:</string>
     <string name="butt_InputNumber">НОМЕР ТЕЛЕФОНА ДЛЯ СМС</string>
-    <string name="butt_inputWarning">ТРЕВОГА СМС, t°C НИЖЕ:</string>
-    <string name="butt_inputAlarma">ПОВТОР ТРЕВОГИ, часы:</string>
-    <string name="butt_inputNormal">ИНФОРМАЦИЯ СМС, ЧАСОВ:</string>
+    <string name="butt_inputWarning">ТЕМПЕРАТУРА ТРЕВОГИ:</string>
+    <string name="butt_inputAlarma">ПОВТОР ТРЕВОГИ, ЧАСЫ:</string>
+    <string name="butt_inputNormal">ИНФОРМАЦИЯ СМС, ЧАСЫ:</string>
     <string name="butt_stopSheduler">СТОП</string>
     <string name="butt_startSheduler">СТАРТ</string>
     <string name="setServiceStop">Служба остановлена</string>
