@@ -26,6 +26,23 @@
     <string name="inputAlarmMessage1">Такие СМС отправляются,\nесли температура ниже, чем: </string>
     <string name="inputAlarmMessage2">\n\nНастроено: </string>
     <string name="inputAlarmMessage3"> час\n\nВажно: Интервал меньше, чем 1 час установить нельзя!</string>
+    <string name="tvStatusField">Проверка состояния службы...</string>
+    <string name="tvWorkTime">Время работы:</string>
+    <string name="tvTimerDays">\" дн, \"</string>
+    <string name="tvTimerHours">\" час, \"</string>
+    <string name="tvTimerMins">\" мин\"</string>
+    <string name="tvThermometer">ТЕРМОМЕТР</string>
+    <string name="tvBattery">БАТАРЕЯ</string>
+    <string name="tvLine">-----</string>
+    <string name="tvStatusOne">Служба запущена (?)</string>
+    <string name="tvInputNumberPhone">Введите номер телефона!</string>
+    <string name="tvCounterSMS">Счетчик СМС:</string>
+    <string name="butt_InputNumber">НОМЕР ТЕЛЕФОНА ДЛЯ СМС</string>
+    <string name="butt_inputWarning">ТРЕВОГА, ЕСЛИ t°C НИЖЕ:</string>
+    <string name="butt_inputAlarma">ПОВТОР ТРЕВОГИ, часы:</string>
+    <string name="butt_inputNormal">ИНФО СМС, ПОВТОРЫ, ЧАС:</string>
+    <string name="butt_stopSheduler">СТОП</string>
+    <string name="butt_startSheduler">СТАРТ</string>
 
 
 </resources>

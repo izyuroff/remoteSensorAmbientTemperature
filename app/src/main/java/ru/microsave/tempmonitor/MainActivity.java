@@ -113,9 +113,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.concurrent.TimeUnit;
+
+import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
 
@@ -960,7 +960,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             //  long minutes = (((mCountedTime % 604800) % 86400) % 3600) / 60;
             //  long seconds = (((mCountedTime % 604800) % 86400) % 3600) % 60;
 
-            tvTimer.setText(days + " дн, " + hours + " час, " + minutes + " мин");
+            tvTimer.setText(days + getString(R.string.tvTimerDays) + hours + getString(R.string.tvTimerHours) + minutes + getString(R.string.tvTimerMins));
             //tvTimer.setText(mCountedTime + "");
             //    Log.d(LOG_TAG, days +" дней, " + hours + " часов, " + minutes + " минут");
 
@@ -982,15 +982,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             hours = hours % 24;
             minutes = minutes % 60;
-            tvTimer.setText(days + " ДН, " + hours + " ЧАС, " + minutes + " МИН");
-            //long mLongTime = (24 * 60 * 60 * 1000) * 365;
 
-            //    Log.d(LOG_TAG, " mLongTime:" + mLongTime);
+            tvTimer.setText(days + getString(R.string.tvTimerDays) + hours + getString(R.string.tvTimerHours) + minutes + getString(R.string.tvTimerMins));
 
             //    Log.d(LOG_TAG, "ЛЕТ " + String.valueOf(mLongTime / (31 * 24 * 60 * 60 * 1000) % 12));
             //    Log.d(LOG_TAG, "МЕСЯЦЕВ " + String.valueOf(mLongTime / (1000 * 60 * 60 * 24 * 30) % 12));
-
-
             //    Log.d(LOG_TAG, "ДНЕЙ " + String.valueOf(mLongTime / (24 * 60 * 60 * 1000)));
             //    Log.d(LOG_TAG, "ЧАСОВ " + String.valueOf(mLongTime / (60 * 60 * 1000) % 24));
             //    Log.d(LOG_TAG, "МИНУТ " + String.valueOf(mLongTime / (60 * 1000) % 60));
