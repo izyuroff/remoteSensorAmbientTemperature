@@ -580,7 +580,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //  mSensorTemperature = null;
         super.onDestroy();
     }
-
+/*
+    // Этот метод настраивал периоды тревоги - потом я решил что каждый час достаточно
     public void inputAlarma(View view) {
         readSharedPreferences();
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -634,17 +635,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         alert.show();
     }
+*/
 
     public void inputNormal(View view) {
         readSharedPreferences();
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(R.string.inputNormalTitle);
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            alert.setMessage(getString(R.string.inputNormalMessage1) + " " + NORMAL_INTERVAL+ " " + getString(R.string.inputNormalMessage2));
-        else
-            alert.setMessage(getString(R.string.inputNormalMessage1) + " " + NORMAL_INTERVAL);
+        alert.setMessage(getString(R.string.inputNormalMessage1) + " " + NORMAL_INTERVAL+ " " + getString(R.string.inputNormalMessage2));
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
@@ -689,7 +686,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle(R.string.inputNumberTitle);
-        alert.setMessage(getString(R.string.inputNumberMessage) + " " + MY_NUMBER);
+        alert.setMessage(getString(R.string.inputNumberMessage) + " " + MY_NUMBER + "\n\n");
         // TODO: 12.04.2022 Что то тут не так, проверка нужна на правильность ввода номера
 
         // Set an EditText view to get user input

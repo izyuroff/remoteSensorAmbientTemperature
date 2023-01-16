@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Монитор t° v.1.08</string>
+    <string name="app_name">Монитор t° v.1.09</string>
     <string name="symbol_degrees">°C</string>
     <string name="buttonOK">Ok</string>
     <string name="buttonCancel">отмена</string>
@@ -11,21 +11,24 @@
     <string name="infoSensorMessage">Имеется встроенный датчик температуры окружающего воздуха\n\nВсе измерения производятся именно на нем\n\nПоказания батареи выводятся только для информации!</string>
 
     <string name="inputWarningTitle">Минимальная температура</string>
-    <string name="inputWarningMessage">Это для тревожных СМС\n\nВажно:\nНельзя установить 0°С и ниже!\n\nНастроено: </string>
+    <string name="inputWarningMessage">Вызывает тревожные СМС\n\nВажно:\nНельзя установить 0°С и ниже!\nТревога повторяется каждый час!\n\nНастроено: </string>
 
 
-    <string name="inputNormalTitle">Частота СМС в минутах</string>
-    <string name="inputNormalMessage1">Стандарт СМС - информация,\nот температуры не зависит!\n\n Настроено: </string>
+    <string name="inputNormalTitle">Повторы СМС, в часах</string>
+    <string name="inputNormalMessage1">Просто периодическая информация,\nот температуры никак не зависит!\n\n Настроено: </string>
     <string name="inputNormalMessage2">час\n\nВажно: Интервал меньше, чем 1 час установить нельзя!</string>
 
     <string name="inputNumberTitle">Номер для СМС</string>
     <!--    <string name="inputNumberMessage">Без \"+\"  и кода страны СМС не работают!\n\n Настроено: </string>-->
-    <string name="inputNumberMessage">Обязательно \"+\"  и код страны!\n\n Настроено: </string>
+    <string name="inputNumberMessage">Обязательно \"+\"  и код страны!\n\n\n Настроено: </string>
 
+<!--
     <string name="inputAlarmTitle">Частота тревоги в минутах</string>
     <string name="inputAlarmMessage1">Такие СМС отправляются,\nесли температура ниже, чем: </string>
     <string name="inputAlarmMessage2">\n\nНастроено: </string>
     <string name="inputAlarmMessage3"> час\n\nВажно: Интервал меньше, чем 1 час установить нельзя!</string>
+    -->
+
     <string name="tvStatusField">Проверка состояния службы...</string>
     <string name="tvWorkTime">Время работы:</string>
     <string name="tvTimerDays">дн,</string>
@@ -38,9 +41,9 @@
     <string name="tvInputNumberPhone">Введите номер телефона!</string>
     <string name="tvCounterSMS">Счетчик СМС:</string>
     <string name="butt_InputNumber">НОМЕР ТЕЛЕФОНА ДЛЯ СМС</string>
-    <string name="butt_inputWarning">ТРЕВОГА, ЕСЛИ t°C НИЖЕ:</string>
+    <string name="butt_inputWarning">ТРЕВОГА СМС, t°C НИЖЕ:</string>
     <string name="butt_inputAlarma">ПОВТОР ТРЕВОГИ, часы:</string>
-    <string name="butt_inputNormal">ИНФО СМС, ПОВТОРЫ, ЧАС:</string>
+    <string name="butt_inputNormal">ИНФОРМАЦИЯ СМС, ЧАСОВ:</string>
     <string name="butt_stopSheduler">СТОП</string>
     <string name="butt_startSheduler">СТАРТ</string>
     <string name="setServiceStop">Служба остановлена</string>
