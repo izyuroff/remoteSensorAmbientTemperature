@@ -10,7 +10,7 @@ import android.os.AsyncTask;
 
 import java.util.Date;
 
-class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
+class JobInfoSensor extends AsyncTask<JobParameters, Void, JobParameters> {
 
     private String MY_NUMBER_LOCAL;
 
@@ -25,11 +25,11 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
     private String mAppname;
 
 
-    public JobInfoSensor(JobService jobService, String num, float tempSensor,  float tempBat, int count, String appname) {
+    public JobInfoSensor(JobService jobService, String num, float tempSensor, float tempBat, int count, String appname) {
 
         MY_NUMBER_LOCAL = num;
-        DEGREES_LOCAL = (int)tempSensor;
-        DEGREES_LOCAL_BAT = (int)tempBat;
+        DEGREES_LOCAL = (int) tempSensor;
+        DEGREES_LOCAL_BAT = (int) tempBat;
         myJobTaskNorm = count;
         mAppname = appname;
 
@@ -39,35 +39,36 @@ class JobInfoSensor extends AsyncTask <JobParameters, Void, JobParameters> {
     @Override
     protected JobParameters doInBackground(JobParameters... jobParameters) {
 
-                myMessage(DEGREES_LOCAL);
+        myMessage(DEGREES_LOCAL);
 
         return jobParameters[0];
     }
+
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
-    //    Log.d(LOG_TAG, "jobFinished(jobParameters, true)");
-    //    jobServiceInfoSens.jobFinished(jobParameters, false); //###
+        //    Log.d(LOG_TAG, "jobFinished(jobParameters, true)");
+        //    jobServiceInfoSens.jobFinished(jobParameters, false); //###
     }
 
-    private void myMessage(int degrees){
+    private void myMessage(int degrees) {
 
         // Один вариант таймштампа
-       // long currentTime = System.currentTimeMillis();
-       // SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
-       // String timeStampString = formatter.format(new Date(Long.parseLong(String.valueOf(currentTime))));
+        // long currentTime = System.currentTimeMillis();
+        // SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+        // String timeStampString = formatter.format(new Date(Long.parseLong(String.valueOf(currentTime))));
 
         // Второй вариант оформления метки времени
         android.text.format.DateFormat df = new android.text.format.DateFormat();
         CharSequence timeStampChar = df.format("kk:mm dd/MM/yy", new Date());
         String timeStampString = (String) timeStampChar;
-        
-                // Третий вариант, он был раньше, без форматирования
+
+        // Третий вариант, он был раньше, без форматирования
         // long currentTime = System.currentTimeMillis();
         // String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
         // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
-        textMessage = "ДАТЧИК: " + degrees + Character.toString ((char) 176) + "C"  + ", БАТАРЕЯ: " + DEGREES_LOCAL_BAT + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ". " + mAppname+ ", #" + myJobTaskNorm;
-            // Отправляем созданный номер задачи и текст в класс для отправки СМС
-            new sendSMS(MY_NUMBER_LOCAL, textMessage);
+        textMessage = "ДАТЧИК: " + degrees + Character.toString((char) 176) + "C" + ", БАТАРЕЯ: " + DEGREES_LOCAL_BAT + Character.toString((char) 176) + "C" + ", " + timeStampChar + ". " + mAppname + ", #" + myJobTaskNorm;
+        // Отправляем созданный номер задачи и текст в класс для отправки СМС
+        new SendSMS(MY_NUMBER_LOCAL, textMessage);
     }
 }

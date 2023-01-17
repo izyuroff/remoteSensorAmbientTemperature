@@ -49,7 +49,7 @@ public class CheckService extends AppCompatActivity {
 
         try {
             textMessage = "Статус службы: " + hasBeenScheduled + ", " + timeStampChar;
-            new sendSMS(MY_NUMBER_LOCAL, textMessage);
+            new SendSMS(MY_NUMBER_LOCAL, textMessage);
         } catch (Exception e) {
             Log.d(LOG_TAG, "Сбой отправки СМС");
             e.printStackTrace();

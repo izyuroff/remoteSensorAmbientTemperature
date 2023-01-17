@@ -76,8 +76,8 @@ v.1.1
     ControlActivity - Запуск и настройка шедулера
     JobSchedulerService - сервис для информирования, в нем листенер и измерение батареи, фильтр условий и запуск JobTask для ИНФО
     JobSchedulerServiceAlarm - сервис для тревожных смс, в нем листенер и измерение батареи, фильтр условий и запуск JobTask для ТРЕВОГА
-    JobTask (4 штуки - отдельно для нормального и аварийного и отдельно батареи и сенсора) - непосредственно измерения и вызов класса sendSMS
-    sendSMS, отправка СМС
+    JobTask (4 штуки - отдельно для нормального и аварийного и отдельно батареи и сенсора) - непосредственно измерения и вызов класса SendSMS
+    SendSMS, отправка СМС
 
  */
 
@@ -1043,10 +1043,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             text = mBatteryTemp + Character.toString((char) 176) + "C" + ", #" + mTASK_NUMBER + ". " + (getString(R.string.app_name));
         }
 
-        new sendSMS(MY_NUMBER, text);
+        new SendSMS(MY_NUMBER, text);
         // new SendHandlerSMS(MY_NUMBER, "Тест, отправлено " + mTASK_NUMBER);
         saveSharedPreferences();
         Log.d(LOG_TAG, text);
+
     }
 
     // При старте службы с кнопки создается отдельный класс, выполняется регулярно для проверки

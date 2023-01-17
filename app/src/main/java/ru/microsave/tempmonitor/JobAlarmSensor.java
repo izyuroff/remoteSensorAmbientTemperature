@@ -12,7 +12,7 @@ import android.os.AsyncTask;
 
 import java.util.Date;
 
-class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
+class JobAlarmSensor extends AsyncTask<JobParameters, Void, JobParameters> {
 
     private String MY_NUMBER_LOCAL;
     private int WARNING_TEMP_LOCAL;
@@ -31,8 +31,8 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
     public JobAlarmSensor(JobService jobService, String num, float tempSensor, float tempBat, int count, int war, String appname) {
 
         MY_NUMBER_LOCAL = num;
-        DEGREES_LOCAL = (int)tempSensor;
-        DEGREES_LOCAL_BAT = (int)tempBat;
+        DEGREES_LOCAL = (int) tempSensor;
+        DEGREES_LOCAL_BAT = (int) tempBat;
         myJobTaskAlarm = count;
         WARNING_TEMP_LOCAL = war;
         mAppname = appname;
@@ -44,19 +44,20 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
     @Override
     protected JobParameters doInBackground(JobParameters... jobParameters) {
 
-                //Log.d(LOG_TAG, "EXIST A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
+        //Log.d(LOG_TAG, "EXIST A SENSOR, DEGREES_LOCAL = " + DEGREES_LOCAL);
 
         myMessage(DEGREES_LOCAL);
 
         return jobParameters[0];
     }
+
     @Override
     protected void onPostExecute(JobParameters jobParameters) {
-   //     Log.d(LOG_TAG, "jobFinished(jobParameters, true)");
-   //     jobServiceAlarmSens.jobFinished(jobParameters, false);
-}
+        //     Log.d(LOG_TAG, "jobFinished(jobParameters, true)");
+        //     jobServiceAlarmSens.jobFinished(jobParameters, false);
+    }
 
-    private void myMessage(int degrees){
+    private void myMessage(int degrees) {
 
         //if (degrees == 0) return;
         // TODO: 17.04.2022 Это временный костыль. А мало ли реально будет 0 градусов. Надо понять почему первый замер равен нулю.
@@ -66,8 +67,8 @@ class JobAlarmSensor extends AsyncTask <JobParameters, Void, JobParameters> {
         CharSequence timeStampChar = df.format("kk:mm dd/MM/yy", new Date());
 
 
-        textMessage = "ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C"  + ", БАТАРЕЯ: " + DEGREES_LOCAL_BAT + Character.toString ((char) 176) + "C" + ", " + timeStampChar + ". " + mAppname+ ", #" + myJobTaskAlarm;
-            // Отправляем созданный номер задачи и текст в класс для отправки СМС
-            new sendSMS(MY_NUMBER_LOCAL, textMessage);
+        textMessage = "ТРЕВОГА: " + degrees + Character.toString((char) 176) + "C" + ", БАТАРЕЯ: " + DEGREES_LOCAL_BAT + Character.toString((char) 176) + "C" + ", " + timeStampChar + ". " + mAppname + ", #" + myJobTaskAlarm;
+        // Отправляем созданный номер задачи и текст в класс для отправки СМС
+        new SendSMS(MY_NUMBER_LOCAL, textMessage);
     }
 }
