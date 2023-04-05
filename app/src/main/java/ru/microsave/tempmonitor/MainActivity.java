@@ -24,6 +24,8 @@ package ru.microsave.tempmonitor;
 Vivo Y81, наблюдал - после удаления приложения и установки заново - все настройки сохранялись,
 очевидно в оболочке Funtouch от Vivo как то сохраняется этот файл,
 таким образом хорошо бы добавить кнопку сброса настроек в дефолтные начальные для подобных случаев
+(пофиксил в манифесте: android:allowBackup="false")
+
 
 Варианты заголовков для описания
 Temperature monitor with alarm SMS
@@ -275,7 +277,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 messageBattery();
                 return true;
 /*
-
             case R.id.action_test:
                 testSMS();
                 return true;
@@ -889,15 +890,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Автоматическая проверка статуса, асинхронно
         JobScheduler s = (JobScheduler) this.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
-
         boolean serviseCheck = false;
 
-        for (JobInfo jobInfo1 : s.getAllPendingJobs()) {
-            if (jobInfo1.getId() == 1077 | jobInfo1.getId() == 2078 ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            // небольшая оптимизация, чтобы не перебирать все задачи
+            // Это только для андроида 7 и выше
+            if (s.getPendingJob(1077) != null | s.getPendingJob(2078) != null)
                 serviseCheck = true;
-                break;
+        }
+
+        else {
+            // Если ниже, то просто перебираем все запущенные задачи
+            for (JobInfo jobInfo1 : s.getAllPendingJobs()) {
+                if (jobInfo1.getId() == 1077 | jobInfo1.getId() == 2078) {
+                    serviseCheck = true;
+                    break;
+                }
             }
         }
+
 
         if (serviseCheck) {
             tvStatus.setText(R.string.setServiceWorking);
@@ -911,15 +922,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 stopSheduler(null);
             }
         }
-
     }
-
 
     public void batteryTemp() {
         // Также каждые три секунды проверяем изменение счетчика СМС в сохраненном файле
-        readCounter(); // Далее методы расставил в другие методы по цепочке, иначе они не всегда срабатывают
+        readCounter(); // нижеперечисленные методы вложил в другие методы по цепочке, иначе они не всегда срабатывают
         //countTime(); // Сперва подсчет времени
-        // checkService(); // После всего проверка службы
+        // checkService(); // После всего проверка состояния службы
 
         Intent intent = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         mBatteryTemp = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
