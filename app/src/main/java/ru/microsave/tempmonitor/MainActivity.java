@@ -1,5 +1,8 @@
 package ru.microsave.tempmonitor;
 /*
+
+ Редакция 04 апреля 2023 г
+
  После запуска первое измерение на сенсоре равно 0:
  #1 17 Апр 2022 г. 13:08:14 ТРЕВОГА: 0°C
 
@@ -114,9 +117,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.concurrent.TimeUnit;
-
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.concurrent.TimeUnit;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
 
