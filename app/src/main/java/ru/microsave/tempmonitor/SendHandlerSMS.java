@@ -1,5 +1,9 @@
 package ru.microsave.tempmonitor;
+/*
 
+Черновик, пробовал смс отправлять в Handler
+
+ */
 
 import android.app.Activity;
 import android.os.Handler;
