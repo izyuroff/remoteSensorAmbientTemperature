@@ -84,6 +84,8 @@ v.1.1
     JobTask (4 штуки - отдельно для нормального и аварийного и отдельно батареи и сенсора) - непосредственно измерения и вызов класса SendSMS
     SendSMS, отправка СМС
 
+
+
  */
 
 import android.Manifest;
@@ -131,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // Для отправки СМС implements View.OnClickListener
     public String MY_NUMBER;
     public int WARNING_TEMP;
-    private long ALARM_INTERVAL; //     теперь всё в часах
+    private long ALARM_INTERVAL; //     аварийный интервал всегда в часах
     private long NORMAL_INTERVAL; //    НАСТРОЙКА КОЛИЧЕСТВА ЧАСОВ
 
     public int mDEGREES;
@@ -401,37 +403,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     // Метод для кнопочки БОЕВОЕ ДЕЖУРСТВО, то есть СТАРТ
-    public void startSheduler() {
-    //    startWorking();
-        msg(getString(R.string.msgServiceON));
-        serviseON = true;
-        invertButton(serviseON);
-        mStartTime = System.currentTimeMillis();
-        saveSharedPreferences();
-        statusLabel.setText(R.string.setServiceStart);
-
-        // Может быть надо раскомментировать?
-        // mSensorManager.unregisterListener(this);
-        Intent intent = new Intent(this, Control_activity.class);
-        //    msg("Служба запускается для API = " + Build.VERSION.SDK_INT);
-        // Проверить условие Запретить оптимизировать батарею
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            String packageName = getPackageName();
-            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                msg(getString(R.string.msgBatteryIgnore));
-            }
-            intent.setData(Uri.parse("package:" + packageName));
-        }
-
-        intent.putExtra("serviceIntentON", serviseON);
-        intent.putExtra("ALARM_HOURS", ALARM_INTERVAL);
-        intent.putExtra("NORMAL_HOURS", NORMAL_INTERVAL);
-        startActivity(intent);
-
-    }
-
     private void saveSharedPreferences() {
         String pAlarm = String.valueOf((int) ALARM_INTERVAL);
         String pNormal = String.valueOf((int) NORMAL_INTERVAL);
@@ -462,6 +433,37 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ed.putBoolean("SERVICEON", serviseON);
 
         ed.apply();
+    }
+
+    public void startSheduler() {
+    //    startWorking();
+        msg(getString(R.string.msgServiceON));
+        serviseON = true;
+        invertButton(serviseON);
+        mStartTime = System.currentTimeMillis();
+        saveSharedPreferences();
+        statusLabel.setText(R.string.setServiceStart);
+
+        // Может быть надо раскомментировать?
+        // mSensorManager.unregisterListener(this);
+        Intent intent = new Intent(this, Control_activity.class);
+        //    msg("Служба запускается для API = " + Build.VERSION.SDK_INT);
+        // Проверить условие Запретить оптимизировать батарею
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String packageName = getPackageName();
+            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                msg(getString(R.string.msgBatteryIgnore));
+            }
+            intent.setData(Uri.parse("package:" + packageName));
+        }
+
+        intent.putExtra("serviceIntentON", serviseON);
+        intent.putExtra("ALARM_HOURS", ALARM_INTERVAL);
+        intent.putExtra("NORMAL_HOURS", NORMAL_INTERVAL);
+        startActivity(intent);
+
     }
 
     private void readSharedPreferences() {
