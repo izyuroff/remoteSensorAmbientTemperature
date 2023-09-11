@@ -30,6 +30,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     private long myNormalInterval;
 
     private long mCurrentTime;
+
     private long mLastInfo;
 
     private int TASK_NUMBER;

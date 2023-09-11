@@ -6,9 +6,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.util.Date;
-
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Date;
 
 public class CheckService extends AppCompatActivity {
     private String MY_NUMBER_LOCAL = "+79221897658";
@@ -19,6 +19,7 @@ public class CheckService extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(LOG_TAG, "Запущена служба CheckService");
         isJobServiceOn();
     }
 
@@ -50,6 +51,7 @@ public class CheckService extends AppCompatActivity {
         try {
             textMessage = "Статус службы: " + hasBeenScheduled + ", " + timeStampChar;
             new SendSMS(MY_NUMBER_LOCAL, textMessage);
+            Log.d(LOG_TAG, textMessage);
         } catch (Exception e) {
             Log.d(LOG_TAG, "Сбой отправки СМС");
             e.printStackTrace();
