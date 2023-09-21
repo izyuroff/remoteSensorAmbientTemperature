@@ -42,11 +42,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.concurrent.TimeUnit;
+
+import ru.rustore.sdk.billingclient.RuStoreBillingClient;
+import ru.rustore.sdk.billingclient.RuStoreBillingClientFactory;
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
 
     // Для обновления температуры батареи в UI
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
 
     // Для отправки СМС implements View.OnClickListener
     public String MY_NUMBER;
@@ -80,9 +84,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private long mLastAlarm;
     private long mLastInfo;
     private int mBatteryTemp;
-
-
     // private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
+
+
+
 
 
     @Override
@@ -138,8 +143,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (sensorExist)
             mSensorManager.registerListener(this, mSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
 
-        // Запрос пермишна
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        // Запрос пермишна (закомментил if после минимального sdk = 23
+   //     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 
             if (checkSelfPermission(Manifest.permission.SEND_SMS)
                     == PackageManager.PERMISSION_DENIED) {
@@ -150,14 +155,44 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 requestPermissions(permissions, PERMISSION_REQUEST_CODE);
 
             }
-        }
+   //     }
 
-        mButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity.this.startSheduler();
-            }
-        });
+        // Типичный листенер заменил на лямбду
+        mButton2.setOnClickListener(view -> MainActivity.this.startSheduler());
+
+        // TODO: 22.09.2023
+        // Далее для RUSTORE поддержка встроенных покупок
+        final Context context  = getApplicationContext();
+        final String consoleApplicationId = "2063500489";
+        final String deeplinkScheme = "yourappscheme";
+
+
+        // Опциональные параметры - пока не надо
+    //    final BillingClientThemeProvider themeProvider = null;
+    //    final boolean debugLogs = false;
+    //    final ExternalPaymentLoggerFactory externalPaymentLoggerFactory = null;
+
+
+
+        RuStoreBillingClient billingClient = RuStoreBillingClientFactory.INSTANCE.create(
+                context,
+                consoleApplicationId,
+                deeplinkScheme
+                // Опциональные параметры
+               // themeProvider
+                // debugLogs,
+                //externalPaymentLoggerFactory
+        );
+
+
+
+
+
+
+
+
+
+
 
         // TODO: 02.11.2022  Блокировка экрана, чтоб не выключался (для отладки, потом убрать)
 /*        PowerManager pm=(PowerManager) this.getSystemService(Context.POWER_SERVICE);
@@ -236,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // Описание Runnable-объекта
     // Тут у нас цикличный опрос температуры батареи
-    private Runnable timeUpdaterRunnable = new Runnable() {
+    private final Runnable timeUpdaterRunnable = new Runnable() {
         public void run() {
             // вычисляем время (Кажется этот код из какого то примера по Handler:))))
 /*            final long start = mTime;
@@ -367,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Intent intent = new Intent(this, Control_activity.class);
         //    msg("Служба запускается для API = " + Build.VERSION.SDK_INT);
         // Проверить условие Запретить оптимизировать батарею
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+   //     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             String packageName = getPackageName();
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
@@ -375,7 +410,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 msg(getString(R.string.msgBatteryIgnore));
             }
             intent.setData(Uri.parse("package:" + packageName));
-        }
+
+    //    }
 
         intent.putExtra("serviceIntentON", serviseON);
         intent.putExtra("ALARM_HOURS", ALARM_INTERVAL);
@@ -588,32 +624,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         alert.setView(input);
 
-        alert.setPositiveButton(R.string.buttonOK, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                String value = String.valueOf(input.getText());
+        alert.setPositiveButton(R.string.buttonOK, (dialog, whichButton) -> {
+            String value = String.valueOf(input.getText());
 
-                // Проверяем поля на пустоту
-                if (TextUtils.isEmpty(input.getText().toString())) {
-                    msg(getString(R.string.msgCancel));
-                    return;
-                }
-
-                int hours = (Integer.parseInt(value));
-                // Проверка значения
-                if (hours < 1) {
-                    msg(getString(R.string.msgMinHours));
-                    inputNormal(null);
-                } else {
-                    NORMAL_INTERVAL = Long.valueOf(hours);
-                    Log.d(LOG_TAG, "--- NORMAL_INTERVAL ---" + NORMAL_INTERVAL);
-                    saveSharedPreferences();
-                }
-
-
-              //  InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-                dialog.cancel();
+            // Проверяем поля на пустоту
+            if (TextUtils.isEmpty(input.getText().toString())) {
+                msg(getString(R.string.msgCancel));
+                return;
             }
+
+            int hours = (Integer.parseInt(value));
+            // Проверка значения
+            if (hours < 1) {
+                msg(getString(R.string.msgMinHours));
+                inputNormal(null);
+            } else {
+                NORMAL_INTERVAL = Long.valueOf(hours);
+                Log.d(LOG_TAG, "--- NORMAL_INTERVAL ---" + NORMAL_INTERVAL);
+                saveSharedPreferences();
+            }
+
+
+          //  InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+            dialog.cancel();
         });
         alert.setNegativeButton(R.string.buttonCancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
@@ -851,10 +885,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // checkService(); // После всего проверка состояния службы
 
         Intent intent = this.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        mBatteryTemp = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
+        try {
+            mBatteryTemp = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "batteryTemp error, mBatteryTemp = " + mBatteryTemp);
+            throw new RuntimeException(e);
+        }
 
         // Строка для вывод значения температуры батареи
-        String message = String.valueOf(mBatteryTemp) + Character.toString((char) 176) + "C";
+        String message = String.valueOf(mBatteryTemp) + (char) 176 + "C";
         batteryLabel.setText(message);
     }
 
