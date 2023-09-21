@@ -140,8 +140,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Log.d(LOG_TAG, "MainActivity sensorExist = " + sensorExist);
 
         // Только после проверки регистрируем листенер
-        if (sensorExist)
+        if (sensorExist) {
             mSensorManager.registerListener(this, mSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+
 
         // Запрос пермишна (закомментил if после минимального sdk = 23
    //     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -157,8 +160,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
    //     }
 
+
+
         // Типичный листенер заменил на лямбду
         mButton2.setOnClickListener(view -> MainActivity.this.startSheduler());
+
+
 
         // TODO: 22.09.2023
         // Далее для RUSTORE поддержка встроенных покупок
@@ -401,17 +408,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // mSensorManager.unregisterListener(this);
         Intent intent = new Intent(this, Control_activity.class);
         //    msg("Служба запускается для API = " + Build.VERSION.SDK_INT);
+
+
         // Проверить условие Запретить оптимизировать батарею
-   //     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             String packageName = getPackageName();
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+
+        // TODO: 22.09.2023 Если публиковать в гугл маркете - удалить пермишн!
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                 msg(getString(R.string.msgBatteryIgnore));
             }
+
             intent.setData(Uri.parse("package:" + packageName));
 
-    //    }
 
         intent.putExtra("serviceIntentON", serviseON);
         intent.putExtra("ALARM_HOURS", ALARM_INTERVAL);
