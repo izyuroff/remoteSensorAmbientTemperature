@@ -1,4 +1,4 @@
-package ru.microsave.tempmonitor;
+package ru.microsave.tempmonitor.temp;
 
 import android.app.AlarmManager;
 import android.content.Context;

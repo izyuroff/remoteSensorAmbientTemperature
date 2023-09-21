@@ -1,13 +1,11 @@
 package ru.microsave.tempmonitor;
 /*
 Этот класс для выполнения работы в отдельном потоке и вызывается из JobSchedulerService
-    Здесь производится измерение температуры батареи и отправка СМС сообщения по стандартному интервалу
+    Здесь производится подготовка и передача СМС сообщения для отправки, с заданным интервалом
  */
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.AsyncTask;
 
 import java.util.Date;
@@ -18,8 +16,8 @@ class JobInfoBattery extends AsyncTask <JobParameters, Void, JobParameters> {
 
     private static int DEGREES_LOCAL; // Похоже только static работает
 
-    private static Sensor mJobSensorTemperature;
-    private static SensorManager mJobSensorManager;
+//    private static Sensor mJobSensorTemperature;
+//    private static SensorManager mJobSensorManager;
     private static int myJobTaskNorm;
 
     private final String LOG_TAG = "myLogs";

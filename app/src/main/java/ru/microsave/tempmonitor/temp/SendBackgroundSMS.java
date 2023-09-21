@@ -1,4 +1,4 @@
-package ru.microsave.tempmonitor;
+package ru.microsave.tempmonitor.temp;
 /*
 Класс отправки СМС в фоновом режиме, через AsyncTask
  */

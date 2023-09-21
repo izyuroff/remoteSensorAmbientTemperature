@@ -100,7 +100,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
                 if (ifSensor) {
                     // Log.d(LOG_TAG, "new: JobInfoSensor");
-                    // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
+                    // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАЁТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
                     //    if (tempSensor == 0) tempSensor = tempBattery;
                     ++TASK_NUMBER;
                     saveSharedPreferences();

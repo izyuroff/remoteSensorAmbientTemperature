@@ -1,13 +1,11 @@
 package ru.microsave.tempmonitor;
 /*
 Этот класс для выполнения работы в отдельном потоке и вызывается из JobSchedulerService
-    Здесь производится измерение температуры встроенного сенсора и отправка СМС сообщения, если температура ниже аварийного порога
+    Здесь производится подготовка и передача СМС сообщения для отправки, если температура ниже аварийного порога
  */
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.AsyncTask;
 
 import java.util.Date;
@@ -19,8 +17,8 @@ class JobAlarmSensor extends AsyncTask<JobParameters, Void, JobParameters> {
     private int DEGREES_LOCAL; // Похоже только static работает
     private int DEGREES_LOCAL_BAT; // Похоже только static работает
 
-    private static Sensor mJobSensorTemperatureAlarm;
-    private static SensorManager mJobSensorManagerAlarm;
+//    private static Sensor mJobSensorTemperatureAlarm;
+//    private static SensorManager mJobSensorManagerAlarm;
     private static int myJobTaskAlarm;
 
     private final String LOG_TAG = "myLogs";
