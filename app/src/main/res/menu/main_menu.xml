@@ -3,45 +3,45 @@
     <item
         android:id="@+id/action_info"
         android:orderInCategory="1"
-        android:title="Информация" />
+        android:title="@string/TitleMenuInfo" />
 
     <item
         android:id="@+id/action_test"
         android:enabled="false"
         android:orderInCategory="1"
-        android:title="Тест отправки СМС" />
+        android:title="@string/TitleMenuTestSVS" />
 
     <item
         android:id="@+id/action_test_Job"
         android:enabled="false"
         android:orderInCategory="1"
-        android:title="Проверка службы" />
+        android:title="@string/TitleMenuCheckServices" />
 
     <item
         android:id="@+id/action_count"
         android:orderInCategory="1"
-        android:title="Сбросить счетчик СМС" />
+        android:title="@string/TitleMenuResetCounterSMS" />
 
     <item
         android:id="@+id/action_inc_count"
         android:enabled="false"
         android:orderInCategory="1"
-        android:title="Увеличить счетчик СМС" />
+        android:title="@string/TitleMenuIncrementCounterSMS" />
 
     <item
         android:id="@+id/action_settings"
         android:enabled="false"
         android:orderInCategory="2"
-        android:title="Открыть настройки" />
+        android:title="@string/TitleMenuSetUp" />
 
     <item
         android:id="@+id/open_privacy"
         android:enabled="false"
         android:orderInCategory="3"
-        android:title="Конфиденциальность" />
+        android:title="@string/TitleMenuPrivacy" />
     <item
         android:id="@+id/open_about"
         android:enabled="false"
         android:orderInCategory="4"
-        android:title="О приложении" />
+        android:title="@string/TitleMenuAbout" />
 </menu>

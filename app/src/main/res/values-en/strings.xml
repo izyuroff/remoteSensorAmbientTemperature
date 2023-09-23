@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Monitor t° v.1.14</string>
+    <string name="symbol_degrees">°C</string>
+    <string name="buttonOK">Ok</string>
+    <string name="buttonCancel">cancel</string>
+
+    <string name="infoBatteryTitle">Thermometer not detected!</string>
+    <string name="infoBatteryMessage">Measurements are made on the battery. This gives an error when the screen is on.\n\nLeave the phone alone for about one hour.\nThe sensor will begin to produce values ​​close to the actual air temperature.\n\nMeasurement error may be five to seven degrees. Take this into account when setting up!</string>
+
+    <string name="infoSensorTitle">Thermometer detected!</string>
+    <string name="infoSensorMessage">There is a built-in ambient temperature sensor\n\nAll measurements are made on it\n\nBattery readings are displayed for information only!</string>
+
+    <string name="inputWarningTitle">Minimum t°C</string>
+    <string name="inputWarningMessage">Calls alarm SMS\n\nImportant:\nYou cannot enter 0°C and below!\n\nAlarm SMS are repeated every hour!\n\nConfigured: </string>
+
+
+    <string name="inputNormalTitle">SMS repeats, in hours</string>
+    <string name="inputNormalMessage1">Periodic information\ndoes not depend on temperature!\n\n Configured: </string>
+    <string name="inputNormalMessage2">hour\n\nImportant: An interval of less than 1 hour cannot be set!</string>
+
+    <string name="inputNumberTitle">SMS number</string>
+    <!-- <string name="inputNumberMessage">SMS does not work without \"+\" and country code!\n\n Configured: </string>-->
+    <string name="inputNumberMessage">Required \"+\" and country code!\n\n\n Configured: </string>
+
+
+
+
+
+
+
+    <string name="tvStatusField">Checking service status...</string>
+    <string name="tvWorkTime">Working time:</string>
+    <string name="tvTimerDays">days</string>
+    <string name="tvTimerHours">hour,</string>
+    <string name="tvTimerMins">min</string>
+    <string name="tvThermometer">THERMOMETER</string>
+    <string name="tvBattery">BATTERY</string>
+    <string name="tvLine">-----</string>
+    <string name="tvStatusOne">Service started (?)</string>
+    <string name="tvInputNumberPhone">Enter your phone number!</string>
+    <string name="tvCounterSMS">SMS Counter:</string>
+    <string name="butt_InputNumber">PHONE NUMBER FOR SMS</string>
+    <string name="butt_inputWarning">ALARM TEMPERATURE:</string>
+    <string name="butt_inputAlarma">ALARM REPEAT, HOURS:</string>
+    <string name="butt_inputNormal">SMS INFORMATION, HOURS:</string>
+    <string name="butt_stopSheduler">STOP</string>
+    <string name="butt_startSheduler">START</string>
+    <string name="setServiceStop">Service stopped</string>
+    <string name="setServiceStart">Service started</string>
+    <string name="setSaveNumber">Number saved:</string>
+    <string name="setThermometer">THERMOMETER</string>
+    <string name="setServiceWorking">Service is running</string>
+    <string name="setServiceNotWorking">The service is not working!</string>
+    <string name="setServiceNotStopped">The service has not stopped!</string>
+    <string name="setServiceFailure">Service failure! Stopped!</string>
+    <string name="setTimerSession">Current session: </string>
+    <string name="setTimerLastSession">Last session: </string>
+    <string name="msgServiceON">Service started successfully!</string>
+    <string name="msgBatteryIgnore">Battery optimization is enabled, need to be disabled</string>
+    <string name="msgCancel">Exit without changes!</string>
+    <string name="msgMinHours">Cannot be set in less than 1 hour!</string>
+    <string name="msgNotZero">Cannot be set to 0!</string>
+    <string name="msgServiceWorking">Service is running!</string>
+    <string name="msgServiceNotWorking">The service is not working!</string>
+    <string name="TitleMenuInfo">Information</string>
+    <string name="TitleMenuTestSVS">SMS sending test</string>
+    <string name="TitleMenuCheckServices">Service check</string>
+    <string name="TitleMenuResetCounterSMS">Reset SMS counter</string>
+    <string name="TitleMenuIncrementCounterSMS">Increase SMS counter</string>
+    <string name="TitleMenuSetUp">Open settings</string>
+    <string name="TitleMenuPrivacy">Privacy</string>
+    <string name="TitleMenuAbout">About</string>
+</resources>

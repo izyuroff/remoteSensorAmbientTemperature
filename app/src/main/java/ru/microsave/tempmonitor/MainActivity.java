@@ -397,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void startSheduler() {
     //    startWorking();
-        msg(getString(R.string.msgServiceON));
+        msgShort(getString(R.string.msgServiceON));
         serviseON = true;
         invertButton(serviseON);
         mStartTime = System.currentTimeMillis();
@@ -416,8 +416,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // TODO: 22.09.2023 Если публиковать в гугл маркете - удалить пермишн!
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                 msg(getString(R.string.msgBatteryIgnore));
+                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
             }
 
             intent.setData(Uri.parse("package:" + packageName));
@@ -483,6 +483,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // fast way to call Toast
     private void msg(String s) {
         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+    }
+
+    // fast way to call Toast
+    private void msgShort(String s) {
+        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
     }
 
     // Меняем кнопочки

@@ -57,12 +57,20 @@
     <string name="setTimerSession">Текущая сессия: </string>
     <string name="setTimerLastSession">Прошлая сессия: </string>
     <string name="msgServiceON">Служба запущена успешно!</string>
-    <string name="msgBatteryIgnore">Оптимизация отключена успешно</string>
+    <string name="msgBatteryIgnore">Оптимизация батареи включена, нужно отключить</string>
     <string name="msgCancel">Выход без изменений!</string>
     <string name="msgMinHours">Нельзя устанавливать менее 1 часа!</string>
     <string name="msgNotZero">Нельзя устанавливать 0!</string>
     <string name="msgServiceWorking">Служба выполняется!</string>
     <string name="msgServiceNotWorking">Служба не работает!</string>
+    <string name="TitleMenuInfo">Информация</string>
+    <string name="TitleMenuTestSVS">Тест отправки СМС</string>
+    <string name="TitleMenuCheckServices">Проверка службы</string>
+    <string name="TitleMenuResetCounterSMS">Сбросить счетчик СМС</string>
+    <string name="TitleMenuIncrementCounterSMS">Увеличить счетчик СМС</string>
+    <string name="TitleMenuSetUp">Открыть настройки</string>
+    <string name="TitleMenuPrivacy">Конфиденциальность</string>
+    <string name="TitleMenuAbout">О приложении</string>
 
 
 </resources>
