@@ -71,6 +71,7 @@
     <string name="TitleMenuSetUp">Открыть настройки</string>
     <string name="TitleMenuPrivacy">Конфиденциальность</string>
     <string name="TitleMenuAbout">О приложении</string>
+    <string name="prefix" translatable="false">+7</string>
 
 
 </resources>

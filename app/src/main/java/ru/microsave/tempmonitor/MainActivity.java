@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public boolean serviseON; // состояние службы боевого дежурства, запущена пользователем или нет,
     public boolean sensorExist; // наличие сенсора температуры
     public boolean messageRead; // сообщение прочитано при первом запуске, больше не выводить
-    public boolean useFlexTime; // Эта переменная проверяется в JobSchedulerService
+    public boolean useFlexTime; // Эта переменная проверяется в JobSchedulerService и JobSchedulerServiceAlarm
     private Sensor mSensorTemperature;
     private SensorManager mSensorManager;
     private SharedPreferences savePref;
@@ -685,9 +685,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
+        input.setHint(R.string.prefix);
         // input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
         input.requestFocus();
+
         //getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+
         input.setInputType(InputType.TYPE_CLASS_PHONE);  //установит клавиатуру для ввода номера телефона
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
@@ -823,7 +827,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         // Инициализация планировщика для разных API , если >= 24 то true
-        // Эта переменная проверяется в JobSchedulerService
+        // Эта переменная проверяется в JobSchedulerService и JobSchedulerServiceAlarm
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             useFlexTime = true;
         }

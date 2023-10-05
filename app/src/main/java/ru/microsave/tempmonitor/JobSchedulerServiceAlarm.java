@@ -109,11 +109,16 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
                     mLastAlarm = mCurrentTime - (1000L * 3L); // Новый таймштамп
 
                     // Для сенсора и проверка температуры
-                    if (ifSensor && !(tempSensor <= myWarningTemperature)) {
-                        ++TASK_NUMBER;
-                        saveSharedPreferences();
-                        new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
-                    }
+                    // TODO: 05.10.2023 Какая то ошибка, почему в проверке falce непонятно, счас проверю
+                    if ((tempSensor <= myWarningTemperature))
+                        if (ifSensor) {
+                            Log.d(LOG_TAG, "ifSensor && !(tempSensor <= myWarningTemperature)");
+                            Log.d(LOG_TAG, "ПРОВЕРКА СРАБОТАЛА");
+
+                            ++TASK_NUMBER;
+                            saveSharedPreferences();
+                            new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
+                        }
                     // Для батареи и проверка температуры
                     if (!ifSensor && tempBattery <= myWarningTemperature) {
                         ++TASK_NUMBER;
