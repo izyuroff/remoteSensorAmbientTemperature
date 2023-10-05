@@ -72,6 +72,8 @@
     <string name="TitleMenuPrivacy">Конфиденциальность</string>
     <string name="TitleMenuAbout">О приложении</string>
     <string name="prefix" translatable="false">+7</string>
+    <string name="hintWarning">Введите нижний порог</string>
+    <string name="hintNormal">рекомендуется 12</string>
 
 
 </resources>

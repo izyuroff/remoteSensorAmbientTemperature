@@ -1,7 +1,7 @@
 package ru.microsave.tempmonitor;
 /*
 
-
+ Вся информация в read.me
 
 
  */
@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // Для отправки СМС implements View.OnClickListener
     public String MY_NUMBER;
     public int WARNING_TEMP;
+
+    // TODO: 06.10.2023 Это же теперь final? На будущее что ли оставил?? Надо убрать! 
     private long ALARM_INTERVAL; //     аварийный интервал всегда в часах
     private long NORMAL_INTERVAL; //    НАСТРОЙКА КОЛИЧЕСТВА ЧАСОВ
 
@@ -62,7 +64,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public boolean serviseON; // состояние службы боевого дежурства, запущена пользователем или нет,
     public boolean sensorExist; // наличие сенсора температуры
     public boolean messageRead; // сообщение прочитано при первом запуске, больше не выводить
+    
+    /*
+    useFlexTime Влияет на настройку шедулера, для API >= 24 используется два параметра: 
+    .setPeriodic(mPeriodic, mFlexPeriodic)
+     */
     public boolean useFlexTime; // Эта переменная проверяется в JobSchedulerService и JobSchedulerServiceAlarm
+    
     private Sensor mSensorTemperature;
     private SensorManager mSensorManager;
     private SharedPreferences savePref;
@@ -627,6 +635,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
+        input.setHint(R.string.hintNormal);
 
 
         // input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
@@ -739,6 +748,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
+        input.setHint(R.string.hintWarning);
+
         //input.getBackground().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
         input.requestFocus();
         input.setInputType(InputType.TYPE_CLASS_NUMBER);  //установит клавиатуру для ввода номера телефона

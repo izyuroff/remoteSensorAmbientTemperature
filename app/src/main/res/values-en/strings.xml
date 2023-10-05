@@ -71,4 +71,6 @@
     <string name="TitleMenuSetUp">Open settings</string>
     <string name="TitleMenuPrivacy">Privacy</string>
     <string name="TitleMenuAbout">About</string>
+    <string name="hintWarning">Input degrees</string>
+    <string name="hintNormal">12</string>
 </resources>

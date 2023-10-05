@@ -126,10 +126,20 @@ public class Control_activity extends AppCompatActivity {
             // mPeriodic = 1000 * 60 * 35; // Решено посмотреть на разных устройствах качество срабатывания
             // mFlexPeriodic = 1000 * 60 * 30; // Решено посмотреть на разных устройствах качество срабатывания
 
-            // если 55 - Это дало срабатывания 5, 65, 55, 61, 64, 60, 54, 59 минут
-            // если 5 - Это дало срабатывания .. минут
-        //    mPeriodic = multiNormal * 1000 * 60 * 15; // Решено посмотреть на разных устройствах качество срабатывания
-        //    mFlexPeriodic = multiNormal * 1000 * 60 * 14; // Решено посмотреть на разных устройствах качество срабатывания
+            // если 1000L * 60 * 55 - Это дало срабатывания 5, 65, 55, 61, 64, 60, 54, 59 минут
+            // если 1000L * 60 * 5 - Это дало срабатывания .. минут
+
+
+
+/*
+            Опытным путем выведены именно эти значения, НЕ МЕНЯТЬ!
+                mPeriodic = multiNormal * 1000 * 60 * 15;
+                mFlexPeriodic = multiNormal * 1000 * 60 * 14;
+            А еще здесь была тупая ошибка - Правильная запись 1000L * 60L * 15L иначе расчеты становятся некорректными
+
+
+*/
+
             mPeriodic = 900000L; // 1000L * 60 * 15
             mFlexPeriodic = 840000L; // 1000L * 60 * 14
 
@@ -143,13 +153,12 @@ public class Control_activity extends AppCompatActivity {
                     .build();
         }
 
-        // Инициализация планировщика для API < 24
-        // Для устройств менее, чем Build.VERSION_CODES.N
+        // Инициализация планировщика для API < 24 (Build.VERSION_CODES.N)
         else {
-            mPeriodic = 300000L;
+            mPeriodic = 300000L; // Срабатывает каждые 300 секунд
             jobInfo = new JobInfo.Builder(mJobId, componentName)
                     .setRequiresCharging(false)
-                    // .setMinimumLatency(5000) - Пробовать
+                    // .setMinimumLatency(5000) - Пробовать (НЕТ, ПРОБОВАЛ УЖЕ)
                     .setPeriodic(mPeriodic) // Период запусков теста должен быть меньше(?), чем переменные *_INTERVAL
                     .setPersisted(isPersisted)
                     .build();
@@ -159,20 +168,14 @@ public class Control_activity extends AppCompatActivity {
         if (mJobScheduler.schedule(jobInfo) <= 0) {
             Log.d(LOG_TAG, "onCreate: Some error, jobInfo = " + jobInfo);
         } else Log.d(LOG_TAG, "jobInfo: Все запланировалось успешно");
-        // ===================================================================================
-        // ===================================================================================
+
+
+
+
         // ======================= Планируем jobInfoAlarm ===========================================
         // Инициализация планировщика для API >= 24
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
-
-
-            //mPeriodicAlarm = 1000 * 60 * 15; // Решено посмотреть на разных устройствах качество срабатывания
-            //mFlexPeriodicAlarm = 1000 * 60 * 14; // Решено посмотреть на разных устройствах качество срабатывания
-
-
-        //    mPeriodicAlarm = multiAlarm * 1000L * 60 * 15; // Решено посмотреть на разных устройствах качество срабатывания
-        //    mFlexPeriodicAlarm = multiAlarm * 1000L * 60 * 14; // Решено посмотреть на разных устройствах качество срабатывания
             mPeriodic = 900000L; // 1000L * 60 * 15
             mFlexPeriodic = 840000L; // 1000L * 60 * 14
 
