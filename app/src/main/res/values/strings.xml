@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Монитор t° v.1.14</string>
+    <string name="app_name">Монитор t° v.1.15</string>
     <string name="symbol_degrees">°C</string>
-    <string name="buttonOK">Ok</string>
+    <string name="buttonOK">`@android:string/OK` </string>
     <string name="buttonCancel">отмена</string>
 
     <string name="infoBatteryTitle">Термометр не обнаружен!</string>
@@ -29,7 +29,7 @@
     <string name="inputAlarmMessage3"> час\n\nВажно: Интервал меньше, чем 1 час установить нельзя!</string>
     -->
 
-    <string name="tvStatusField">Проверка состояния службы...</string>
+    <string name="tvStatusField">Проверка состояния службы(&#8230;)</string>
     <string name="tvWorkTime">Время работы:</string>
     <string name="tvTimerDays">дн,</string>
     <string name="tvTimerHours">час,</string>

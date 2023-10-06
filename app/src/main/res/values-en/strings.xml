@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Monitor t° v.1.14</string>
+    <string name="app_name">Monitor t° v.1.15</string>
     <string name="symbol_degrees">°C</string>
-    <string name="buttonOK">Ok</string>
-    <string name="buttonCancel">cancel</string>
+    <string name="buttonOK">`@android:string/OK` </string>
+    <string name="buttonCancel">`@android:string/cancel`</string>
 
     <string name="infoBatteryTitle">Thermometer not detected!</string>
     <string name="infoBatteryMessage">Measurements are made on the battery. This gives an error when the screen is on.\n\nLeave the phone alone for about one hour.\nThe sensor will begin to produce values ​​close to the actual air temperature.\n\nMeasurement error may be five to seven degrees. Take this into account when setting up!</string>
@@ -29,7 +29,7 @@
 
 
 
-    <string name="tvStatusField">Checking service status...</string>
+    <string name="tvStatusField">Checking service status(&#8230;)</string>
     <string name="tvWorkTime">Working time:</string>
     <string name="tvTimerDays">days</string>
     <string name="tvTimerHours">hour,</string>
