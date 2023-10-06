@@ -9,7 +9,7 @@ android {
         configurations.configureEach {
             resolutionStrategy { force 'androidx.core:core:1.6.0' }
         }
-        applicationId "ru.microsave.tempmonitor"
+        applicationId "ru.microsave.scanerpro"
         minSdkVersion 23
         targetSdkVersion 34
         versionCode 1
@@ -43,7 +43,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }*/
-    namespace 'ru.microsave.tempmonitor'
+    namespace 'ru.microsave.scanerpro'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

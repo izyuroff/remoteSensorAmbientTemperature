@@ -1,4 +1,4 @@
-package ru.microsave.tempmonitor;
+package ru.microsave.scanerpro;
 /**
  * Шедулер для периодического контроля аварийной темпертатуры
  *

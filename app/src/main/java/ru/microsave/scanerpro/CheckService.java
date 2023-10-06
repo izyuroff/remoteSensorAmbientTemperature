@@ -1,4 +1,4 @@
-package ru.microsave.tempmonitor;
+package ru.microsave.scanerpro;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;

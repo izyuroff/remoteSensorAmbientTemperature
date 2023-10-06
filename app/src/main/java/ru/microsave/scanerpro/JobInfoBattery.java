@@ -1,4 +1,4 @@
-package ru.microsave.tempmonitor;
+package ru.microsave.scanerpro;
 /*
 Этот класс для выполнения работы в отдельном потоке и вызывается из JobSchedulerService
     Здесь производится подготовка и передача СМС сообщения для отправки, с заданным интервалом

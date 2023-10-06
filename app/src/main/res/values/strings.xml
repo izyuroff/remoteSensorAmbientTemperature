@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Монитор t° v.1.15</string>
     <string name="symbol_degrees">°C</string>
-    <string name="buttonOK">`@android:string/OK` </string>
+    <string name="buttonOK">OK</string>
     <string name="buttonCancel">отмена</string>
 
     <string name="infoBatteryTitle">Термометр не обнаружен!</string>
@@ -72,8 +72,8 @@
     <string name="TitleMenuPrivacy">Конфиденциальность</string>
     <string name="TitleMenuAbout">О приложении</string>
     <string name="prefix" translatable="false">+7</string>
-    <string name="hintWarning">Введите нижний порог</string>
-    <string name="hintNormal">рекомендуется 12</string>
+    <string name="hintWarning">Введите температуру</string>
+    <string name="hintNormal">12</string>
 
 
 </resources>

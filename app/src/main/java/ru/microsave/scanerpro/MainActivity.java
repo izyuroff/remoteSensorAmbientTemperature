@@ -1,10 +1,12 @@
-package ru.microsave.tempmonitor;
+package ru.microsave.scanerpro;
 /*
 
  Вся информация в read.me
 
 
  */
+
+import static javax.net.ssl.SSLEngineResult.Status.OK;
 
 import android.Manifest;
 import android.app.AlertDialog;

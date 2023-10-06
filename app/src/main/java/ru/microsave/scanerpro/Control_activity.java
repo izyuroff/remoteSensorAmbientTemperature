@@ -1,4 +1,4 @@
-package ru.microsave.tempmonitor;
+package ru.microsave.scanerpro;
 /*
 Класс контроллер
 Сюда передаются настройки пользователя: период теста, интервалы сообщений

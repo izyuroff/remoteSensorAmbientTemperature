@@ -1,4 +1,4 @@
-package ru.microsave.tempmonitor;
+package ru.microsave.scanerpro;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
