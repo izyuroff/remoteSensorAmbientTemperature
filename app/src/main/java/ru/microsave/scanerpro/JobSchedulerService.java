@@ -47,7 +47,7 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     public void onCreate() {
         // Log.d(LOG_TAG, "JobSchedulerService onCreate");
         readSharedPreferences();
-        this.mJobSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+        mJobSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         mJobSensorManager.registerListener(this, mJobSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
         myApp = getString(R.string.app_name);

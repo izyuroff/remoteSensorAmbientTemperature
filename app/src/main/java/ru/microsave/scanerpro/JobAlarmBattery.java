@@ -7,14 +7,15 @@ package ru.microsave.scanerpro;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.os.AsyncTask;
+import android.text.format.DateFormat;
 
 import java.util.Date;
 
 class JobAlarmBattery extends AsyncTask<JobParameters, Void, JobParameters> {
-    private float mTempBattery;
+    private final float mTempBattery;
 
-    private String MY_NUMBER_LOCAL;
-    private int WARNING_TEMP_LOCAL;
+    private final String MY_NUMBER_LOCAL;
+    private final int WARNING_TEMP_LOCAL;
     private static int DEGREES_LOCAL; // Похоже только static работает
 
     private static int myJobTaskAlarm;
@@ -22,7 +23,7 @@ class JobAlarmBattery extends AsyncTask<JobParameters, Void, JobParameters> {
     private final String LOG_TAG = "myLogs";
     private final JobService jobServiceAlarmBatt;
     private String textMessage;
-    private String mAppname;
+    private final String mAppname;
 
     public JobAlarmBattery(JobService jobService, String num, float tempBat, int count, int war, String appname) {
 
@@ -56,9 +57,9 @@ class JobAlarmBattery extends AsyncTask<JobParameters, Void, JobParameters> {
 
         // Второй вариант оформления метки времени
         android.text.format.DateFormat df = new android.text.format.DateFormat();
-        CharSequence timeStampChar = df.format("kk:mm dd/MM/yy", new Date());
+        CharSequence timeStampChar = DateFormat.format("kk:mm dd/MM/yy", new Date());
 
-        textMessage = "ТРЕВОГА: " + degrees + Character.toString((char) 176) + "C" + ", " + timeStampChar + ". " + mAppname + ", #" + myJobTaskAlarm;
+        textMessage = "ТРЕВОГА: " + degrees + (char) 176 + "C" + ", " + timeStampChar + ". " + mAppname + ", #" + myJobTaskAlarm;
         // Отправляем созданный номер задачи и текст в класс для отправки СМС
         new SendSMS(MY_NUMBER_LOCAL, textMessage);
     }

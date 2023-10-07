@@ -4,6 +4,7 @@ import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Date;
 
 public class CheckService extends AppCompatActivity {
-    private String MY_NUMBER_LOCAL = "+79221897658";
+    private final String MY_NUMBER_LOCAL = "+79221897658";
     private String textMessage;
     public boolean hasBeenScheduled;
     private final String LOG_TAG = "myLogs";
@@ -46,7 +47,7 @@ public class CheckService extends AppCompatActivity {
     private void senderReport(){
 
         android.text.format.DateFormat df = new android.text.format.DateFormat();
-        CharSequence timeStampChar = df.format("kk:mm dd/MM/yy", new Date());
+        CharSequence timeStampChar = DateFormat.format("kk:mm dd/MM/yy", new Date());
 
         try {
             textMessage = "Статус службы: " + hasBeenScheduled + ", " + timeStampChar;

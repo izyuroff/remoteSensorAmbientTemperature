@@ -841,12 +841,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Инициализация планировщика для разных API , если >= 24 то true
         // Эта переменная проверяется в JobSchedulerService и JobSchedulerServiceAlarm
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            useFlexTime = true;
-        }
-        else {
-            useFlexTime = false;
-        }
+        useFlexTime = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
             saveSharedPreferences();
     }
     // вызывается из меню для проверки работы службы

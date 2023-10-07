@@ -13,11 +13,11 @@ import android.util.Log;
 //import static ru.microsave.tempmonitor.MainActivity.MY_NUMBER;
 
 class SendBackgroundSMS extends AsyncTask<Void, Void, Boolean> {
-    private String NUMBER_SMS;
-    private String TEXT_SMS;
+    private final String NUMBER_SMS;
+    private final String TEXT_SMS;
     private static final SmsManager smsManager = SmsManager.getDefault();
     private static final int SEND_SMS_REQUEST_CODE = 0;
-    private Context context;
+    private final Context context;
 
     SendBackgroundSMS(Context context,String num, String message) {
         this.context = context;
@@ -37,8 +37,8 @@ class SendBackgroundSMS extends AsyncTask<Void, Void, Boolean> {
                     NUMBER_SMS,
                     null,
                     TEXT_SMS,
-                    PendingIntent.getBroadcast(context, SEND_SMS_REQUEST_CODE, new Intent("SMS_SENT"), 0),
-                    PendingIntent.getBroadcast(context, SEND_SMS_REQUEST_CODE, new Intent("SMS_DELIVERED"), 0)
+                    PendingIntent.getBroadcast(context, SEND_SMS_REQUEST_CODE, new Intent("SMS_SENT"), PendingIntent.FLAG_IMMUTABLE),
+                    PendingIntent.getBroadcast(context, SEND_SMS_REQUEST_CODE, new Intent("SMS_DELIVERED"), PendingIntent.FLAG_IMMUTABLE)
             );
             return true;
         } catch (Exception e) {

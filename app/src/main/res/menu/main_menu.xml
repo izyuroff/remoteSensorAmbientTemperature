@@ -7,7 +7,7 @@
 
     <item
         android:id="@+id/action_test"
-        android:enabled="false"
+        android:enabled="true"
         android:orderInCategory="1"
         android:title="@string/TitleMenuTestSVS" />
 
@@ -36,12 +36,12 @@
 
     <item
         android:id="@+id/open_privacy"
-        android:enabled="false"
+        android:enabled="true"
         android:orderInCategory="3"
         android:title="@string/TitleMenuPrivacy" />
     <item
         android:id="@+id/open_about"
-        android:enabled="false"
+        android:enabled="true"
         android:orderInCategory="4"
         android:title="@string/TitleMenuAbout" />
 </menu>

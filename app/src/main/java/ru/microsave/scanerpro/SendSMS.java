@@ -5,8 +5,8 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 class SendSMS {
-    private String NUMBER_SMS;
-    private String TEXT_SMS;
+    private final String NUMBER_SMS;
+    private final String TEXT_SMS;
     private final String LOG_TAG = "myLogs";
 
     public SendSMS(String num, String message) {

@@ -7,22 +7,23 @@ package ru.microsave.scanerpro;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.os.AsyncTask;
+import android.text.format.DateFormat;
 
 import java.util.Date;
 
 class JobInfoSensor extends AsyncTask<JobParameters, Void, JobParameters> {
 
-    private String MY_NUMBER_LOCAL;
+    private final String MY_NUMBER_LOCAL;
 
-    private int DEGREES_LOCAL; // Похоже только static работает
-    private int DEGREES_LOCAL_BAT;
+    private final int DEGREES_LOCAL; // Похоже только static работает
+    private final int DEGREES_LOCAL_BAT;
 
     private static int myJobTaskNorm;
 
     private final String LOG_TAG = "myLogs";
     private final JobService jobServiceInfoSens;
     private String textMessage;
-    private String mAppname;
+    private final String mAppname;
 
 
     public JobInfoSensor(JobService jobService, String num, float tempSensor, float tempBat, int count, String appname) {
@@ -59,7 +60,7 @@ class JobInfoSensor extends AsyncTask<JobParameters, Void, JobParameters> {
 
         // Второй вариант оформления метки времени
         android.text.format.DateFormat df = new android.text.format.DateFormat();
-        CharSequence timeStampChar = df.format("kk:mm dd/MM/yy", new Date());
+        CharSequence timeStampChar = DateFormat.format("kk:mm dd/MM/yy", new Date());
         String timeStampString = (String) timeStampChar;
 
         // Третий вариант, он был раньше, без форматирования
@@ -67,7 +68,7 @@ class JobInfoSensor extends AsyncTask<JobParameters, Void, JobParameters> {
         // String timestamp = DateFormat.getDateTimeInstance().format(new Date(currentTime));
 
         // Log.d(LOG_TAG, "myJobTask = " + myJobTask);
-        textMessage = "ДАТЧИК: " + degrees + Character.toString((char) 176) + "C" + ", БАТАРЕЯ: " + DEGREES_LOCAL_BAT + Character.toString((char) 176) + "C" + ", " + timeStampChar + ". " + mAppname + ", #" + myJobTaskNorm;
+        textMessage = "ДАТЧИК: " + degrees + (char) 176 + "C" + ", БАТАРЕЯ: " + DEGREES_LOCAL_BAT + (char) 176 + "C" + ", " + timeStampChar + ". " + mAppname + ", #" + myJobTaskNorm;
         // Отправляем созданный номер задачи и текст в класс для отправки СМС
         new SendSMS(MY_NUMBER_LOCAL, textMessage);
     }

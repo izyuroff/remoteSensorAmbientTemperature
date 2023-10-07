@@ -11,9 +11,9 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 class SendHandlerSMS extends Activity {
-    private Handler mHandler = new Handler();
-    private String NUMBER_SMS;
-    private String TEXT_SMS;
+    private final Handler mHandler = new Handler();
+    private final String NUMBER_SMS;
+    private final String TEXT_SMS;
     private final String LOG_TAG = "myLogs";
 
     SendHandlerSMS(String num, String message){
@@ -22,7 +22,7 @@ class SendHandlerSMS extends Activity {
     }
 
     // Описание Runnable-объекта
-    private Runnable timeUpdaterRunnable = new Runnable() {
+    private final Runnable timeUpdaterRunnable = new Runnable() {
         public void run() {
             try {
                 SmsManager.getDefault()

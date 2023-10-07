@@ -21,11 +21,11 @@ import java.text.DateFormat;
 import java.util.Date;
 
 class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements SensorEventListener {
-    private float mTempBattery;
-    private String MY_NUMBER_LOCAL;
-    private int WARNING_TEMP_LOCAL;
-    private Boolean mALARM_TYPE;
-    private Boolean ifSensor;
+    private final float mTempBattery;
+    private final String MY_NUMBER_LOCAL;
+    private final int WARNING_TEMP_LOCAL;
+    private final Boolean mALARM_TYPE;
+    private final Boolean ifSensor;
     private static int DEGREES_LOCAL; // Похоже только static работает
 
     private static Sensor mJobSensorTemperature;
@@ -51,8 +51,9 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
             mJobSensorTemperature = mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
             mJobSensorManager.registerListener(this, mJobSensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
         }
-        else
-        Log.d(LOG_TAG, "Нет сенсора, будет температура mTempBattery = " + mTempBattery);
+        else {
+            Log.d(LOG_TAG, "Нет сенсора, будет температура mTempBattery = " + mTempBattery);
+        }
 
         this.jobService = jobService;
     }
@@ -127,7 +128,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         if (degrees < WARNING_TEMP_LOCAL && mALARM_TYPE) {
             ++myJobTask;
             Log.d(LOG_TAG, "myJobTask = " + myJobTask);
-            textMessage = "#" + myJobTask + " " + timestamp +  " ТРЕВОГА: " + degrees + Character.toString ((char) 176) + "C";
+            textMessage = "#" + myJobTask + " " + timestamp +  " ТРЕВОГА: " + degrees + (char) 176 + "C";
             try {
                 SmsManager.getDefault()
                         .sendTextMessage(MY_NUMBER_LOCAL, null, textMessage, null, null);
@@ -146,7 +147,7 @@ class JobTask extends AsyncTask <JobParameters, Void, JobParameters> implements 
         if (!mALARM_TYPE) {
             ++myJobTask;
             Log.d(LOG_TAG, "myJobTask = " + myJobTask);
-            textMessage = "#" + myJobTask + " " + timestamp +  " ИНФО: " + degrees + Character.toString ((char) 176) + "C";
+            textMessage = "#" + myJobTask + " " + timestamp +  " ИНФО: " + degrees + (char) 176 + "C";
 
           //  tempBattery = String.valueOf(temp) + Character.toString ((char) 176) + "C";
 
