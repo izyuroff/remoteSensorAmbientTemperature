@@ -1,9 +1,6 @@
 package ru.microsave.scanerpro;
 /*
-
  Вся информация в read.me
-
-
  */
 
 import static javax.net.ssl.SSLEngineResult.Status.OK;
