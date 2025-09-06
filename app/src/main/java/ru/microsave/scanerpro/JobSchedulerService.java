@@ -34,8 +34,8 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     private long mLastInfo;
 
     private int TASK_NUMBER;
-    private static Sensor mJobSensorTemperature;
-    private static SensorManager mJobSensorManager;
+    private Sensor mJobSensorTemperature;
+    private SensorManager mJobSensorManager;
 
 
     public JobSchedulerService() {
@@ -55,16 +55,17 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        float value = sensorEvent.values[0];
+        float newValue = sensorEvent.values[0];
 
-        // Игнорируем дефолтный ноль (который иногда приходит при инициализации)
-        if (value > 0) {
-            tempSensor = value;
-            Log.d(LOG_TAG, "Sensor updated: " + tempSensor);
+        // Игнорируем ложные нули и отрицательные значения
+        if (newValue > 0) {
+            tempSensor = newValue;
+            Log.d(LOG_TAG, "JobSchedulerService: tempSensor updated = " + tempSensor);
         } else {
-            Log.d(LOG_TAG, "Sensor returned 0, keeping previous value: " + tempSensor);
+            Log.w(LOG_TAG, "JobSchedulerService: sensor returned " + newValue + ", keeping old value = " + tempSensor);
         }
     }
+
 
 
     @Override
@@ -127,22 +128,25 @@ public class JobSchedulerService extends JobService implements SensorEventListen
                 Log.d(LOG_TAG, "2. Info (mCurrentTime - mLastInfo) = " + ((mCurrentTime - mLastInfo)/1000L/60L));
 
                 mLastInfo = mCurrentTime - (1000L * 3L); // Новый таймштамп
-
                 if (ifSensor) {
-                    // Log.d(LOG_TAG, "new: JobInfoSensor");
-                    // Log.d(LOG_TAG, "new: JobInfoSensor");
-                    // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-                    //    if (tempSensor == 0) tempSensor = tempBattery;
-
-                    ++TASK_NUMBER;
-                    saveSharedPreferences();
-                    new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
+                    // TODO (12.11.2022): раньше здесь стоял костыль, потому что сенсор иногда отдавал 0
+                    // Теперь нули фильтруются в onSensorChanged(), а в случае 0 выполняется fallback на батарею
+                    if (tempSensor > 0) {
+                        ++TASK_NUMBER;
+                        saveSharedPreferences();
+                        new JobInfoSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myApp).execute(param);
+                    } else {
+                        Log.d(LOG_TAG, "JobSchedulerService: tempSensor=0, fallback на батарею");
+                        ++TASK_NUMBER;
+                        saveSharedPreferences();
+                        new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
+                    }
                 } else {
-                    // Log.d(LOG_TAG, "new: JobInfoBattery");
                     ++TASK_NUMBER;
                     saveSharedPreferences();
                     new JobInfoBattery(this, myNumber, tempBattery, TASK_NUMBER, myApp).execute(param);
                 }
+
             }
         }
 
@@ -168,16 +172,23 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     public void onDestroy() {
         //    stopService(new Intent(this, JobSchedulerService.class));
         try {
-            if (mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
+            if (mJobSensorManager != null &&
+                    mJobSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
                 mJobSensorManager.unregisterListener(this);
-                //    Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
+                Log.d(LOG_TAG, "mJobSensorManager.unregisterListener");
             }
-
         } catch (Exception e) {
             Log.d(LOG_TAG, "mJobSensorManager.unregisterListener = null");
             e.printStackTrace();
         }
+
+        // Сброс значения сенсора, чтобы при новом запуске не использовать старые данные
+        tempSensor = 0f;
+        Log.d(LOG_TAG, "JobSchedulerService: tempSensor reset to 0");
+
+        super.onDestroy();
     }
+
 
     private void readSharedPreferences() {
         SharedPreferences saveJobPref = getSharedPreferences("ru.microsave.tempmonitor.Prefs", MODE_PRIVATE);
@@ -204,7 +215,15 @@ public class JobSchedulerService extends JobService implements SensorEventListen
     public float batteryTemperature() {
         Log.d(LOG_TAG, "JobSchedulerService.batteryTemperature working");
         Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        tempBattery = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10; // Почему разделил на 10??? Да почему то выдача идет в 10 раз больше
+        if (intent != null) {
+            // EXTRA_TEMPERATURE возвращается в десятых долях °C → делим на 10
+            tempBattery = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10; // Почему разделил на 10??? Да почему то выдача идет в 10 раз больше
+
+        } else {
+            Log.w(LOG_TAG, "batteryTemperature: intent = null, returning last known value");
+            // tempBattery уже хранит предыдущее значение, его и возвращаем
+        }
+
         return tempBattery;
     }
 }

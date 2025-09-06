@@ -3,8 +3,6 @@ package ru.microsave.scanerpro;
  Вся информация в read.me
  */
 
-import static javax.net.ssl.SSLEngineResult.Status.OK;
-
 import android.Manifest;
 //import android.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog;
@@ -178,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // TODO: 22.09.2023
         // Далее для RUSTORE поддержка встроенных покупок
         final Context context  = getApplicationContext();
-        final String consoleApplicationId = "0123456789";
+        final String consoleApplicationId = "2063500489";
         final String deeplinkScheme = "yourappscheme";
 
 

@@ -1,5 +1,5 @@
 package ru.microsave.scanerpro;
-/**
+/*
  * Шедулер для периодического контроля аварийной темпертатуры
  *
  */
@@ -15,7 +15,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.BatteryManager;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.work.Configuration;
@@ -182,7 +181,19 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
 
     public float batteryTemperature() {
         Intent intent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        tempBattery = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10; // Почему разделил на 10??? Да почему то выдача идет в 10 раз больше
+
+        if (intent != null) {
+            // EXTRA_TEMPERATURE возвращается в десятых долях °C → делим на 10
+            tempBattery = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10; // Почему разделил на 10??? Да почему то выдача идет в 10 раз больше
+
+        } else {
+            Log.w(LOG_TAG, "batteryTemperature: intent = null, returning last known value");
+            // tempBattery уже хранит предыдущее значение, его и возвращаем
+        }
+
         return tempBattery;
+
+
+
     }
 }
