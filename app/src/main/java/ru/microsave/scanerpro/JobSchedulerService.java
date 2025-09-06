@@ -55,8 +55,17 @@ public class JobSchedulerService extends JobService implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        tempSensor = sensorEvent.values[0];
+        float value = sensorEvent.values[0];
+
+        // Игнорируем дефолтный ноль (который иногда приходит при инициализации)
+        if (value > 0) {
+            tempSensor = value;
+            Log.d(LOG_TAG, "Sensor updated: " + tempSensor);
+        } else {
+            Log.d(LOG_TAG, "Sensor returned 0, keeping previous value: " + tempSensor);
+        }
     }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {

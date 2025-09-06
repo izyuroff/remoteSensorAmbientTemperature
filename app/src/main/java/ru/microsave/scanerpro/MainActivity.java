@@ -6,7 +6,8 @@ package ru.microsave.scanerpro;
 import static javax.net.ssl.SSLEngineResult.Status.OK;
 
 import android.Manifest;
-import android.app.AlertDialog;
+//import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.Context;
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // TODO: 22.09.2023
         // Далее для RUSTORE поддержка встроенных покупок
         final Context context  = getApplicationContext();
-        final String consoleApplicationId = "2063500489";
+        final String consoleApplicationId = "0123456789";
         final String deeplinkScheme = "yourappscheme";
 
 
@@ -573,7 +574,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // Этот метод настраивал периоды тревоги - потом я решил что каждый час достаточно
     public void inputAlarma(View view) {
         readSharedPreferences();
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert);
+
         alert.setTitle(R.string.inputAlarmTitle);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
@@ -628,7 +630,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void inputNormal(View view) {
         readSharedPreferences();
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert);
+
         alert.setTitle(R.string.inputNormalTitle);
         alert.setMessage(getString(R.string.inputNormalMessage1) + " " + NORMAL_INTERVAL+ " " + getString(R.string.inputNormalMessage2));
 
@@ -685,8 +688,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // ==========================================
     public void inputNumber(View view) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
+        AlertDialog.Builder alert = new AlertDialog.Builder(this, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert);
         alert.setTitle(R.string.inputNumberTitle);
         alert.setMessage(getString(R.string.inputNumberMessage) + " " + MY_NUMBER + "\n\n");
         // TODO: 12.04.2022 Что то тут не так, проверка нужна на правильность ввода номера
@@ -740,8 +742,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     // ==========================================
     public void inputWarning(View view) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
+        AlertDialog.Builder alert = new AlertDialog.Builder(this, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert);
         alert.setTitle(R.string.inputWarningTitle);
         alert.setMessage(getString(R.string.inputWarningMessage) + " " + WARNING_TEMP + " " + (getString(R.string.symbol_degrees)));
 
@@ -798,7 +799,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         // Собственно диалоговое окно с информацией
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert);
         // Log.d(LOG_TAG, "33 MainActivity sensorExist = " + sensorExist);
         if (!sensorExist) {
             alert.setTitle(R.string.infoBatteryTitle);
@@ -814,6 +815,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         alert.show();
     }
+
+
+
+    // =============================================================
+    // Остальной код (сенсоры, сервисы, SharedPreferences и т.д.)
+    // --- оставил без изменений ---
+    // =============================================================
+
 
     private void checkSensor() {
         // Проверим наличчие сенсора

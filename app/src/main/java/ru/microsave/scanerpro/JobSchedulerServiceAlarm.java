@@ -87,77 +87,45 @@ public class JobSchedulerServiceAlarm  extends JobService implements SensorEvent
         readSharedPreferences();
         batteryTemperature();
         mCurrentTime = System.currentTimeMillis();
-        // Log.d(LOG_TAG, "mCurrentTime 1: " + mCurrentTime);
-        // Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " +  (mCurrentTime - mLastAlarm)/1000/60 + " ? " + myAlarmInterval/1000/60);
-        // Log.d(LOG_TAG, "mLastAlarm 1: " + mLastAlarm);
-        // Log.d(LOG_TAG, "myAlarmInterval 1: " + myAlarmInterval);
-        // Log.d(LOG_TAG, "myAlarmInterval 1: " + mCurrentTime + " - " + mLastAlarm + " = " + (mCurrentTime - mLastAlarm) + " ? " + myAlarmInterval * 1000 * 60 * 60);
 
         // При старте всегда равно нулю (обнуляется по кнопке Stop)
         if (mLastAlarm == 0) {
             mLastAlarm = mCurrentTime;
-            // Log.d(LOG_TAG, "mLastAlarm 2: " + mLastAlarm);
             saveSharedPreferences();
         }
 
-            // =======================================================================================
-        // TODO: 28.11.2022 СЛЕДУЕТ НА ПЕРВОЕ МЕСТО ПОСТАВИТЬ ТРЕВОГУ, А ПОТОМ УЖЕ ПРОВЕРКУ ЧАСИКОВ 
-            if (ifFlexTime) {
-                // Если FlexTime то время не проверяем! (НЕТ, ТЕПЕРЬ ПРОВЕРЯЕМ)
-                // TODO: 06.10.2023 - зачем тогда условие?????  Надо убрать!
-                if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 60L) {
-                    Log.d(LOG_TAG, "1. Alarm (mCurrentTime - mLastAlarm) = " + ((mCurrentTime - mLastAlarm)/1000L/60L));
+        // =======================================================================================
+        if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 60L) {
+            Log.d(LOG_TAG, "Alarm check: interval passed = " + ((mCurrentTime - mLastAlarm) / 1000L / 60L) + " мин.");
+            mLastAlarm = mCurrentTime - (1000L * 3L); // Новый таймштамп
 
-                    mLastAlarm = mCurrentTime - (1000L * 3L); // Новый таймштамп
+            // Лог для диагностики
+            Log.d(LOG_TAG, "Alarm check values: tempSensor=" + tempSensor + ", tempBattery=" + tempBattery + ", warning=" + myWarningTemperature);
 
-                    // Для сенсора и проверка температуры
-                    // TODO: 05.10.2023 Какая то ошибка, почему в проверке falce непонятно, счас проверю
-                    // TODO: 06.10.2023 Был вот такой код: ifSensor && !(tempSensor <= myWarningTemperature) 
-                    if ((tempSensor <= myWarningTemperature)) {
-                        if (ifSensor) {
-                            Log.d(LOG_TAG, "ifSensor && !(tempSensor <= myWarningTemperature)");
-                            Log.d(LOG_TAG, "ПРОВЕРКА FLEXTIME СРАБОТАЛА");
-                            Log.d(LOG_TAG, String.valueOf(Build.VERSION.SDK_INT));
+            // Для сенсора: игнорируем дефолтный ноль
+            if (ifSensor && tempSensor > 0 && tempSensor <= myWarningTemperature) {
+                ++TASK_NUMBER;
+                saveSharedPreferences();
+                new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
+            }
 
-                            ++TASK_NUMBER;
-                            saveSharedPreferences();
-                            new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
-                        }
-                        // Для батареи и проверка температуры
-                        if (!ifSensor && tempBattery <= myWarningTemperature) {
-                            ++TASK_NUMBER;
-                            saveSharedPreferences();
-                            new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
-                        }
-                    }
+            // Фолбэк: если сенсор есть, но значение 0 (не обновился), проверим батарею
+            else if (ifSensor && tempSensor <= 0) {
+                Log.d(LOG_TAG, "Сенсор вернул 0, fallback на батарею");
+                if (tempBattery <= myWarningTemperature) {
+                    ++TASK_NUMBER;
+                    saveSharedPreferences();
+                    new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
                 }
             }
-                else {
-                        // Проверка времени для старых устройств (в миллисекундах!)
-                        if ((mCurrentTime - mLastAlarm) > myAlarmInterval * 1000L * 60L * 60L) {
-                            Log.d(LOG_TAG, "2. Alarm (mCurrentTime - mLastAlarm) = " + ((mCurrentTime - mLastAlarm)/1000L/60L));
-                            mLastAlarm = mCurrentTime - (1000L * 3L); // Новый таймштамп, сразу же после сработки
 
-                            Log.d(LOG_TAG, "ПРОВЕРКА FLEXTIME НЕ СРАБОТАЛА");
-                            Log.d(LOG_TAG, String.valueOf(Build.VERSION.SDK_INT));
-
-                            // TODO: 12.11.2022 КОСТЫЛЬ - ИНОГДА СЕНСОР ОТДАЁТ НОЛЬ НЕПОНЯТНО ПОЧЕМУ
-                            //    if (tempSensor == 0) tempSensor = tempBattery;
-
-                            // Для сенсора и проверка температуры
-                            if (ifSensor && tempSensor <= myWarningTemperature) {
-                                ++TASK_NUMBER;
-                                saveSharedPreferences();
-                                new JobAlarmSensor(this, myNumber, tempSensor, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
-                            }
-                            // Для батареи и проверка температуры
-                            if (!ifSensor && tempBattery <= myWarningTemperature) {
-                                ++TASK_NUMBER;
-                                saveSharedPreferences();
-                                new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
-                            }
-                        }
-                    }
+            // Если сенсора нет — работаем только по батарее
+            else if (!ifSensor && tempBattery <= myWarningTemperature) {
+                ++TASK_NUMBER;
+                saveSharedPreferences();
+                new JobAlarmBattery(this, myNumber, tempBattery, TASK_NUMBER, myWarningTemperature, myApp).execute(param);
+            }
+        }
 
         saveSharedPreferences();
         // =======================================================================================
