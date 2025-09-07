@@ -41,8 +41,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.concurrent.TimeUnit;
 
-import ru.rustore.sdk.billingclient.RuStoreBillingClient;
-import ru.rustore.sdk.billingclient.RuStoreBillingClientFactory;
+//import ru.rustore.sdk.billingclient.RuStoreBillingClient;
+//import ru.rustore.sdk.billingclient.RuStoreBillingClientFactory;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Запрос пермишна (закомментил if после минимального sdk = 23
    //     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.SEND_SMS)
                     == PackageManager.PERMISSION_DENIED) {
 
@@ -164,7 +165,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 requestPermissions(permissions, PERMISSION_REQUEST_CODE);
 
             }
-   //     }
+        }
+        //     }
 
 
 
@@ -187,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
 
-        RuStoreBillingClient billingClient = RuStoreBillingClientFactory.INSTANCE.create(
+/*        RuStoreBillingClient billingClient = RuStoreBillingClientFactory.INSTANCE.create(
                 context,
                 consoleApplicationId,
                 deeplinkScheme
@@ -195,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                // themeProvider
                 // debugLogs,
                 //externalPaymentLoggerFactory
-        );
+        );*/
 
 
 
@@ -421,12 +423,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
 
         // TODO: 22.09.2023 Если публиковать в гугл маркете - удалить пермишн!
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
                 msg(getString(R.string.msgBatteryIgnore));
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
             }
+        }
 
-            intent.setData(Uri.parse("package:" + packageName));
+        intent.setData(Uri.parse("package:" + packageName));
 
 
         intent.putExtra("serviceIntentON", serviseON);

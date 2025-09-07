@@ -10,8 +10,9 @@ android {
             resolutionStrategy { force 'androidx.core:core:1.6.0' }
         }
         applicationId "ru.microsave.scanerpro"
-        minSdkVersion 23
+        minSdkVersion 21
         targetSdkVersion 36
+        //maxSdkVersion 33     // ограничение: установка только до Android 13
         versionCode 1
         versionName "1.15"
 
@@ -51,7 +52,7 @@ android {
 }
 
 dependencies {
-    implementation 'ru.rustore.sdk:billingclient:2.2.0'
+    //implementation 'ru.rustore.sdk:billingclient:2.2.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'com.google.android.material:material:1.13.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
